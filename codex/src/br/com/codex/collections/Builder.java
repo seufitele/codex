@@ -9,7 +9,7 @@ package br.com.codex.collections;
  * de ordem superior for chamada. Por exemplo, é possível passar um builder de LinkedHashSet, que assegurará
  * a ordem de inclusão dos elementos.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <E> O tipo de elementos que serão alimentados no builder
  * @param <To> O tipo de coleção a ser retornada pelo builder

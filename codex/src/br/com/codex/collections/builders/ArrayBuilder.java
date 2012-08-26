@@ -10,7 +10,7 @@ import br.com.codex.collections.mutable.ListSharp;
 /**
  * Essa classe é um builder para SharpCollection baseado em um ListSharp.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <E> O tipo de dados do ListSharp retornado
  */

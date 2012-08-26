@@ -8,7 +8,7 @@ import br.com.codex.collections.Builder;
 /**
  * Essa classe é um builder para Set baseado em um HashSet. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <E> O tipo de dados armazenado no HashSet.
  */

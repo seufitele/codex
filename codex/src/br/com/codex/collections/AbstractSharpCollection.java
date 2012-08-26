@@ -30,7 +30,7 @@ import br.com.codex.product.Tuple2;
  * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
  * classe é suficiente).
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> 

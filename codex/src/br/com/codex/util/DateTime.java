@@ -10,7 +10,7 @@ import java.util.Date;
   * para realizar operações básicas.
  * 
  * ATENÇÃO: Classe IMUTÁVEL
- * Autor: Vinícius Seufitele Pinto (F9540702)
+ * @author Vinícius Seufitele Pinto 
  */
 public class DateTime implements Comparable<DateTime>
 {

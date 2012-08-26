@@ -20,7 +20,7 @@ import br.com.codex.function.Function1;
  * Coleções como funções parciais: <br/>
  * Coleções podem ser vistas como funções parciais. ListSharp, por exemplo, é uma função que faz corresponder, para cada inteiro, um elemento do tipo T.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  */
 public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements Function1<Integer, T>
 {

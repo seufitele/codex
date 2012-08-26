@@ -18,7 +18,7 @@ import br.com.codex.product.Tuple2;
  * discard : Quando true, o valor retornado pelo parser será descartado. Útil quando há uma combinação de parsers, e alguns
  * possuem informações que não são úteis. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  */
 public class Parser
 {

@@ -3,7 +3,7 @@ package br.com.codex.collections;
 /**
  * Essa interface deve ser assinada pelas coleções que permitem mutabilidade.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public interface MutableSharpCollection<T>

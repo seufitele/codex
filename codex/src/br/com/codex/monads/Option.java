@@ -10,7 +10,7 @@ import br.com.codex.collections.mutable.ListSharp;
  * Option pode ser vista como uma lista, que estará vazia se a operação não foi bem-sucedida,
  * ou conterá um elemento se ela foi.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <T> O tipo de dados a ser guardado no option
  */

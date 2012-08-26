@@ -2,7 +2,8 @@ package br.com.codex.function;
 
 /**
  * Interface que define uma função que não possui parâmetros, e retorna um valor do tipo T
- * @author f9540702 Vinícius Seufitele Pinto
+ * 
+ * @author Vinícius Seufitele Pinto
  *
  * @param <T> O tipo a ser retornado pela função
  */

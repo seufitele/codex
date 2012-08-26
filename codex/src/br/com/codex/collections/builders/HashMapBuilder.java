@@ -11,7 +11,7 @@ import br.com.codex.product.Tuple2;
 /**
  * Essa classe é um builder para Set baseado em um MapSharp. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
  */

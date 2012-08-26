@@ -4,7 +4,7 @@ package br.com.codex.util;
  * Esta classe contém métodos para ser importados estaticamente, criados para simplificar
  * e diminuir a repetição de código para validações mais comuns.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public final class Validations

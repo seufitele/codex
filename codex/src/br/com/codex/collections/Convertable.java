@@ -7,7 +7,7 @@ import java.util.Set;
  * As classes que assinam essa interface devem prover métodos para transformar
  * a sua classe em coleções Java. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public interface Convertable<T>

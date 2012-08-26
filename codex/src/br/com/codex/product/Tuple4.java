@@ -5,7 +5,7 @@ package br.com.codex.product;
  * Uma enupla é igual a outra se, e somente se, os seus valores são iguais.<br/>
  * <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  * 
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo

@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * As classes que assinam esta interface possuem diversas funções que utilizam comparação. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public interface ComparisonFunctions<T>

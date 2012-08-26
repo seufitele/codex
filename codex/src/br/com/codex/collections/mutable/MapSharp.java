@@ -17,7 +17,7 @@ import br.com.codex.product.Tuple2;
  * Os métodos desta classe são utilizados para favorecer a programação funcional, e possuem a mesma nomeclatura 
  * encontrada no Scala. Os métodos desta classe são extremamente poderosos, e simplificam a codificação de estruturas mais complexas.<br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  */
 public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>>
 {

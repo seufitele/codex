@@ -9,7 +9,7 @@ import br.com.codex.product.Tuple2;
 /**
  * Interface padrão para coleções que admitem funções de ordem superior. 
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <T> O tipo de elementos da coleção
  */

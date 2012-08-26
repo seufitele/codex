@@ -7,7 +7,7 @@ import br.com.codex.function.Function2;
  * Interface que determina os métodos que as coleções que possuem suporte a funções de ordem
  * superior deve prover para serem utilizadas. 
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <T> O tipo de dados da coleção
  */

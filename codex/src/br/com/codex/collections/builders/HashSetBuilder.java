@@ -10,7 +10,7 @@ import br.com.codex.collections.mutable.SetSharp;
 /**
  * Essa classe é um builder para Set baseado em um SetSharp. <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  * @param <E> O tipo de dados armazenado no SetSharp.
  */

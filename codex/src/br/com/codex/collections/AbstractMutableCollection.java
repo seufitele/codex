@@ -17,7 +17,7 @@ package br.com.codex.collections;
  * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
  * classe é suficiente).
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public abstract class AbstractMutableCollection<T, U extends SharpCollection<T>> extends AbstractSharpCollection<T, U> 

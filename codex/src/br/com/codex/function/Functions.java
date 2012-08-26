@@ -3,7 +3,7 @@ package br.com.codex.function;
 /**
  * Classe utilitária, com métodos a serem aplicados a funções.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public final class Functions
