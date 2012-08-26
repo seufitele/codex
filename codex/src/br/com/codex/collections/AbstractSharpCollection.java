@@ -342,6 +342,44 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		return (U) colecaoRetorno.result();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public U dropWhile(final Function1<T, Boolean> function)
+	{
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Iterator<T> ite = this.iterator();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+			
+			if (!function.apply(curEle))
+			{
+				colecaoRetorno.add(curEle);
+				break;
+			}
+		}
+		
+		while(ite.hasNext())
+		{
+			colecaoRetorno.add(ite.next());
+		}
+		
+		return (U) colecaoRetorno.result();
+	}
+
+	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
+	{
+		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
+		int curIndex = 0;
+		
+		for (T ele : this)
+		{
+			colecaoRetorno.add(Tuple2.from(ele, curIndex++));
+		}
+		return colecaoRetorno.result();
+	}
+	
 	@Override
 	public List<T> toList()
 	{
@@ -373,6 +411,9 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return builder.result();
 	}
+	
+	
+	//MÉTODOS PRIVADOS DESTA CLASSE
 	
 	/**
 	 * Método privado, para métodos que precisam assegurar que a lista contenha elementos
@@ -406,18 +447,6 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		{
 			return ob1.compareTo(ob2);
 		}
-	}
-	
-	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
-	{
-		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
-		int curIndex = 0;
-		
-		for (T ele : this)
-		{
-			colecaoRetorno.add(Tuple2.from(ele, curIndex++));
-		}
-		return colecaoRetorno.result();
 	}
 	
 }

@@ -92,5 +92,13 @@ public interface HighOrderFunctions<T>
 	 * @return Uma coleção onde os elementos são todos distintos entre si.
 	 */
 	public SharpCollection<T> distinct();
+	
+	/**
+	 * Descarta elementos do iterador desta coleção enquanto a função passada como parâmetro retornar <tt>true</tt>.
+	 * @param function A função a ser aplicada a cada elemento
+	 * @return Uma nova coleção, sem os <tt>n</tt> primeiros cuja aplicação da função for <tt>true</tt>, ou uma coleção
+	 * vazia se não houver tais elementos.
+	 */
+	public SharpCollection<T> dropWhile(final Function1<T, Boolean> function);
 
 }
