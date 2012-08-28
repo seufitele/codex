@@ -1,0 +1,61 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.detentor</groupId>
+  <artifactId>codexCollections</artifactId>
+  <packaging>jar</packaging>
+  <name>Codex Collections</name>
+  <version>0.0.1</version>
+  <description>Coleções que objetivam complementar as coleções padrão do Java.</description>
+  <url>git://github.com/detentor/codex.git</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <scm>
+    <url>git://github.com/detentor/codex.git</url>
+    <connection>git://github.com/detentor/codex.git</connection>
+  </scm>
+  
+  <developers>
+  
+  	<developer>
+  		<id>detentor</id>
+  		<name>Vinicius Seufitele Pinto</name>
+  		<email>vinicius.seufitele@gmail.com</email>
+  	</developer>
+  
+  </developers>
+  
+  
+  <dependencies>
+  
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.8.1</version>
+		<scope>test</scope>
+	</dependency>
+    
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
