@@ -6,7 +6,7 @@
   <artifactId>codexCollections</artifactId>
   <packaging>jar</packaging>
   <name>Codex Collections</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   
   <description>Coleções que objetivam complementar as coleções padrão do Java.</description>
   <url>git://github.com/detentor/codex.git</url>
@@ -65,11 +65,13 @@
         </configuration>
       </plugin>
       
+      <!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.3.2</version>
       </plugin>
+       -->
     
   </plugins>
       
