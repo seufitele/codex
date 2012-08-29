@@ -1,13 +1,21 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.detentor</groupId>
   <artifactId>codexCollections</artifactId>
   <packaging>jar</packaging>
   <name>Codex Collections</name>
   <version>0.0.1</version>
+  
   <description>Coleções que objetivam complementar as coleções padrão do Java.</description>
   <url>git://github.com/detentor/codex.git</url>
+  
+   <parent>
+    	<groupId>org.sonatype.oss</groupId>
+    	<artifactId>oss-parent</artifactId>
+   	 	<version>7</version>
+   </parent>
 
   <licenses>
     <license>
@@ -18,8 +26,9 @@
   </licenses>
   
   <scm>
-    <url>git://github.com/detentor/codex.git</url>
-    <connection>git://github.com/detentor/codex.git</connection>
+    <connection>scm:git:git@github.com:detentor/git-demo.git</connection>
+	<url>scm:git:git@github.com:detentor/git-demo.git</url>
+	<developerConnection>scm:git:git@github.com:tobrien/git-demo.git</developerConnection>
   </scm>
   
   <developers>
@@ -31,7 +40,6 @@
   	</developer>
   
   </developers>
-  
   
   <dependencies>
   
@@ -45,9 +53,10 @@
   </dependencies>
   
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <plugins>
-      <plugin>
+ 
+  <plugins>
+	
+   	  <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
@@ -55,7 +64,15 @@
           <target>1.6</target>
         </configuration>
       </plugin>
-    </plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+    
+  </plugins>
+      
   </build>
   
 </project>
