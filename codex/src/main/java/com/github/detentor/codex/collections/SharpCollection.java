@@ -151,14 +151,5 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * @return Uma coleção de tuplas, onde o primeiro elemento é o elemento original, e o segundo o seu índice
 	 */
 	SharpCollection<Tuple2<T, Integer>> zipWithIndex();
-	
-
-	/**
-	 * Retorna uma coleção de tuplas a partir desta coleção, onde o primeiro elemento é o elemento desta coleção,
-	 * e o segundo o seu índice (de acordo com o iterator), utilizando o builder passado como parâmetro
-	 * @param cbf (CanBuildFrom) O Builder a ser utilizado no método.
-	 * @return Uma coleção de tuplas, onde o primeiro elemento é o elemento original, e o segundo o seu índice
-	 */
-	SharpCollection<Tuple2<T, Integer>> zipWithIndex(final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> cbf);
 
 }

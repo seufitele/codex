@@ -417,19 +417,14 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	@Override
 	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return zipWithIndex(this.<Tuple2<T, Integer>>builder());
-	}
-	
-	@Override
-	public SharpCollection<Tuple2<T, Integer>> zipWithIndex(final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> cbf)
-	{
-		int curIndex = 0;
+		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
+		int curIndex = -1;
 		
 		for (T ele : this)
 		{
-			cbf.add(Tuple2.from(ele, curIndex++));
+			colecaoRetorno.add(Tuple2.from(ele, ++curIndex));
 		}
-		return cbf.result();
+		return (SharpCollection<Tuple2<T, Integer>>) colecaoRetorno.result();
 	}
 	
 }

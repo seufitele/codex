@@ -140,12 +140,6 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>>
 	}
 
 	@Override
-	public SetSharp<Tuple2<T, Integer>> zipWithIndex(final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> cbf)
-	{
-		return (SetSharp<Tuple2<T, Integer>>) super.zipWithIndex(cbf);
-	}
-
-	@Override
 	public int hashCode()
 	{
 		final int prime = 31;

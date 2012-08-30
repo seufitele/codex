@@ -1,11 +1,8 @@
 package com.github.detentor.codex.monads;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.github.detentor.codex.monads.Option;
-import com.github.detentor.codex.operations.IntegerOp;
 
 
 public class OptionTest
@@ -20,7 +17,6 @@ public class OptionTest
 		final Option<Integer> optionVazio = Option.from(null);
 	
 		assertTrue(optionVazio.isEmpty());
-		assertTrue(optionVazio.map(IntegerOp.square).isEmpty());
 	}
 	
 
