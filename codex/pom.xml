@@ -52,7 +52,7 @@
     
   </dependencies>
   
-  <!-- 
+  
   <build>
  
   <plugins>
@@ -81,7 +81,6 @@
         </executions>
       </plugin>
       
-      -->
       
       <!-- 
       <plugin>
@@ -90,12 +89,9 @@
         <version>2.3.2</version>
       </plugin>
        -->
-   <!-- 
   </plugins>
-   
       
   </build>
   
-  -->
   
 </project>
