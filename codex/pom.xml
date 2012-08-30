@@ -88,6 +88,7 @@
         <configuration>
 	        <checkModificationExcludes>
 		      <checkModificationExclude>release.properties</checkModificationExclude>
+		      <checkModificationExclude>target/*</checkModificationExclude>
 	    	</checkModificationExcludes>
         </configuration>
       </plugin>
