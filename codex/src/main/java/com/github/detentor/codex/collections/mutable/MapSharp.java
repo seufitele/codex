@@ -9,6 +9,8 @@ import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.HashMapBuilder;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 
@@ -132,7 +134,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return new HashMapBuilder();
 	}
-
+	
 	/**
 	 * ATENÇÃO: O método contains verifica se este mapa, representado por uma coleção de tuplas, 
 	 * contém a tupla passada como parâmetro. Para verificar se ele possui a chave, use o método {@link #containsKey containsKey}.
@@ -235,7 +237,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return backingMap.containsValue(value);
 	}
-
+	
 	/**
 	 * Retorna esta coleção como um mapa do Java. As modificações no mapa retornado afetam também este mapa.
 	 * 

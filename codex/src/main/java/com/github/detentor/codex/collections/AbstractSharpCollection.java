@@ -10,6 +10,7 @@ import com.github.detentor.codex.collections.builders.java.ArrayListBuilder;
 import com.github.detentor.codex.collections.builders.java.HashSetBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -28,7 +29,8 @@ import com.github.detentor.codex.product.Tuple2;
  * Para coleções mutáveis, veja {@link AbstractMutableCollection}. <br/><br/>
  * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/> <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos Map e FlatMap. Devido à incompetência do Java com relação a Generics,
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} 
+ * e {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics,
  * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
  * classe é suficiente).
  * 
@@ -195,6 +197,22 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return (U) colecaoRetorno.result();
 	}
+	
+	@SuppressWarnings(UNCHECKED)
+	@Override
+	public U filterNot(final Function1<T, Boolean> pred)
+	{
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		
+		for (final T ele : this)
+		{
+			if (!pred.apply(ele))
+			{
+				colecaoRetorno.add(ele);
+			}
+		}
+		return (U) colecaoRetorno.result();
+	}
 
 	@Override
 	public boolean exists(final Function1<T, Boolean> pred)
@@ -242,6 +260,21 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		for (final T ele : this)
 		{
 			colecaoRetorno.add(function.apply(ele));
+		}
+		return colecaoRetorno.result();
+	}
+	
+	@Override
+	public <B> SharpCollection<B> collect(final PartialFunction<T, B> pFunction)
+	{
+		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
+
+		for (final T ele : this)
+		{
+			if (pFunction.isDefinedAt(ele))
+			{
+				colecaoRetorno.add(pFunction.apply(ele));
+			}
 		}
 		return colecaoRetorno.result();
 	}
@@ -345,6 +378,19 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return (U) colecaoRetorno.result();
 	}
+	
+	@Override
+	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
+	{
+		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
+		int curIndex = -1;
+		
+		for (T ele : this)
+		{
+			colecaoRetorno.add(Tuple2.from(ele, ++curIndex));
+		}
+		return (SharpCollection<Tuple2<T, Integer>>) colecaoRetorno.result();
+	}
 
 	@Override
 	public List<T> toList()
@@ -377,7 +423,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return builder.result();
 	}
-	
+
 	/**
 	 * Método protegido, para métodos que precisam assegurar que a lista contenha elementos
 	 */
@@ -396,7 +442,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	{
 		ensureNotEmpty("Método não definido para coleções vazias");
 	}
-	
+
 	/**
 	 * Classe que converte um Comparable para Comparator
 	 * @author f9540702 Vinícius Seufitele Pinto
@@ -412,19 +458,6 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		{
 			return ob1.compareTo(ob2);
 		}
-	}
-
-	@Override
-	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
-	{
-		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
-		int curIndex = -1;
-		
-		for (T ele : this)
-		{
-			colecaoRetorno.add(Tuple2.from(ele, ++curIndex));
-		}
-		return (SharpCollection<Tuple2<T, Integer>>) colecaoRetorno.result();
 	}
 	
 }

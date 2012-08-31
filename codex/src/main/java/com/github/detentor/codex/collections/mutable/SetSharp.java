@@ -9,6 +9,7 @@ import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.HashSetBuilder;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 
@@ -131,6 +132,12 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>>
 	public <B> SetSharp<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function)
 	{
 		return (SetSharp<B>) super.flatMap(function);
+	}
+	
+	@Override
+	public <B> SetSharp<B> collect(final PartialFunction<T, B> pFunction)
+	{
+		return (SetSharp<B>) super.collect(pFunction);
 	}
 
 	@Override

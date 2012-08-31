@@ -10,6 +10,7 @@ import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 
@@ -145,6 +146,12 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
 		return new ArrayBuilder<B>();
+	}
+	
+	@Override
+	public <B> ListSharp<B> collect(final PartialFunction<T, B> pFunction)
+	{
+		return (ListSharp<B>) super.collect(pFunction);
 	}
 
 	@Override

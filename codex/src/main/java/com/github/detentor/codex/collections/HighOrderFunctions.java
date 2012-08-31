@@ -2,6 +2,7 @@ package com.github.detentor.codex.collections;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
+import com.github.detentor.codex.function.PartialFunction;
 
 /**
  * Interface que determina os métodos que as coleções que possuem suporte a funções de ordem
@@ -20,6 +21,14 @@ public interface HighOrderFunctions<T>
 	 * satisfazem o predicado pred. A ordem dos elementos será a mesma ordem retornada pelo iterator.
 	 */
 	SharpCollection<T> filter(final Function1<T, Boolean> pred);
+	
+	/**
+	 * Seleciona todos os elementos desta coleções que não satisfazem um determinado predicado
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
+	 * não satisfazem o predicado pred. A ordem dos elementos será a mesma ordem retornada pelo iterator.
+	 */
+	SharpCollection<T> filterNot(final Function1<T, Boolean> pred);
 	
 	/**
 	 * Verifica se o predicado passado como parâmetro é satisfeito por algum elemento desta coleção.
@@ -63,6 +72,16 @@ public interface HighOrderFunctions<T>
 	 */
 	<B> SharpCollection<B> map(final Function1<T, B> function);
 	
+	/**
+	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
+	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
+	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
+	 * @param <B> O tipo da nova coleção.
+	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
+	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
+	 */
+	<B> SharpCollection<B> collect(final PartialFunction<T, B> pFunction);
+
 	/**
 	 * Constrói uma nova coleção, a partir da aplicação da função passada 
 	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
