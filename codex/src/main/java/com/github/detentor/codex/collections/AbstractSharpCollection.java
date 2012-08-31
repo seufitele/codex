@@ -181,6 +181,32 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		sBuilder.append(end);
 		return sBuilder.toString();
 	}
+	
+	@SuppressWarnings(UNCHECKED)
+	@Override
+	public U dropWhile(final Function1<T, Boolean> pred)
+	{
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Iterator<T> ite = this.iterator();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+			
+			if (! pred.apply(curEle))
+			{
+				colecaoRetorno.add(curEle);
+				break;
+			}
+		}
+		
+		while(ite.hasNext())
+		{
+			colecaoRetorno.add(ite.next());
+		}
+
+		return (U) colecaoRetorno.result();
+	}
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
@@ -238,6 +264,21 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public Integer count(final Function1<T, Boolean> pred)
+	{
+		int numElementos = 0;
+		
+		for (final T ele : this)
+		{
+			if (pred.apply(ele))
+			{
+				numElementos++;
+			}
+		}
+		return numElementos;
 	}
 
 	@Override

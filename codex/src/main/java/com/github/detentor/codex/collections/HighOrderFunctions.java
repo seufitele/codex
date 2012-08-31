@@ -15,6 +15,15 @@ import com.github.detentor.codex.function.PartialFunction;
 public interface HighOrderFunctions<T>
 {
 	/**
+	 * Descarta os elementos do início da coleção enquanto eles satisfizerem o predicado. <br/>
+	 * 
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return Os elementos desta coleção com exceção do grupo de elementos do início que satisfazem
+	 * o predicado.
+	 */
+	SharpCollection<T> dropWhile(final Function1<T, Boolean> pred);
+	
+	/**
 	 * Seleciona todos os elementos desta coleções que satisfazem um determinado predicado
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
@@ -32,14 +41,14 @@ public interface HighOrderFunctions<T>
 	
 	/**
 	 * Verifica se o predicado passado como parâmetro é satisfeito por algum elemento desta coleção.
-	 * @param pred O predicado a ser verificado
+	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return true se existe algum elemento que satisfaz o predicado, ou false se não houver
 	 */
 	boolean exists(final Function1<T, Boolean> pred);
 	
 	/**
 	 * Verifica se o predicado passado como parâmetro é satisfeito por todos os elementos desta coleção.
-	 * @param pred O predicado a ser verificado
+	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return true se todos os elementos desta coleção satisfazem o predicado, ou false se existe algum
 	 * elemento que não satisfaz o predicado.
 	 */
@@ -105,6 +114,13 @@ public interface HighOrderFunctions<T>
 	 * passada como parâmetro.
 	 */
 	SharpCollection<T> intersect(final SharpCollection<T> withCollection);
+	
+	/**
+	 * Conta o número de elementos desta coleção que satisfazem o predicado passado como parâmetro.
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return O número de elementos desta coleção que satisfazem o predicado 
+	 */
+	Integer count(final Function1<T, Boolean> pred);
 	
 	/**
 	 * Retorna uma coleção que possui somente elementos distintos entre si (de acordo com o equals). <br/>
