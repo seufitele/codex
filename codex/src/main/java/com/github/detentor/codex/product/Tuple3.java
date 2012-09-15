@@ -141,4 +141,10 @@ public final class Tuple3<A, B, C>
 		return true;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Tuple(" + val1 + ", " + val2 + ", " + val3 + ")";
+	}
+
 }

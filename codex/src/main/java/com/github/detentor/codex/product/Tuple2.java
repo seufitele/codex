@@ -42,6 +42,15 @@ public class Tuple2<A, B>
 		return new Tuple2<C, D>(valor1, valor2);
 	}
 
+	/**
+	 * Retorna uma nova tupla, com os elementos em posições trocadas.
+	 * @return Uma nova tupla, onde a posição dos elementos está invertida.
+	 */
+	public Tuple2<B, A> swap()
+	{
+		return Tuple2.from(this.getVal2(), this.getVal1());
+	}
+
 	public A getVal1()
 	{
 		return val1;
@@ -117,7 +126,7 @@ public class Tuple2<A, B>
 	@Override
 	public String toString()
 	{
-		return val1.toString() + " " + val2.toString();
+		return "Tuple(" + val1 + ", " + val2 + ")";
 	}
 
 }
