@@ -9,8 +9,6 @@ import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.HashMapBuilder;
-import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 
