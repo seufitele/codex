@@ -54,7 +54,7 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
      * @return um <tt>Iterator</tt> sobre os elementos desta coleção
      */
     @Override
-	Iterator<T> iterator();
+	public Iterator<T> iterator();
     
     //MÉTODOS BULK, cujas implementações são criadas a partir dos valores anteriores: 
     
