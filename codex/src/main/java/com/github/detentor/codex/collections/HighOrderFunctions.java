@@ -24,12 +24,29 @@ public interface HighOrderFunctions<T>
 	SharpCollection<T> dropWhile(final Function1<T, Boolean> pred);
 	
 	/**
+	 * Descarta os elementos do fim da coleção enquanto eles satisfizerem o predicado. <br/>
+	 * 
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return Os elementos desta coleção com exceção do grupo de elementos do fim que satisfazem
+	 * o predicado.
+	 */
+	SharpCollection<T> dropRightWhile(final Function1<T, Boolean> pred);
+
+	/**
 	 * Pega os elementos da coleção enquanto eles satisfizerem o predicado. <br/>
 	 * 
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return O mais longo prefixo desta coleção onde todos os elementos satisfazem o predicado. 
 	 */
 	SharpCollection<T> takeWhile(final Function1<T, Boolean> pred);
+	
+	/**
+	 * Pega os elementos da coleção, começando no último elemento, enquanto eles satisfizerem o predicado. <br/>
+	 * 
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return O mais longo prefixo (da direita para a esquerda) desta coleção onde todos os elementos satisfazem o predicado. 
+	 */
+	SharpCollection<T> takeRightWhile(final Function1<T, Boolean> pred);
 	
 	/**
 	 * Seleciona todos os elementos desta coleções que satisfazem um determinado predicado

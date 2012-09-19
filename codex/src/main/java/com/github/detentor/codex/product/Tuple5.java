@@ -11,45 +11,51 @@ package com.github.detentor.codex.product;
  * @param <B> O objeto do segundo tipo
  * @param <C> O objeto do terceiro tipo
  * @param <D> O objeto do quarto tipo
+ * @param <E> O objeto do quinto tipo
  */
-public final class Tuple4<A, B, C, D>
+public final class Tuple5<A, B, C, D, E>
 {
 	private A val1;
 	private B val2;
 	private C val3;
 	private D val4;
+	private E val5;
 
 	/**
 	 * Construtor default, inicializa os valores com null
 	 */
-	public Tuple4()
+	public Tuple5()
 	{
-		this(null, null, null, null);
+		this(null, null, null, null, null);
 	}
 
-	private Tuple4(final A valor1, final B valor2, final C valor3, final D valor4)
+	private Tuple5(final A valor1, final B valor2, final C valor3, final D valor4, final E valor5)
 	{
 		this.val1 = valor1;
 		this.val2 = valor2;
 		this.val3 = valor3;
 		this.val4 = valor4;
+		this.val5 = valor5;
 	}
-	
+
 	/**
-	 * Cria uma tuple 4 a partir dos valores passados como parâmetro 
+	 * Cria uma tuple 4 a partir dos valores passados como parâmetro
+	 * 
 	 * @param <E> O tipo de dados do primeiro valor
 	 * @param <F> O tipo de dados do segundo valor
 	 * @param <G> O tipo de dados do terceiro valor
 	 * @param <H> O tipo de dados do quarto valor
+	 * @param <I> O tipo de dados do quinto valor
 	 * @param valor1 O valor do primeiro elemento
 	 * @param valor2 O valor do segundo elemento
 	 * @param valor3 O valor do terceiro elemento
 	 * @param valor4 O valor do quarto elemento
-	 * @return Uma tuple4 com os valores passados como parâmetro
+	 * @param valor5 O valor do quinto elemento
+	 * @return Uma tuple5 com os valores passados como parâmetro
 	 */
-	public static <E, F, G, H> Tuple4<E, F, G, H> from(final E valor1, final F valor2, final G valor3, final H valor4)
+	public static <E, F, G, H, I> Tuple5<E, F, G, H, I> from(final E valor1, final F valor2, final G valor3, final H valor4, final I valor5)
 	{
-		return new Tuple4<E, F, G, H>(valor1, valor2, valor3, valor4);
+		return new Tuple5<E, F, G, H, I>(valor1, valor2, valor3, valor4, valor5);
 	}
 
 	public A getVal1()
@@ -57,24 +63,24 @@ public final class Tuple4<A, B, C, D>
 		return val1;
 	}
 
-	public B getVal2()
-	{
-		return val2;
-	}
-
-	public C getVal3()
-	{
-		return val3;
-	}
-
 	public void setVal1(final A theVal1)
 	{
 		this.val1 = theVal1;
 	}
 
+	public B getVal2()
+	{
+		return val2;
+	}
+
 	public void setVal2(final B theVal2)
 	{
 		this.val2 = theVal2;
+	}
+
+	public C getVal3()
+	{
+		return val3;
 	}
 
 	public void setVal3(final C theVal3)
@@ -92,15 +98,26 @@ public final class Tuple4<A, B, C, D>
 		this.val4 = theVal4;
 	}
 
+	public E getVal5()
+	{
+		return val5;
+	}
+
+	public void setVal5(final E theVal5)
+	{
+		this.val5 = theVal5;
+	}
+
 	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((val1 == null) ? 0 : val1.hashCode());
-		result = prime * result + ((val2 == null) ? 0 : val2.hashCode());
-		result = prime * result + ((val3 == null) ? 0 : val3.hashCode());
-		result = prime * result + ((val4 == null) ? 0 : val4.hashCode());
+		result = prime * result + (val1 == null ? 0 : val1.hashCode());
+		result = prime * result + (val2 == null ? 0 : val2.hashCode());
+		result = prime * result + (val3 == null ? 0 : val3.hashCode());
+		result = prime * result + (val4 == null ? 0 : val4.hashCode());
+		result = prime * result + (val5 == null ? 0 : val5.hashCode());
 		return result;
 	}
 
@@ -120,7 +137,7 @@ public final class Tuple4<A, B, C, D>
 		{
 			return false;
 		}
-		final Tuple4 other = (Tuple4) obj;
+		final Tuple5 other = (Tuple5) obj;
 		if (val1 == null)
 		{
 			if (other.val1 != null)
@@ -165,13 +182,24 @@ public final class Tuple4<A, B, C, D>
 		{
 			return false;
 		}
+		if (val5 == null)
+		{
+			if (other.val5 != null)
+			{
+				return false;
+			}
+		}
+		else if (!val5.equals(other.val5))
+		{
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Tuple(" + val1 + ", " + val2 + ", " + val3 +  ", " + val4 + ")";
+		return "Tuple(" + val1 + ", " + val2 + ", " + val3 + ", " + val4 + ", " + val5 + ")";
 	}
 
 }

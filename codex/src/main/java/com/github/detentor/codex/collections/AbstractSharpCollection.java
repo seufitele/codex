@@ -210,7 +210,64 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public SharpCollection<T> takeWhile(final Function1<T, Boolean> pred)
+	public U dropRightWhile(final Function1<T, Boolean> pred)
+	{
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Iterator<T> ite = this.iterator();
+		
+		Builder<T, SharpCollection<T>> tempCollection = builder();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+
+			if (pred.apply(curEle))
+			{
+				//Esse predicado pode ser o último
+				tempCollection.add(curEle);
+			}
+			else
+			{
+				//Adiciona os elementos que seriam descartados
+				for (T ele : tempCollection.result())
+				{
+					colecaoRetorno.add(ele);
+				}
+				//Adiciona o elemento atual
+				colecaoRetorno.add(curEle);
+				tempCollection = builder(); //reseta o builder
+			}
+		}
+		return (U) colecaoRetorno.result();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public U takeRightWhile(final Function1<T, Boolean> pred)
+	{
+		Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Iterator<T> ite = this.iterator();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+
+			if (pred.apply(curEle))
+			{
+				//Coleta os elementos que satisfazem o predicado
+				colecaoRetorno.add(curEle);
+			}
+			else
+			{
+				colecaoRetorno = builder(); //reseta o builder
+			}
+		}
+		return (U) colecaoRetorno.result();
+	}
+
+	@SuppressWarnings(UNCHECKED)
+	@Override
+	public U takeWhile(final Function1<T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		final Iterator<T> ite = this.iterator();
