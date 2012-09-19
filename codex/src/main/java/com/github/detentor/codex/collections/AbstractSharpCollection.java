@@ -207,7 +207,30 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 
 		return (U) colecaoRetorno.result();
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public SharpCollection<T> takeWhile(final Function1<T, Boolean> pred)
+	{
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Iterator<T> ite = this.iterator();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+			
+			if (pred.apply(curEle))
+			{
+				colecaoRetorno.add(curEle);
+			}
+			else
+			{
+				break;
+			}
+		}
+		return (U) colecaoRetorno.result();
+	}
+	
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U filter(final Function1<T, Boolean> pred)

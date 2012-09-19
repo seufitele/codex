@@ -24,6 +24,14 @@ public interface HighOrderFunctions<T>
 	SharpCollection<T> dropWhile(final Function1<T, Boolean> pred);
 	
 	/**
+	 * Pega os elementos da coleção enquanto eles satisfizerem o predicado. <br/>
+	 * 
+	 * @param pred O predicado a ser utilizado para testar os elementos
+	 * @return O mais longo prefixo desta coleção onde todos os elementos satisfazem o predicado. 
+	 */
+	SharpCollection<T> takeWhile(final Function1<T, Boolean> pred);
+	
+	/**
 	 * Seleciona todos os elementos desta coleções que satisfazem um determinado predicado
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
