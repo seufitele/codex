@@ -250,6 +250,12 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		return ListSharp.from(backingList.subList(0, Math.min(num, this.size())));
 	}
 
+	@Override
+	public ListSharp<T> drop(final Integer num)
+	{
+		return ListSharp.from(backingList.subList(num, Math.min(num, this.size())));
+	}
+
 	/**
 	 * Retorna a referência à lista que contém os elementos desta coleção. <br/>
 	 * ATENÇÃO: Mudanças estruturais na lista retornada também afetam esta coleção.
