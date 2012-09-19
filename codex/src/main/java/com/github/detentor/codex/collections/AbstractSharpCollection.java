@@ -119,11 +119,33 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		final Iterator<T> ite = this.iterator();
 		int count = 0;
 		
-		while (count < num && ite.hasNext())
+		while (count++ < num && ite.hasNext())
 		{
 			colecaoRetorno.add(ite.next());
-			count++;
 		}
+		return (U) colecaoRetorno.result();
+	}
+	
+	@SuppressWarnings(UNCHECKED)
+	@Override
+	public U takeRight(final Integer num)
+	{
+		final int eleToSkip = Math.max(this.size() - num, 0);
+		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
+		final Iterator<T> ite = this.iterator();
+		int curCount = 0;
+		
+		while (ite.hasNext() && curCount < eleToSkip)
+		{
+			ite.next();
+			curCount++;
+		}
+		
+		while (ite.hasNext())
+		{
+			colecaoRetorno.add(ite.next());
+		}
+		
 		return (U) colecaoRetorno.result();
 	}
 
@@ -136,13 +158,30 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		
 		int count = 0;
 		
-		while (count < num && ite.hasNext())
+		while (count++ < num && ite.hasNext())
 		{
 			ite.next();
-			count++;
+		}
+
+		while (ite.hasNext())
+		{
+			colecaoRetorno.add(ite.next());
 		}
 		
-		while (ite.hasNext())
+		return (U) colecaoRetorno.result();
+	}
+	
+	@SuppressWarnings(UNCHECKED)
+	@Override
+	public U dropRight(final Integer num)
+	{
+		final int toAdd = Math.max(0, this.size() - num);
+		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
+		final Iterator<T> ite = this.iterator();
+		
+		int count = 0;
+		
+		while (ite.hasNext() && count++ < toAdd)
 		{
 			colecaoRetorno.add(ite.next());
 		}
@@ -286,6 +325,23 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 			}
 		}
 		return (U) colecaoRetorno.result();
+	}
+	
+	@Override
+	public Option<T> find(final Function1<T, Boolean> pred)
+	{
+		final Iterator<T> ite = this.iterator();
+		
+		while (ite.hasNext())
+		{
+			final T curEle = ite.next();
+
+			if (pred.apply(curEle))
+			{
+				return Option.from(curEle);
+			}
+		}
+		return Option.empty();
 	}
 	
 	@SuppressWarnings(UNCHECKED)

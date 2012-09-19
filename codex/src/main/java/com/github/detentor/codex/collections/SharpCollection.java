@@ -3,6 +3,7 @@ package com.github.detentor.codex.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -104,6 +105,15 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	SharpCollection<T> take(final Integer num);
 	
 	/**
+	 * Pega até os 'num' últimos elementos desta coleção. 
+	 * Se a coleção não possuir 'num' elementos, retorna todos eles. <br/>
+	 * ATENÇÃO: Não afeta a lista original.
+	 * @param num O número de elementos a pegar desta coleção.
+	 * @return Uma nova coleção, com os 'num' últimos elementos dela.
+	 */
+	SharpCollection<T> takeRight(final Integer num);
+	
+	/**
 	 * Retorna esta coleção sem os 'num' primeiros elementos. 
 	 * Se a coleção não possuir 'num' elementos, uma coleção vazia será retornada.<br/>
 	 * ATENÇÃO: Não afeta a lista original.
@@ -111,6 +121,23 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * @return Uma nova coleção, composta pelos elementos desta coleção, exceto os 'num' primeiros.
 	 */
 	SharpCollection<T> drop(final Integer num);
+	
+	/**
+	 * Retorna esta coleção sem os 'num' últimos elementos. 
+	 * Se a coleção não possuir 'num' elementos, uma coleção vazia será retornada.<br/>
+	 * ATENÇÃO: Não afeta a lista original.
+	 * @param num O número de elementos a 'pular' (contando da direita para a esquerda) desta coleção.
+	 * @return Uma nova coleção, composta pelos elementos desta coleção, exceto os 'num' últimos.
+	 */
+	SharpCollection<T> dropRight(final Integer num);
+	
+	/**
+	 * Retorna o primeiro elemento (ordem definida pelo iterador da coleção) que satisfaz o predicado. <br/>
+	 * 
+	 * @param pred O predicado a ser utilizado para testar o elemento
+	 * @return Uma Option que conterá o elemento se ele existir.
+	 */
+	Option<T> find(final Function1<T, Boolean> pred);
 	
 	/**
 	 * Chama o método toString em cada elemento desta coleção, concatenando os resultados.
