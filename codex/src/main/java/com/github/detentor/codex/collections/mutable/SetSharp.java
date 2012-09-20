@@ -12,8 +12,19 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
-
-public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>>
+/**
+ * Essa classe representa uma conjunto (Set) mutável, cujos elementos são armazenados num HashSet usando composição. <br/>
+ * 
+ * Os métodos desta classe são utilizados para favorecer a programação funcional, e possuem a mesma nomeclatura 
+ * encontrada no Scala. Os métodos desta classe são extremamente poderosos, e simplificam a codificação de estruturas
+ * mais complexas.<br/> <br/>
+ *
+ * Note que esta classe é uma função que está definida para os valores que ela contém. Em particular, uma chamada
+ * ao método {@link #apply(Object) apply} retornará <tt>true</tt> se, e somente se, esta coleção contém o elemento.
+ * 
+ * @author Vinícius Seufitele Pinto
+ */
+public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> implements Function1<T, Boolean>
 {
 	private final Set<T> backingSet;
 
@@ -144,6 +155,17 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>>
 	public SetSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
 		return (SetSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+	
+	/**
+	 * Verifica se este conjunto possui o elemento passado como parâmetro
+	 * @param param O elemento a ser verificado se existe no conjunto
+	 * @return True se este conjunto contém o elemento, ou false se não contém
+	 */
+	@Override
+	public Boolean apply(final T param)
+	{
+		return backingSet.contains(param);
 	}
 
 	@Override
