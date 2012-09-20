@@ -6,7 +6,7 @@
   <artifactId>codexCollections</artifactId>
   <packaging>jar</packaging>
   <name>Codex Collections</name>
-  <version>0.0.7-SNAPSHOT</version>
+  <version>0.0.7</version>
   
   <description>Coleções que objetivam complementar as coleções padrão do Java.</description>
   <url>git://github.com/detentor/codex.git</url>
@@ -29,7 +29,7 @@
     <connection>scm:git:git@github.com:detentor/codex.git</connection>
 	<url>scm:git:git@github.com:detentor/codex.git</url>
 	<developerConnection>scm:git:git@github.com:detentor/codex.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>codexCollections-0.0.7</tag>
   </scm>
   
   <developers>
