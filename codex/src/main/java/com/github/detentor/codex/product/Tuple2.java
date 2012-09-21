@@ -18,7 +18,7 @@ public class Tuple2<A, B>
 	/**
 	 * Construtor default, inicializa os valores como nulo
 	 */
-	public Tuple2()
+	private Tuple2()
 	{
 		this(null, null);
 	}

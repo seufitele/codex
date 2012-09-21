@@ -20,7 +20,7 @@ public final class Tuple3<A, B, C>
 	/**
 	 * Construtor default, inicializa os valores com null
 	 */
-	public Tuple3()
+	private Tuple3()
 	{
 		this(null, null, null);
 	}

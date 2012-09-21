@@ -24,7 +24,7 @@ public final class Tuple5<A, B, C, D, E>
 	/**
 	 * Construtor default, inicializa os valores com null
 	 */
-	public Tuple5()
+	private Tuple5()
 	{
 		this(null, null, null, null, null);
 	}
