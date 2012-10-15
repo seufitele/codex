@@ -72,6 +72,17 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		}
 		return retorno;
 	}
+	
+	/**
+	 * Constrói uma instância de MapSharp vazia.
+	 * @param <T> O tipo da chave
+	 * @param <U> O tipo dos valores 
+	 * @return Uma instância de MapSharp vazia.
+	 */
+	public static <T, U> MapSharp<T, U> empty()
+	{
+		return new MapSharp<T, U>();
+	}
 
 	@Override
 	public int size()

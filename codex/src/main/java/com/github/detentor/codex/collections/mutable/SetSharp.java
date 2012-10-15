@@ -93,6 +93,16 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> imple
 		}
 		return retorno;
 	}
+	
+	/**
+	 * Constrói uma instância de SetSharp vazia.
+	 * @param <T> O tipo de dados da instância
+	 * @return Uma instância de SetSharp vazia.
+	 */
+	public static <T> SetSharp<T> empty()
+	{
+		return new SetSharp<T>();
+	}
 
 	@Override
 	public int size()
