@@ -513,14 +513,14 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	@Override
 	public T min()
 	{
-		return minWith(new ComparableToComparator());
+		return minWith(new DefaultComparator());
 	}
 
 	@SuppressWarnings({ UNCHECKED, "rawtypes" })
 	@Override
 	public T max()
 	{
-		return maxWith(new ComparableToComparator());
+		return maxWith(new DefaultComparator());
 	}
 	
 	@SuppressWarnings(UNCHECKED)
@@ -626,7 +626,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	 *
 	 * @param <A>
 	 */
-	private static final class ComparableToComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
+	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
 	{
 		private static final long serialVersionUID = 6163897449143010763L;
 
