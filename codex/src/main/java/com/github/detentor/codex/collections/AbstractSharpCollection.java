@@ -430,7 +430,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public <B> SharpCollection<B> map(final Function1<T, B> function)
+	public <B> SharpCollection<B> map(final Function1<? super T, B> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
 
@@ -442,7 +442,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	}
 	
 	@Override
-	public <B> SharpCollection<B> collect(final PartialFunction<T, B> pFunction)
+	public <B> SharpCollection<B> collect(final PartialFunction<? super T, B> pFunction)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
 
@@ -457,7 +457,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public <B> SharpCollection<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function)
+	public <B> SharpCollection<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
 
