@@ -151,7 +151,7 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	}
 	
 	@Override
-	public <B> ListSharp<B> collect(final PartialFunction<T, B> pFunction)
+	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
 	{
 		return (ListSharp<B>) super.collect(pFunction);
 	}
@@ -203,13 +203,13 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	}
 
 	@Override
-	public <B> ListSharp<B> map(final Function1<T, B> function)
+	public <B> ListSharp<B> map(final Function1<? super T, B> function)
 	{
 		return (ListSharp<B>) super.map(function);
 	}
 
 	@Override
-	public <B> ListSharp<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function)
+	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (ListSharp<B>) super.flatMap(function);
 	}

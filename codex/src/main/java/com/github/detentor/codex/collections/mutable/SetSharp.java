@@ -144,19 +144,19 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> imple
 	}
 
 	@Override
-	public <B> SetSharp<B> map(final Function1<T, B> function)
+	public <B> SetSharp<B> map(final Function1<? super T, B> function)
 	{
 		return (SetSharp<B>) super.map(function);
 	}
 
 	@Override
-	public <B> SetSharp<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function)
+	public <B> SetSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (SetSharp<B>) super.flatMap(function);
 	}
 	
 	@Override
-	public <B> SetSharp<B> collect(final PartialFunction<T, B> pFunction)
+	public <B> SetSharp<B> collect(final PartialFunction<? super T, B> pFunction)
 	{
 		return (SetSharp<B>) super.collect(pFunction);
 	}

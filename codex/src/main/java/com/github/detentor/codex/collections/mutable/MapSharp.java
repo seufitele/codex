@@ -264,7 +264,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	@Override
-	public <B> SharpCollection<B> map(final Function1<Tuple2<K, V>, B> function)
+	public <B> SharpCollection<B> map(final Function1<? super Tuple2<K, V>, B> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
 
@@ -290,7 +290,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	@Override
-	public <B> SharpCollection<B> collect(final PartialFunction<Tuple2<K, V>, B> pFunction)
+	public <B> SharpCollection<B> collect(final PartialFunction<? super Tuple2<K, V>, B> pFunction)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
 
@@ -321,7 +321,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	@Override
-	public <B> SharpCollection<B> flatMap(final Function1<Tuple2<K, V>, ? extends SharpCollection<B>> function)
+	public <B> SharpCollection<B> flatMap(final Function1<? super Tuple2<K, V>, ? extends SharpCollection<B>> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
 
