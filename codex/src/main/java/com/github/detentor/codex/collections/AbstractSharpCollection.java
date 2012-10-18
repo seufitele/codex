@@ -621,11 +621,8 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	}
 
 	/**
-	 * Classe que converte um Comparable para Comparator
-	 * @author f9540702 Vinícius Seufitele Pinto
-	 *
-	 * @param <A>
-	 */
+     * Classe com a implementação default do comparator
+     */
 	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
 	{
 		private static final long serialVersionUID = 6163897449143010763L;
