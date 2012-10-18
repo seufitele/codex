@@ -140,13 +140,13 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>>
 	}
 
 	@Override
-	public <B> Option<B> map(final Function1<T, B> function)
+	public <B> Option<B> map(final Function1<? super T, B> function)
 	{
 		return (Option<B>) super.map(function);
 	}
 
 	@Override
-	public <B> Option<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function)
+	public <B> Option<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (Option<B>) super.flatMap(function);
 	}
