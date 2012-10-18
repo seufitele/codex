@@ -1,7 +1,9 @@
 package com.github.detentor.codex.collections.mutable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -214,7 +216,7 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 
 	/**
 	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br>
-	 * Em outras palavras, aplica a coleção passada como parâmetro a cada elemento desta coleção,
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção,
 	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de
 	 * elementos desta coleção que retornam aquele valor à função.
 	 * @param <B> O tipo de retorno da função
@@ -224,7 +226,7 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
 	{
-		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.from(new HashMap<A, ListSharp<T>>());
+		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.empty();
 
 		for (final T curEle : this)
 		{
@@ -232,6 +234,54 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 			mapaRetorno.add(value, mapaRetorno.getOrElse(value, ListSharp.<T>empty()).add(curEle));
 		}
 		return mapaRetorno;
+	}
+	
+	/**
+	 * Transforma esta coleção em um mapa de acordo com uma função discriminadora. </br>
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção,
+	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é o elemento. <br/>
+	 * Se esta coleção possuir elementos repetidos, então o elemento do mapa será o último a ser
+	 * retornado pelo iterador desta coleção. 
+	 * @param <B> O tipo de retorno da função
+	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
+	 * @return Um mapa, onde a chave é o resultado da função, e o valor é o elemento usado para gerar a chave
+	 */
+	public <A> MapSharp<A, T> mapped(final Function1<T, A> function)
+	{
+		final MapSharp<A, T> mapaRetorno = MapSharp.empty();
+
+		for (final T curEle : this)
+		{
+			mapaRetorno.add(Tuple2.from(function.apply(curEle), curEle));
+		}
+		return mapaRetorno;
+	}
+	
+	/**
+	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
+	 * Esse método não está definido quando os elementos contidos nesta lista não
+	 * são instâncias de {@link Comparable} ou {@link Comparator}.
+	 * @return Esta lista com os elementos ordenados
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ListSharp<T> sorted()
+	{
+		return sorted(new DefaultComparator());
+	}
+	
+	/**
+	 * Retorna esta lista, após a ordenação de seus elementos de acordo com a função
+	 * de comparação passada como parâmetro. <br/>
+	 * @return Esta lista após a ordenação dos elementos ordenados
+	 */
+	public ListSharp<T> sorted(final Comparator<T> comparator)
+	{
+		if (this.isEmpty())
+		{
+			return this;
+		}
+		Collections.sort(backingList, comparator);
+		return this;
 	}
 
 	/**
@@ -279,4 +329,18 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
         ensureNotEmpty("tail chamado para uma coleção vazia");
         return ListSharp.from(backingList.subList(1, this.size()));
     }
+    
+    /**
+     * Classe com a implementação default do comparator
+     */
+	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
+	{
+		private static final long serialVersionUID = 4989261028786246998L;
+
+		@Override
+		public int compare(final A ob1, final A ob2)
+		{
+			return ob1.compareTo(ob2);
+		}
+	}
 }
