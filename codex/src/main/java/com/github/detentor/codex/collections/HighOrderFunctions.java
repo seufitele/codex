@@ -104,7 +104,7 @@ public interface HighOrderFunctions<T>
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento.
 	 */
-	<B> SharpCollection<B> map(final Function1<T, B> function);
+	<B> SharpCollection<B> map(final Function1<? super T, B> function);
 	
 	/**
 	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
@@ -114,7 +114,7 @@ public interface HighOrderFunctions<T>
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
 	 */
-	<B> SharpCollection<B> collect(final PartialFunction<T, B> pFunction);
+	<B> SharpCollection<B> collect(final PartialFunction<? super T, B> pFunction);
 
 	/**
 	 * Constrói uma nova coleção, a partir da aplicação da função passada 
@@ -126,7 +126,7 @@ public interface HighOrderFunctions<T>
 	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
 	 * das coleção.
 	 */
-	<B> SharpCollection<B> flatMap(final Function1<T, ? extends SharpCollection<B>> function);
+	<B> SharpCollection<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function);
 	
 	/**
 	 * Calcula a interseção desta coleção com a coleção passada como parâmetro. <br/>
