@@ -17,14 +17,6 @@ public final class Tuple3<A, B, C>
 	private B val2;
 	private C val3;
 
-	/**
-	 * Construtor default, inicializa os valores com null
-	 */
-	private Tuple3()
-	{
-		this(null, null, null);
-	}
-
 	private Tuple3(final A valor1, final B valor2, final C valor3)
 	{
 		this.val1 = valor1;

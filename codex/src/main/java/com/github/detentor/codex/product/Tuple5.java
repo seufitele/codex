@@ -21,14 +21,6 @@ public final class Tuple5<A, B, C, D, E>
 	private D val4;
 	private E val5;
 
-	/**
-	 * Construtor default, inicializa os valores com null
-	 */
-	private Tuple5()
-	{
-		this(null, null, null, null, null);
-	}
-
 	private Tuple5(final A valor1, final B valor2, final C valor3, final D valor4, final E valor5)
 	{
 		this.val1 = valor1;
@@ -39,7 +31,7 @@ public final class Tuple5<A, B, C, D, E>
 	}
 
 	/**
-	 * Cria uma tuple 4 a partir dos valores passados como parâmetro
+	 * Cria uma tuple 5 a partir dos valores passados como parâmetro
 	 * 
 	 * @param <E> O tipo de dados do primeiro valor
 	 * @param <F> O tipo de dados do segundo valor

@@ -19,14 +19,6 @@ public final class Tuple4<A, B, C, D>
 	private C val3;
 	private D val4;
 
-	/**
-	 * Construtor default, inicializa os valores com null
-	 */
-	private Tuple4()
-	{
-		this(null, null, null, null);
-	}
-
 	private Tuple4(final A valor1, final B valor2, final C valor3, final D valor4)
 	{
 		this.val1 = valor1;
@@ -34,7 +26,7 @@ public final class Tuple4<A, B, C, D>
 		this.val3 = valor3;
 		this.val4 = valor4;
 	}
-	
+
 	/**
 	 * Cria uma tuple 4 a partir dos valores passados como parâmetro 
 	 * @param <E> O tipo de dados do primeiro valor

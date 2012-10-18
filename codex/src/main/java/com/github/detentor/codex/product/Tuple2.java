@@ -15,14 +15,6 @@ public class Tuple2<A, B>
 	private A val1;
 	private B val2;
 
-	/**
-	 * Construtor default, inicializa os valores como nulo
-	 */
-	private Tuple2()
-	{
-		this(null, null);
-	}
-
 	private Tuple2(final A valor1, final B valor2)
 	{
 		this.val1 = valor1;
