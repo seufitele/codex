@@ -33,6 +33,15 @@ public class Tuple2<A, B>
 	{
 		return new Tuple2<C, D>(valor1, valor2);
 	}
+	
+	/**
+	 * Cria uma tupla 2 inicializando os valores como null
+	 * @return Uma tupla 2 onde o valor de cada elemento é null
+	 */
+	public static <C, D> Tuple2<C, D> empty()
+	{
+		return new Tuple2<C, D>(null, null);
+	}
 
 	/**
 	 * Retorna uma nova tupla, com os elementos em posições trocadas.

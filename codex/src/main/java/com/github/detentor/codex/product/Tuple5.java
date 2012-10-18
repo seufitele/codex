@@ -50,6 +50,15 @@ public final class Tuple5<A, B, C, D, E>
 		return new Tuple5<E, F, G, H, I>(valor1, valor2, valor3, valor4, valor5);
 	}
 
+	/**
+	 * Cria uma tupla 5 inicializando os valores como null
+	 * @return Uma tupla 5 onde o valor de cada elemento é null
+	 */
+	public static <E, F, G, H, I> Tuple5<E, F, G, H, I> empty()
+	{
+		return new Tuple5<E, F, G, H, I>(null, null, null, null, null);
+	}
+
 	public A getVal1()
 	{
 		return val1;

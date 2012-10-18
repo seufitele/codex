@@ -38,6 +38,15 @@ public final class Tuple3<A, B, C>
 	{
 		return new Tuple3<D, E, F>(valor1, valor2, valor3);
 	}
+	
+	/**
+	 * Cria uma tupla 3 inicializando os valores como null
+	 * @return Uma tupla 3 onde o valor de cada elemento é null
+	 */
+	public static <D, E, F> Tuple3<D, E, F> empty()
+	{
+		return new Tuple3<D, E, F>(null, null, null);
+	}
 
 	public A getVal1()
 	{

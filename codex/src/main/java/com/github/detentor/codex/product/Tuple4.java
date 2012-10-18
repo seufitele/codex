@@ -44,6 +44,15 @@ public final class Tuple4<A, B, C, D>
 		return new Tuple4<E, F, G, H>(valor1, valor2, valor3, valor4);
 	}
 
+	/**
+	 * Cria uma tupla 4 inicializando os valores como null
+	 * @return Uma tupla 4 onde o valor de cada elemento é null
+	 */
+	public static <E, F, G, H> Tuple4<E, F, G, H> empty()
+	{
+		return new Tuple4<E, F, G, H>(null, null, null, null);
+	}
+
 	public A getVal1()
 	{
 		return val1;
