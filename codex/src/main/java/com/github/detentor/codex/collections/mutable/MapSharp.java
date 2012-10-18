@@ -8,7 +8,10 @@ import java.util.Map.Entry;
 import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.collections.builders.HashMapBuilder;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 
@@ -247,6 +250,91 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		return backingMap.containsValue(value);
 	}
 	
+	/**
+	 * Constrói uma nova coleção a partir da aplicação da função passada como parâmetro em cada elemento da coleção. <br/>
+	 * A ordem é preservada, se ela estiver bem-definida.
+	 * @param <B> O tipo da nova coleção.
+	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
+	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento.
+	 */
+	@SuppressWarnings("unchecked")
+	public <W, Y> MapSharp<W, Y> map(final Function1<Tuple2<K, V>, Tuple2<W, Y>> function)
+	{
+		return (MapSharp<W, Y>) super.map(function);
+	}
+
+	@Override
+	public <B> SharpCollection<B> map(final Function1<Tuple2<K, V>, B> function)
+	{
+		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
+
+		for (final Tuple2<K, V> ele : this)
+		{
+			colecaoRetorno.add(function.apply(ele));
+		}
+		return colecaoRetorno.result();
+	}
+
+	/**
+	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
+	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
+	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
+	 * @param <B> O tipo da nova coleção.
+	 * @param pFunction Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
+	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
+	 */
+	@SuppressWarnings("unchecked")
+	public <W, Y> MapSharp<W, Y> collect(final PartialFunction<Tuple2<K, V>, Tuple2<W, Y>> pFunction)
+	{
+		return (MapSharp<W, Y>) super.collect(pFunction);
+	}
+
+	@Override
+	public <B> SharpCollection<B> collect(final PartialFunction<Tuple2<K, V>, B> pFunction)
+	{
+		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
+
+		for (final Tuple2<K, V> ele : this)
+		{
+			if (pFunction.isDefinedAt(ele))
+			{
+				colecaoRetorno.add(pFunction.apply(ele));
+			}
+		}
+		return colecaoRetorno.result();
+	}
+	
+	/**
+	 * Constrói uma nova coleção, a partir da aplicação da função passada 
+	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
+	 * única coleção. <br/>
+	 * @param <B> O tipo da nova coleção
+	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma 
+	 * coleção de elementos de (potencialmente) outro tipo.
+	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
+	 * das coleção.
+	 */
+	@SuppressWarnings("unchecked")
+	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends SharpCollection<Tuple2<W, Y>>> function)
+	{
+		return (MapSharp<W, Y>) super.flatMap(function);
+	}
+
+	@Override
+	public <B> SharpCollection<B> flatMap(final Function1<Tuple2<K, V>, ? extends SharpCollection<B>> function)
+	{
+		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
+
+		for (final Tuple2<K, V> ele : this)
+		{
+			for (final B mappedEle : function.apply(ele))
+			{
+				colecaoRetorno.add(mappedEle);
+			}
+		}
+		return colecaoRetorno.result();
+	}
+
 	/**
 	 * Retorna esta coleção como um mapa do Java. As modificações no mapa retornado afetam também este mapa.
 	 * 
