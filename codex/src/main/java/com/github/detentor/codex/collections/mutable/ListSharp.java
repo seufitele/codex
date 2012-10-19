@@ -14,6 +14,7 @@ import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.codex.util.Reflections;
 
 
 /**
@@ -282,6 +283,25 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		}
 		Collections.sort(backingList, comparator);
 		return this;
+	}
+	
+	/**
+	 * Equivalente ao {@link #map(Function1) map}, utilizando reflexão para criar a função
+	 * de mapeamento.
+	 * @param methodName O nome do método existente na classe contida nesta coleção, que 
+	 * será transformada em função. Somente métodos sem parâmetros, públicos e com retorno diferente
+	 * de void são suportados.
+	 * @return O resultado do mapeamento dos elementos desta coleção pela função criada dinamicamente a partir
+	 * do nome do método.
+	 */
+	@SuppressWarnings("unchecked")
+	public <B> ListSharp<B> mapReflect(final String methodName)
+	{
+		if (this.isEmpty())
+		{
+			return ListSharp.empty();
+		}
+		return (ListSharp<B>) super.map(Reflections.lift((Class<T>) this.head().getClass(), methodName));
 	}
 
 	/**
