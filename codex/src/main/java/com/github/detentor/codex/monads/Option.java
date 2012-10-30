@@ -1,5 +1,6 @@
 package com.github.detentor.codex.monads;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,10 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo de dados a ser guardado no option
  */
-public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>>
+public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final List<T> value;
 
 	protected Option()
