@@ -1,5 +1,6 @@
 package com.github.detentor.codex.collections.mutable;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,8 +25,10 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> implements PartialFunction<T, Boolean>
+public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> implements PartialFunction<T, Boolean>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final Set<T> backingSet;
 
 	/**

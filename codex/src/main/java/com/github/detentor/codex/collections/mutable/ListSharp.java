@@ -29,8 +29,10 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements PartialFunction<Integer, T>
+public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements PartialFunction<Integer, T>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final List<T> backingList;
 
 	/**

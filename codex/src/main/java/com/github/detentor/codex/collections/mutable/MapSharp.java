@@ -1,5 +1,6 @@
 package com.github.detentor.codex.collections.mutable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,8 +24,10 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>
+public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final Map<K, V> backingMap;
 
 	/**
