@@ -1,5 +1,6 @@
 package com.github.detentor.codex.product;
 
+
 /**
  * Na teoria dos conjuntos, uma n-tuple (enupla) é uma sequência de n elementos, onde n é um inteiro positivo.<br/>
  * Uma enupla é igual a outra se, e somente se, os seus valores são iguais.<br/>
@@ -10,8 +11,10 @@ package com.github.detentor.codex.product;
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo
  */
-public class Tuple2<A, B>
+public class Tuple2<A, B> implements Product
 {
+	private static final long serialVersionUID = 1L;
+
 	private A val1;
 	private B val2;
 

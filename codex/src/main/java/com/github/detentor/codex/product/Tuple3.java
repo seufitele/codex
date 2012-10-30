@@ -11,8 +11,10 @@ package com.github.detentor.codex.product;
  * @param <B> O objeto do segundo tipo
  * @param <C> O objeto do terceiro tipo
  */
-public final class Tuple3<A, B, C>
+public final class Tuple3<A, B, C> implements Product
 {
+	private static final long serialVersionUID = 1L;
+
 	private A val1;
 	private B val2;
 	private C val3;

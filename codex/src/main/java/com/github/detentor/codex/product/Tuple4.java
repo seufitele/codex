@@ -12,8 +12,10 @@ package com.github.detentor.codex.product;
  * @param <C> O objeto do terceiro tipo
  * @param <D> O objeto do quarto tipo
  */
-public final class Tuple4<A, B, C, D>
+public final class Tuple4<A, B, C, D> implements Product
 {
+	private static final long serialVersionUID = 1L;
+
 	private A val1;
 	private B val2;
 	private C val3;
