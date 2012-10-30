@@ -24,7 +24,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> implements Function1<T, Boolean>
+public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> implements PartialFunction<T, Boolean>
 {
 	private final Set<T> backingSet;
 
@@ -177,6 +177,12 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> imple
 	{
 		return backingSet.contains(param);
 	}
+	
+	@Override
+	public boolean isDefinedAt(final T forValue)
+	{
+		return backingSet.contains(forValue);
+	}
 
 	@Override
 	public int hashCode()
@@ -223,5 +229,4 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> imple
 	{
 		return backingSet.toString();
 	}
-
 }

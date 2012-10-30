@@ -23,7 +23,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>>
+public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>
 {
 	private final Map<K, V> backingMap;
 
@@ -40,6 +40,18 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		super();
 		this.backingMap = backMap;
+	}
+	
+	@Override
+	public V apply(final K param)
+	{
+		return backingMap.get(param);
+	}
+
+	@Override
+	public boolean isDefinedAt(final K forValue)
+	{
+		return backingMap.containsKey(forValue);
 	}
 
 	/**
@@ -120,6 +132,24 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 				originalIte.remove();
 			}
 		};
+	}
+	
+	/**
+	 * Retorna o conjunto de chaves contido neste mapa, como uma instância de {@link SetSharp}
+	 * @return Uma instância de SetSharp que contém as chaves deste mapa
+	 */
+	public SetSharp<K> keySet()
+	{
+		return SetSharp.from(backingMap.keySet());
+	}
+
+	/**
+	 * Retorna os valores contidos neste mapa, como uma instância de {@link SharpCollection}
+	 * @return Uma coleção que contém os valores do mapa.
+	 */
+	public SharpCollection<V> values()
+	{
+		return ListSharp.from(backingMap.values());
 	}
 
 	/**
@@ -390,5 +420,4 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return backingMap.toString();
 	}
-
 }

@@ -14,7 +14,6 @@ import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
-import com.github.detentor.codex.util.Reflections;
 
 
 /**
@@ -30,7 +29,7 @@ import com.github.detentor.codex.util.Reflections;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements Function1<Integer, T>
+public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements PartialFunction<Integer, T>
 {
 	private final List<T> backingList;
 
@@ -257,7 +256,7 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		}
 		return mapaRetorno;
 	}
-	
+
 	/**
 	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
 	 * Esse método não está definido quando os elementos contidos nesta lista não
@@ -286,25 +285,6 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	}
 	
 	/**
-	 * Equivalente ao {@link #map(Function1) map}, utilizando reflexão para criar a função
-	 * de mapeamento.
-	 * @param methodName O nome do método existente na classe contida nesta coleção, que 
-	 * será transformada em função. Somente métodos sem parâmetros, públicos e com retorno diferente
-	 * de void são suportados.
-	 * @return O resultado do mapeamento dos elementos desta coleção pela função criada dinamicamente a partir
-	 * do nome do método.
-	 */
-	@SuppressWarnings("unchecked")
-	public <B> ListSharp<B> mapReflect(final String methodName)
-	{
-		if (this.isEmpty())
-		{
-			return ListSharp.empty();
-		}
-		return (ListSharp<B>) super.map(Reflections.lift((Class<T>) this.head().getClass(), methodName));
-	}
-
-	/**
 	 * {@inheritDoc} <br/>
 	 * No caso desta lista, retorna o elemento na posição "param". Equivale ao {@link List#get(int) get} da List.
 	 */
@@ -314,6 +294,12 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		return backingList.get(param);
 	}
 	
+	@Override
+	public boolean isDefinedAt(final Integer forValue)
+	{
+		return forValue > -1 && forValue < this.size();
+	}
+
 	@Override
 	public ListSharp<T> take(final Integer num)
 	{
