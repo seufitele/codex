@@ -5,9 +5,19 @@ import java.lang.reflect.Method;
 
 import com.github.detentor.codex.function.Function1;
 
-public class Reflections
+/**
+ * Essa classe provê métodos helper para trabalhar com Reflection.
+ * 
+ * @author Vinícius Seufitele Pinto
+ *
+ */
+public final class Reflections
 {
-
+	private Reflections()
+	{
+		//Previne instanciaçãp
+	}
+	
 	/**
 	 * Transforma um método de uma classe em uma função. <br/>
 	 * 
