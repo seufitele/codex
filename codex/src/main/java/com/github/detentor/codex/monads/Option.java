@@ -13,7 +13,6 @@ import com.github.detentor.codex.collections.builders.OptionBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
 
-
 /**
  * Option é uma mônade que representa uma operação que pode ou não retornar um valor. <br/>
  * <br/>
@@ -28,20 +27,19 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 {
 	private static final long serialVersionUID = 1L;
 
-	private final List<T> value;
+	private static final Option<Object> NONE = new Option<Object>();
+
+	private final List<T> value = new ArrayList<T>();
 
 	protected Option()
 	{
-		value = new ArrayList<T>();
+		super();
 	}
 
 	protected Option(final T theValue)
 	{
 		this();
-		if (theValue != null)
-		{
-			value.add(theValue);
-		}
+		value.add(theValue);
 	}
 
 	/**
@@ -50,9 +48,10 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	 * @param <T> O tipo de dados que option deveria conter
 	 * @return Uma option que representa uma computação não sucedida
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Option<T> empty()
 	{
-		return new Option<T>();
+		return (Option<T>) NONE;
 	}
 
 	/**
@@ -61,9 +60,10 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	 * @param <T> O tipo de dados que option deveria conter
 	 * @return Uma option que representa uma computação não sucedida
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Option<T> from(final T theValue)
 	{
-		return new Option<T>(theValue);
+		return theValue == null ? (Option<T>) NONE : new Option<T>(theValue) ;
 	}
 
 	/**
@@ -158,6 +158,34 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	public Option<Tuple2<T, Integer>> zipWithIndex()
 	{
 		return (Option<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + value.hashCode();
+		return result;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj == null)
+		{
+			return false;
+		}
+		if (getClass() != obj.getClass())
+		{
+			return false;
+		}
+		return value.equals(((Option) obj).value);
 	}
 
 }
