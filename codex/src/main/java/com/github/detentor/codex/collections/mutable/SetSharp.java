@@ -112,6 +112,12 @@ public class SetSharp<T> extends AbstractMutableCollection<T, SetSharp<T>> imple
 	{
 		return backingSet.size();
 	}
+	
+	@Override
+	public boolean contains(final T element)
+	{
+		return backingSet.contains(element);
+	}
 
 	@Override
 	public Iterator<T> iterator()
