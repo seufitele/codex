@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.monads.Option;
 
 /**
  * Essa classe provê métodos helper para trabalhar com Reflection.
@@ -28,8 +29,63 @@ public final class Reflections
 	 */
 	public static <A, B> Function1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
-		Method theMethod = null;
+		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
 
+		return new Function1<A, B>()
+		{
+			@Override
+			public B apply(final A param)
+			{
+				return invokeSafe(fromClass, theMethod, (Object[]) null);
+			}
+		};
+	}
+
+	/**
+	 * Transforma um método estático de uma classe numa função.
+	 * @param fromClass A classe onde o método estático existe
+	 * @param methodName O nome do método a ser transformado em função
+	 * @return Uma função que representa o método definido pela classe
+	 */
+	public static <A, B, C> Function1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
+	{
+		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
+
+		return new Function1<B, C>()
+		{
+			@Override
+			public C apply(final B param)
+			{
+				return invokeSafe(fromClass, theMethod, param);
+			}
+		};
+	}
+
+	/**
+	 * Valida que a Option contém elementos, disparando uma exceção se não tiver.
+	 * @param theOption A Option a ser verificada
+	 * @return O elemento contido na Option.
+	 * @throws IllegalArgumentException Se a Option não contiver elementos 
+	 */
+	private static Method ensureNotEmpty(final Option<Method> theOption)
+	{
+		if (theOption.isEmpty())
+		{
+			throw new IllegalArgumentException("The named method doesn't exist");
+		}
+		return theOption.get();
+	}
+	
+	/**
+	 * Retorna o método de uma classe a partir de seu nome.
+	 * @param fromClass A classe onde o método será procurado
+	 * @param methodName O nome do método a ser retornado
+	 * @return Uma instância de Option que conterá o método, se ele existir
+	 */
+	public static <A> Option<Method> getMethodFromName(final Class<A> fromClass, final String methodName)
+	{
+		Method theMethod = null;
+		
 		for (final Method curMethod : fromClass.getDeclaredMethods())
 		{
 			if (curMethod.getName().equals(methodName))
@@ -38,34 +94,31 @@ public final class Reflections
 				break;
 			}
 		}
+		return Option.from(theMethod);
+	}
 
-		if (theMethod == null)
+	/**
+	 * Invoca o método de uma classe, pulando as verificações de exceção.
+	 * @param fromClass
+	 * @param method
+	 * @param params
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static <A, B> B invokeSafe(final Class<A> fromClass, final Method method, final Object ... params)
+	{
+		try
 		{
-			throw new IllegalArgumentException("The named method doesn't exist");
+			return (B) method.invoke(fromClass, params);
 		}
-
-		final Method theMethod2 = theMethod;
-
-		return new Function1<A, B>()
+		catch (final IllegalAccessException e)
 		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public B apply(final A param)
-			{
-				try
-				{
-					return (B) theMethod2.invoke(param, (Object[]) null);
-				}
-				catch (final IllegalAccessException e)
-				{
-					throw new IllegalArgumentException(e);
-				}
-				catch (final InvocationTargetException e)
-				{
-					throw new IllegalArgumentException(e);
-				}
-			}
-		};
+			throw new IllegalArgumentException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 }
