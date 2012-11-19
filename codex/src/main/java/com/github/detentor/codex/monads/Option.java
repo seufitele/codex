@@ -29,7 +29,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 
 	private static final Option<Object> NONE = new Option<Object>();
 
-	private final List<T> value = new ArrayList<T>();
+	private final List<T> value = new ArrayList<T>(1);
 
 	protected Option()
 	{
