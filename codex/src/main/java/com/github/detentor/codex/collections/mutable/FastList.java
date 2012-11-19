@@ -16,64 +16,69 @@ import java.util.Arrays;
  * @author Vinícius Seufitele Pinto
  *
  */
-public class ArrayList<E>
+public class FastList<E>
 {
 	Object[] data;
 	
 	int startIndex; //Guarda a posição nos dados onde começam os elementos (para permitir remover head com O(1))
-	int size; //Guarda o tamanho dos dados
+	int endIndex; //Guarda a posição nos dados onde terminam os elementos
 	
 	/**
 	 * Cria uma nova classe ArrayList, com a capacidade inicial definida
 	 * @param capacity
 	 */
-	protected ArrayList(final E[] theData )
+	protected FastList(final E[] theData)
 	{
 		startIndex = 0;
-		size = theData.length;
+		endIndex = theData.length - 1;
 		data = theData;
 	}
-	
-	public static <A> ArrayList<A> from(final A... params)
+
+	public static <A> FastList<A> from(final A... params)
 	{
-		return new ArrayList<A>(params);
+		return new FastList<A>(params);
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	public static <A> FastList<A> empty()
+	{
+		return new FastList<A>((A[]) new Object[0]);
+	}
+
 	/**
 	 * Retorna a quantidade de elementos contida nesta lista
 	 * @return
 	 */
 	public int size()
 	{
-		return size;
+		return (endIndex - startIndex) + 1;
 	}
-	
+
 	/**
 	 * Adiciona um elemento para a lista, retornando a referência para a mesma,
 	 * após o elemento ser adicionado
 	 * @param element
 	 * @return
 	 */
-	public ArrayList<E> add(final E element)
+	public FastList<E> add(final E element)
 	{
-		ensureCapacity(size + 1);
+		ensureCapacity(this.size() + 1);
 		addFast(element);
 		return this;
 	}
-	
+
 	/**
 	 * Remove o elemento no índice especificado
 	 * @param index
 	 * @return
 	 */
-	public ArrayList<E> remove(final int index)
+	public FastList<E> remove(final int index)
 	{
 		if (index == 0)
 		{
 			removeFirst();
 		}
-		else if (index == size - 1)
+		else if (index == this.size() - 1)
 		{
 			removeLast();
 		}
@@ -84,24 +89,22 @@ public class ArrayList<E>
 		return this;
 	}
 	
-	
 	private void removeFirst()
 	{
 		data[startIndex++] = null;
-		size--;
 	}
 	
 	private void removeLast()
 	{
-		data[--size - startIndex] = null;
+		data[endIndex--] = null;
 	}
-	
+
 	/**
 	 * Adiciona todos os elementos 
 	 * @param elements
 	 * @return
 	 */
-	public ArrayList<E> addAll(final Iterable<E> elements)
+	public FastList<E> addAll(final Iterable<E> elements)
 	{
 		for (E element : elements)
 		{
@@ -110,11 +113,11 @@ public class ArrayList<E>
 		return this;
 	}
 	
-	public ArrayList<E> addAll(final E[] elements)
+	public FastList<E> addAll(final E[] elements)
 	{
-		ensureCapacity(size + elements.length);
-		System.arraycopy(elements, 0, data, size - startIndex, elements.length);
-		size += elements.length;
+		ensureCapacity(this.size() + elements.length);
+		System.arraycopy(elements, 0, data, endIndex + 1, elements.length);
+		endIndex += elements.length;
 		return this;
 	}
 
@@ -124,9 +127,9 @@ public class ArrayList<E>
 	 */
 	protected void addFast(final E element)
 	{
-		data[size++ - startIndex] = element;
+		data[++endIndex] = element;
 	}
-	
+
 	public void ensureCapacity(int minCapacity) 
     {
 		int oldCapacity = data.length;
@@ -146,14 +149,14 @@ public class ArrayList<E>
 
 		builder.append('[');
 		
-		for (int i = startIndex; i < this.size - 1; i++)
+		for (int i = startIndex; i < this.endIndex; i++)
 		{
 			builder.append(data[i] + ", ");
 		}
-		
-		builder.append(data[startIndex + this.size - 1]);
+
+		builder.append(data[this.endIndex]);
 		builder.append(']');
-		
+
 		return builder.toString();
 	}
 
