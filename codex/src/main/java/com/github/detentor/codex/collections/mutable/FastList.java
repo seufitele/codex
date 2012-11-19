@@ -66,6 +66,13 @@ public class FastList<E>
 		addFast(element);
 		return this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public FastList<E> subsequence(final int start, final int end)
+	{
+		//Alterar o método para retornar uma cópia imutável da lista
+		return (FastList<E>) FastList.from(Arrays.copyOfRange(this.data, startIndex + start, startIndex + end));
+	}
 
 	/**
 	 * Remove o elemento no índice especificado
@@ -113,7 +120,7 @@ public class FastList<E>
 		return this;
 	}
 	
-	public FastList<E> addAll(final E[] elements)
+	public FastList<E> addAll(final E... elements)
 	{
 		ensureCapacity(this.size() + elements.length);
 		System.arraycopy(elements, 0, data, endIndex + 1, elements.length);
