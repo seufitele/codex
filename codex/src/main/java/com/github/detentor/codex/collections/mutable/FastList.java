@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Criação própria do ArrayList. <br/>
  * Principal diferença: <br/>
  *
- * 1) Remoção ou último elementos são feitas em O(1) 
+ * 1) Remoção de elementos no início da lista, o pior caso do ArrayList, são removidos em O(1)
  * 2) Remoção de intervalos começando no início da lista, ou que vão até o fim da lista 
  * 		são O(n), onde n é o tamanho do intervalo removido. <br/><br/>
  * 
@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class FastList<E>
 {
 	Object[] data;
-	
+
 	int startIndex; //Guarda a posição nos dados onde começam os elementos (para permitir remover head com O(1))
 	int endIndex; //Guarda a posição nos dados onde terminam os elementos
 	
@@ -66,7 +66,7 @@ public class FastList<E>
 		addFast(element);
 		return this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public FastList<E> subsequence(final int start, final int end)
 	{
