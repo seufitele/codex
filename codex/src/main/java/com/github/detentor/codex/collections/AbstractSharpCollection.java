@@ -14,7 +14,6 @@ import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
-
 /**
  * Classe que provê a implementação padrão de diversos métodos de coleções, para simplificar a 
  * criação de classes que os estenda. <br/> <br/>
@@ -91,6 +90,18 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	public Option<T> headOption()
 	{
 		return this.isEmpty() ? Option.<T>empty() : Option.from(this.head());
+	}
+	
+	@Override
+	public T last()
+	{
+		return takeRight(1).head();
+	}
+
+	@Override
+	public Option<T> lastOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(this.last());
 	}
 
 	@SuppressWarnings(UNCHECKED)
