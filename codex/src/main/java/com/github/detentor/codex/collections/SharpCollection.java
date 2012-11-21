@@ -7,7 +7,6 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
-
 /**
  * Interface padrão para coleções que admitem funções de ordem superior. 
  * 
@@ -18,7 +17,7 @@ import com.github.detentor.codex.product.Tuple2;
 public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 {
 	 /**
-	  * Retorna o número de elementos desta coleção.
+	 * Retorna o número de elementos desta coleção.
      *
      * @return O número de elementos desta coleção
      */
@@ -80,11 +79,29 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	T head();
 	
 	 /**
-	 * Retorna o primeiro elemento desta coleção como uma instância de Option. <br/><br/>
+	 * Retorna uma instância de Option que contém o primeiro elemento, se ele existir, 
+	 * ou uma Option vazia, se a coleção estiver vazia. 
 	 * @see Option 
 	 * @return O primeiro elemento desta coleção como uma instância de Option
 	 */
 	Option<T> headOption();
+	
+	/**
+	 * Retorna o último elemento desta coleção. <br/><br/>
+	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), a chamada
+	 * sucessiva a este método pode retornar elementos distintos.
+	 * @return O último elemento desta coleção.
+	 * @throws NoSuchElementException Se a coleção estiver vazia
+	 */
+	T last();
+	
+	/**
+	 * Retorna uma instância de Option que contém o último elemento, 
+	 * se ele existir, ou uma Option vazia, se a coleção estiver vazia. 
+	 * @see Option 
+	 * @return O primeiro elemento desta coleção como uma instância de Option
+	 */
+	Option<T> lastOption();
 	
 	/**
 	 * Seleciona todos os elementos exceto o primeiro.<br/><br/>
