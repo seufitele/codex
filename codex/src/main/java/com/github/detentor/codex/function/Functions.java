@@ -41,7 +41,26 @@ public final class Functions
 	}
 
 	/**
+	 * Retorna uma função predicado que inverte a lógica da função passada como parâmetro
+	 * 
+	 * @param theFunction A função cuja lógica booleana deverá ser invertida
+	 * @return Uma função cujo resultado será o inverso do resultado da função passada como parâmetro
+	 */
+	public static <A> Function1<A, Boolean> not(final Function1<A, Boolean> theFunction)
+	{
+		return new Function1<A, Boolean>()
+		{
+			@Override
+			public Boolean apply(final A param)
+			{
+				return !theFunction.apply(param);
+			}
+		};
+	}
+
+	/**
 	 * Cria uma função parcial a partir de uma função predicado e uma função de transformação.
+	 * 
 	 * @param pred A função predicado, que irá definir os argumentos que a função parcial está definida
 	 * @param transform A função de mapeamento, a ser usada quando a função estiver definida para o argumento
 	 * @return Uma função parcial a partir da função predicado e de transformação passadas.
