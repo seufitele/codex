@@ -11,16 +11,16 @@ package com.github.detentor.codex.collections;
  * 
  * @author Vinícius Seufitele Pinto
  *
- * @param <E> O tipo de elementos que serão alimentados no builder
+ * @param <From> O tipo de elementos que serão alimentados no builder
  * @param <To> O tipo de coleção a ser retornada pelo builder
  */
-public interface Builder<E, To extends Iterable<E>>
+public interface Builder<From, To extends Iterable<From>>
 {
 	/**
 	 * Adiciona o elemento passado como parâmetro no Builder
 	 * @param element O elemento a ser adicionado no builder
 	 */
-	void add(final E element);
+	void add(final From element);
 	
 	/**
 	 * Retorna a coleção criada pelo Builder.
