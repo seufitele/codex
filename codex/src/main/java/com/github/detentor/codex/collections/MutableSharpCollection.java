@@ -23,7 +23,7 @@ public interface MutableSharpCollection<T>
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>, se esta coleção
      * contém um ou mais tais elementos.
      *
-     * @param O elemento a ser removido desta coleção, se presente
+     * @param element O elemento a ser removido desta coleção, se presente
      * @return A referência à coleção, após o elemento ser removido.
      */
     SharpCollection<T> remove(T element);
