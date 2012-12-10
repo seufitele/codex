@@ -57,14 +57,6 @@ public interface HighOrderFunctions<T>
 	SharpCollection<T> filter(final Function1<T, Boolean> pred);
 	
 	/**
-	 * Seleciona todos os elementos desta coleções que não satisfazem um determinado predicado
-	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
-	 * não satisfazem o predicado pred. A ordem dos elementos será a mesma ordem retornada pelo iterator.
-	 */
-	SharpCollection<T> filterNot(final Function1<T, Boolean> pred);
-	
-	/**
 	 * Verifica se o predicado passado como parâmetro é satisfeito por algum elemento desta coleção.
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return true se existe algum elemento que satisfaz o predicado, ou false se não houver
