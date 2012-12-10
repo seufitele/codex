@@ -12,6 +12,9 @@ import com.github.detentor.codex.function.PartialFunction;
  * {@link Iterable#iterator() iterator()} , {@link SharpCollection#size() size()} , 
  * {@link #subsequence(int, int)} , 
  * {@link #apply(Integer)} ,
+ * {@link SharpCollection#add(T) add()} , 
+ * {@link SharpCollection#removeIndex(T) remove()} ,
+ * {@link SharpCollection#clear() clear()} ,
  * {@link SharpCollection#builder() builder()} <br/> <br/>
  * 
  * Não esquecer de sobrescrever o equals e o hashcode também. <br/><br/>
@@ -29,7 +32,6 @@ import com.github.detentor.codex.function.PartialFunction;
 public abstract class AbstractMutableIndexedSeq<T, U extends IndexedSeq<T>> extends AbstractIndexedSeq<T> 
 												   implements IndexedSeq<T>, MutableSharpCollection<T>
 {
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public U addAll(final Iterable<? extends T> col)
