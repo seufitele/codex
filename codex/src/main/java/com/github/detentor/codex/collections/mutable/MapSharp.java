@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.detentor.codex.collections.AbstractSharpCollection;
+import com.github.detentor.codex.collections.AbstractGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.ArrayBuilder;
@@ -24,7 +24,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
+public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 

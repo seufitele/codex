@@ -7,8 +7,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.github.detentor.codex.collections.AbstractMutableCollection;
+import com.github.detentor.codex.collections.AbstractMutableIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
@@ -29,7 +30,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> implements PartialFunction<Integer, T>, Serializable
+public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> implements PartialFunction<Integer, T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -286,6 +287,12 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		return this;
 	}
 	
+	@Override
+	public IndexedSeq<T> subsequence(int startIndex, int endIndex)
+	{
+		return ListSharp.from(backingList.subList(Math.max(startIndex, 0), Math.min(endIndex, this.size())));
+	}
+
 	/**
 	 * {@inheritDoc} <br/>
 	 * No caso desta lista, retorna o elemento na posição "param". Equivale ao {@link List#get(int) get} da List.
@@ -294,24 +301,6 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 	public T apply(final Integer param)
 	{
 		return backingList.get(param);
-	}
-	
-	@Override
-	public boolean isDefinedAt(final Integer forValue)
-	{
-		return forValue > -1 && forValue < this.size();
-	}
-
-	@Override
-	public ListSharp<T> take(final Integer num)
-	{
-		return ListSharp.from(backingList.subList(0, Math.min(num, this.size())));
-	}
-
-	@Override
-	public ListSharp<T> drop(final Integer num)
-	{
-		return ListSharp.from(backingList.subList(num, Math.min(num, this.size())));
 	}
 
 	/**
@@ -331,13 +320,6 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 
-    @Override
-    public ListSharp<T> tail() 
-    {
-        ensureNotEmpty("tail chamado para uma coleção vazia");
-        return ListSharp.from(backingList.subList(1, this.size()));
-    }
-    
     /**
      * Classe com a implementação default do comparator
      */
@@ -351,4 +333,5 @@ public class ListSharp<T> extends AbstractMutableCollection<T, ListSharp<T>> imp
 			return ob1.compareTo(ob2);
 		}
 	}
+
 }

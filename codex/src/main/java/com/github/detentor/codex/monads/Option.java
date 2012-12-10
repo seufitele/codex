@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.collections.AbstractSharpCollection;
+import com.github.detentor.codex.collections.AbstractGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.OptionBuilder;
@@ -23,7 +23,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo de dados a ser guardado no option
  */
-public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
+public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
