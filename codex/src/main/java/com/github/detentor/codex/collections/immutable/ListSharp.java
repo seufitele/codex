@@ -10,6 +10,7 @@ import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.product.Tuple2;
 
 public class ListSharp<T> extends AbstractIndexedSeq<T>
 {
@@ -44,21 +45,8 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	}
 
 	/**
-	 * Cria uma instância de ListSharp a partir da lista passada como parâmetro. <br/>
-	 * ATENÇÃO: Mudanças estruturais na lista original também afetam esta lista.
-	 * 
-	 * @param <T> O tipo de dados guardado pela lista
-	 * @param theList A lista a partir da qual esta ListSharp será criada
-	 * @return Uma listSharp que contém a referência à lista passada como parâmetro
-	 */
-	public static <T> ListSharp<T> from(final List<T> theList)
-	{
-		return new ListSharp<T>(theList);
-	}
-
-	/**
-	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos elementos
-	 * será a mesma ordem do iterable.
+	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. 
+	 * A ordem da adição dos elementos será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -143,6 +131,12 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (ListSharp<B>) super.flatMap(function);
+	}
+	
+	@Override
+	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
+	{
+		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 
 	@Override
