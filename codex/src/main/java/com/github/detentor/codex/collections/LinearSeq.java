@@ -9,7 +9,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * trata-se um elemento de cada vez.<br/><br/>
  * 
  * Sequências lineares garantem tempo constante para os métodos
- * {@link #head()}, {@link #tail()}, {@link #isEmpty()}.
+ * {@link #head()} , {@link #tail()} , {@link #isEmpty()}.
  * 
  * @author Vinícius Seufitele Pinto
  *
