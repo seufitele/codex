@@ -6,7 +6,7 @@ package com.github.detentor.codex.collections;
  * @author Vinícius Seufitele Pinto
  *
  */
-public interface MutableSharpCollection<T>
+public interface MutableSharpCollection<T> extends SharpCollection<T>
 {
 	/**
      * Adiciona o elemento passado como parâmetro nesta coleção. <br/><br/>
