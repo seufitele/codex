@@ -16,7 +16,8 @@ import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Classe que provê a implementação padrão de diversos métodos de coleções, para simplificar a 
- * criação de classes que os estenda. <br/> <br/>
+ * criação de classes que os estenda. Todos os métodos são implementados com base no iterator da classe,
+ * portanto não são otimizados. <br/> <br/>
  * 
  * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/> <br/>
  * 
@@ -36,15 +37,20 @@ import com.github.detentor.codex.product.Tuple2;
  * @author Vinícius Seufitele Pinto
  *
  */
-public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> 
-									implements SharpCollection<T>, Convertable<T>, ComparisonFunctions<T>
+public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> implements SharpCollection<T>, Convertable<T>, ComparisonFunctions<T>
 {
 	private static final String UNCHECKED = "unchecked";
 
-    @Override
-	public boolean isEmpty()
+	@Override
+	public Option<T> headOption()
 	{
-		return this.size() == 0;
+		return this.isEmpty() ? Option.<T>empty() : Option.from(this.head());
+	}
+	
+	@Override
+	public Option<T> lastOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(this.last());
 	}
 
 	@Override
@@ -78,128 +84,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return true;
 	}
-
-	@Override
-	public T head()
-	{
-		ensureNotEmpty("head foi chamado para uma coleção vazia");
-		return this.iterator().next();
-	}
 	
-	@Override
-	public Option<T> headOption()
-	{
-		return this.isEmpty() ? Option.<T>empty() : Option.from(this.head());
-	}
-	
-	@Override
-	public T last()
-	{
-		return takeRight(1).head();
-	}
-
-	@Override
-	public Option<T> lastOption()
-	{
-		return this.isEmpty() ? Option.<T>empty() : Option.from(this.last());
-	}
-
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U tail()
-	{
-		ensureNotEmpty("tail foi chamado para uma coleção vazia");
-
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		
-		ite.next(); //Pula o primeiro elemento
-		
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		return (U) colecaoRetorno.result();
-	}
-	
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U take(final Integer num)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		int count = 0;
-		
-		while (count++ < num && ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		return (U) colecaoRetorno.result();
-	}
-	
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U takeRight(final Integer num)
-	{
-		final int eleToSkip = Math.max(this.size() - num, 0);
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		int curCount = 0;
-		
-		while (ite.hasNext() && curCount < eleToSkip)
-		{
-			ite.next();
-			curCount++;
-		}
-		
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		
-		return (U) colecaoRetorno.result();
-	}
-
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U drop(final Integer num)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		
-		int count = 0;
-		
-		while (count++ < num && ite.hasNext())
-		{
-			ite.next();
-		}
-
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		
-		return (U) colecaoRetorno.result();
-	}
-	
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U dropRight(final Integer num)
-	{
-		final int toAdd = Math.max(0, this.size() - num);
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		
-		int count = 0;
-		
-		while (ite.hasNext() && count++ < toAdd)
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		
-		return (U) colecaoRetorno.result();
-	}
-
 	@Override
 	public String mkString()
 	{
@@ -211,13 +96,13 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 	{
 		return mkString("", separator, "");
 	}
-
+	
 	@Override
 	public String mkString(final String start, final String separator, final String end)
 	{
 		final StringBuilder sBuilder = new StringBuilder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		sBuilder.append(start);
 
 		while (ite.hasNext())
@@ -230,112 +115,6 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		sBuilder.append(end);
 		return sBuilder.toString();
-	}
-	
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U dropWhile(final Function1<T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-		
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-			
-			if (! pred.apply(curEle))
-			{
-				colecaoRetorno.add(curEle);
-				break;
-			}
-		}
-		
-		while(ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-
-		return (U) colecaoRetorno.result();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public U dropRightWhile(final Function1<T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-		
-		Builder<T, SharpCollection<T>> tempCollection = builder();
-		
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-
-			if (pred.apply(curEle))
-			{
-				//Esse predicado pode ser o último
-				tempCollection.add(curEle);
-			}
-			else
-			{
-				//Adiciona os elementos que seriam descartados
-				for (T ele : tempCollection.result())
-				{
-					colecaoRetorno.add(ele);
-				}
-				//Adiciona o elemento atual
-				colecaoRetorno.add(curEle);
-				tempCollection = builder(); //reseta o builder
-			}
-		}
-		return (U) colecaoRetorno.result();
-	}
-
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U takeWhile(final Function1<T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-		
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-			
-			if (pred.apply(curEle))
-			{
-				colecaoRetorno.add(curEle);
-			}
-			else
-			{
-				break;
-			}
-		}
-		return (U) colecaoRetorno.result();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public U takeRightWhile(final Function1<T, Boolean> pred)
-	{
-		Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-		
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-
-			if (pred.apply(curEle))
-			{
-				//Coleta os elementos que satisfazem o predicado
-				colecaoRetorno.add(curEle);
-			}
-			else
-			{
-				colecaoRetorno = builder(); //reseta o builder
-			}
-		}
-		return (U) colecaoRetorno.result();
 	}
 	
 	@Override
@@ -371,22 +150,6 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		return (U) colecaoRetorno.result();
 	}
 	
-	@SuppressWarnings(UNCHECKED)
-	@Override
-	public U filterNot(final Function1<T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		
-		for (final T ele : this)
-		{
-			if (!pred.apply(ele))
-			{
-				colecaoRetorno.add(ele);
-			}
-		}
-		return (U) colecaoRetorno.result();
-	}
-
 	@Override
 	public boolean exists(final Function1<T, Boolean> pred)
 	{
@@ -427,7 +190,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return numElementos;
 	}
-
+	
 	@Override
 	public <B> B foldLeft(final B startValue, final Function2<B, T, B> function)
 	{
@@ -439,7 +202,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return accumulator;
 	}
-
+	
 	@Override
 	public <B> SharpCollection<B> map(final Function1<? super T, B> function)
 	{
@@ -481,6 +244,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return colecaoRetorno.result();
 	}
+	
 	
 	@Override
 	public T maxWith(final Comparator<T> comparator)
@@ -579,39 +343,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 		return (SharpCollection<Tuple2<T, Integer>>) colecaoRetorno.result();
 	}
-
-	@Override
-	public List<T> toList()
-	{
-		return toList(new ArrayListBuilder<T>());
-	}
-
-	@Override
-	public List<T> toList(final Builder<T, List<T>> builder)
-	{
-		for (final T ele : this)
-		{
-			builder.add(ele);
-		}
-		return builder.result();
-	}
-
-	@Override
-	public Set<T> toSet()
-	{
-		return toSet(new HashSetBuilder<T>());
-	}
-
-	@Override
-	public Set<T> toSet(final Builder<T, Set<T>> builder)
-	{
-		for (final T ele : this)
-		{
-			builder.add(ele);
-		}
-		return builder.result();
-	}
-
+	
 	/**
 	 * Método protegido, para métodos que precisam assegurar que a lista contenha elementos
 	 */
@@ -645,4 +377,35 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>>
 		}
 	}
 	
+	@Override
+	public List<T> toList()
+	{
+		return toList(new ArrayListBuilder<T>());
+	}
+
+	@Override
+	public List<T> toList(final Builder<T, List<T>> builder)
+	{
+		for (final T ele : this)
+		{
+			builder.add(ele);
+		}
+		return builder.result();
+	}
+
+	@Override
+	public Set<T> toSet()
+	{
+		return toSet(new HashSetBuilder<T>());
+	}
+
+	@Override
+	public Set<T> toSet(final Builder<T, Set<T>> builder)
+	{
+		for (final T ele : this)
+		{
+			builder.add(ele);
+		}
+		return builder.result();
+	}
 }
