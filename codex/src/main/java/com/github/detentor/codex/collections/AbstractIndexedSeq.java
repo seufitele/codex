@@ -2,8 +2,32 @@ package com.github.detentor.codex.collections;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Functions;
+import com.github.detentor.codex.function.PartialFunction;
 
-public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, AbstractIndexedSeq<T>> implements IndexedSeq<T>
+/**
+ * Classe que provê a implementação padrão de métodos de coleções indexadas sequencialmente, para simplificar a 
+ * criação de classes que os estenda. <br/> <br/>
+ * 
+ * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/> <br/>
+ * 
+ * {@link Iterable#iterator() iterator()} , {@link SharpCollection#size() size()} , 
+ * {@link #subsequence(int, int)} , 
+ * {@link #apply(Integer)} ,
+ * {@link SharpCollection#builder() builder()} <br/> <br/>
+ * 
+ * Não esquecer de sobrescrever o equals e o hashcode também. <br/><br/>
+ * 
+ * Para coleções mutáveis, veja {@link AbstractMutableIndexedSeq}. <br/><br/>
+ * 
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} 
+ * e {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics,
+ * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
+ * classe é suficiente).
+ * 
+ * @author Vinícius Seufitele Pinto
+ *
+ */
+public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, IndexedSeq<T>> implements IndexedSeq<T>
 {
 	/**
 	 * Retorna a sub-sequência a partir do índice passado como parâmetro, até o fim dela. <br/>
@@ -62,7 +86,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, A
 	@Override
 	public boolean isEmpty()
 	{
-		return this.size() > 0;
+		return this.size() == 0;
 	}
 
 	@Override
@@ -120,7 +144,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, A
 	public IndexedSeq<T> dropRightWhile(final Function1<T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
-		return this.subsequence(0, index == -1 ? this.size() - 1 : index);
+		return dropRight(index == -1 ? 0 : this.size() - index);
 	}
 
 	@Override
@@ -133,7 +157,9 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, A
 	public IndexedSeq<T> takeRightWhile(final Function1<T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
-		return this.subsequence(index == -1 ? this.size() : index);
+		return takeRight(index == -1 ? 0 : this.size() - index);
 	}
+	
+	
 
 }
