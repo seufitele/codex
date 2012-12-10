@@ -15,6 +15,11 @@ import com.github.detentor.codex.function.PartialFunction;
 public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollection<A>
 {
 	/**
+	 * Retorna o elemento vinculado à posição especificada
+	 */
+	A apply(Integer pos);
+
+	/**
 	 * Retorna o número de elementos desta coleção. <br/>
 	 * Esta operação tem garantia de ser executada em tempo constante.
      * @return O número de elementos desta coleção
