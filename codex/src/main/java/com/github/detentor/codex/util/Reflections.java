@@ -68,7 +68,7 @@ public final class Reflections
 	 * @param methodName O nome do método a ser transformado em função
 	 * @return Uma função que representa o método definido pela classe
 	 */
-	public static <A, B, C> Function1<B[], C> liftStaticVarargs(final Class<A> fromClass, final String methodName)
+	public static <A, B, C> Function1<B[], C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(
 									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
