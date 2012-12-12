@@ -2,6 +2,7 @@ package com.github.detentor.codex.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
@@ -60,6 +61,27 @@ public final class Reflections
 			}
 		};
 	}
+	
+	/**
+	 * Transforma um método estático de uma classe numa função.
+	 * @param fromClass A classe onde o método estático existe
+	 * @param methodName O nome do método a ser transformado em função
+	 * @return Uma função que representa o método definido pela classe
+	 */
+	public static <A, B, C> Function1<B[], C> liftStaticVarargs(final Class<A> fromClass, final String methodName)
+	{
+		final Method theMethod = ensureNotEmpty(
+									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
+
+		return new Function1<B[], C>()
+		{
+			@Override
+			public C apply(final B[] params)
+			{
+				return invokeSafe(fromClass, theMethod, params);
+			}
+		};
+	}
 
 	/**
 	 * Valida que a Option contém elementos, disparando uma exceção se não tiver.
@@ -96,16 +118,39 @@ public final class Reflections
 		}
 		return Option.from(theMethod);
 	}
+	
+	/**
+	 * Retorna o método de uma classe a partir de seu nome.
+	 * @param fromClass A classe onde o método será procurado
+	 * @param methodName O nome do método a ser retornado
+	 * @return Uma instância de Option que conterá o método, se ele existir
+	 */
+	public static <A> Option<Method> getMethodFromNameAndType(final Class<A> fromClass, 
+															  final String methodName, 
+															  final Class<?>[] parameterType)
+	{
+		Method theMethod = null;
+		
+		for (final Method curMethod : fromClass.getDeclaredMethods())
+		{
+			if (curMethod.getName().equals(methodName) && Arrays.equals(curMethod.getParameterTypes(), parameterType))
+			{
+				theMethod = curMethod;
+				break;
+			}
+		}
+		return Option.from(theMethod);
+	}
 
 	/**
 	 * Invoca o método de uma classe, pulando as verificações de exceção.
-	 * @param fromClass
-	 * @param method
-	 * @param params
+	 * @param fromClass A instância da classe onde o método será chamado
+	 * @param method O método a ser chamado
+	 * @param params A lista de parâmetros esperada pela classe
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static <A, B> B invokeSafe(final Class<A> fromClass, final Method method, final Object ... params)
+	public static <A, B> B invokeSafe(final Class<A> fromClass, final Method method, final Object ... params)
 	{
 		try
 		{
