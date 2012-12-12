@@ -38,7 +38,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	 */
 	public IndexedSeq<T> subsequence(final int startIndex)
 	{
-		return this.subsequence(startIndex, this.size() - 1);
+		return this.subsequence(startIndex, this.size());
 	}
 
 	/**
@@ -113,13 +113,13 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	@Override
 	public IndexedSeq<T> take(final Integer num)
 	{
-		return this.subsequence(0, num - 1);
+		return this.subsequence(0, num);
 	}
 
 	@Override
 	public IndexedSeq<T> takeRight(final Integer num)
 	{
-		return this.subsequence(this.size() - num + 1);
+		return this.subsequence(this.size() - num);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	@Override
 	public IndexedSeq<T> dropRight(final Integer num)
 	{
-		return this.subsequence(0, this.size() - num - 1);
+		return this.subsequence(0, this.size() - num);
 	}
 
 	@Override
@@ -144,22 +144,19 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	public IndexedSeq<T> dropRightWhile(final Function1<T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
-		return dropRight(index == -1 ? 0 : this.size() - index);
+		return dropRight(index == -1 ? 0 : this.size() - (index + 1));
 	}
 
 	@Override
 	public IndexedSeq<T> takeWhile(final Function1<T, Boolean> pred)
 	{
-		return this.subsequence(indexWhere(Functions.not(pred)));
+		return this.subsequence(0, indexWhere(Functions.not(pred)));
 	}
 
 	@Override
 	public IndexedSeq<T> takeRightWhile(final Function1<T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
-		return takeRight(index == -1 ? 0 : this.size() - index);
+		return takeRight(index == -1 ? 0 : this.size() - (index + 1));
 	}
-	
-	
-
 }
