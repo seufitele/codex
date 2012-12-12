@@ -30,7 +30,7 @@ public class SharpCollectionTest
 	
 	public void testCollection(Class<SharpCollection<?>> theClass) 
 	{
-		final Function1<Object[], SharpCollection<Integer>> func = Reflections.liftStaticVarargs(theClass, "from");
+		final Function1<Object[], SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
 		final Option<Method> func2 = Reflections.getMethodFromName(theClass, "empty");
 		
 		SharpCollection<Integer> listaOri = func.apply(new Object[] {new Object[] { 1, 2, 3, 4, 5} });
