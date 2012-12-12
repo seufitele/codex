@@ -1,15 +1,13 @@
 package com.github.detentor.codex.collections;
 
-import java.util.Iterator;
-
 import com.github.detentor.codex.function.PartialFunction;
 
 /**
- * Sequências lineares representam sequências onde, assim como {@link Iterator iterators}, 
- * trata-se um elemento de cada vez.<br/><br/>
- * 
- * Sequências lineares garantem tempo constante para os métodos
- * {@link #head()} , {@link #tail()} , {@link #isEmpty()}.
+ * Sequências lineares representam sequências onde a ordem dos elementos retornados pelo 
+ * iterator é estável (ex: Mapas e Sets não são sequências lineares, pois os itens 
+ * retornados pelo iterador pode mudar). <br/><br/>
+ * Além disso, sequências lineares garantem tempo constante para os métodos
+ * {@link #head()} , {@link #tail()} , {@link #isEmpty()}.<br/><br/>
  * 
  * @author Vinícius Seufitele Pinto
  *
