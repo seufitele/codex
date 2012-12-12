@@ -69,7 +69,7 @@ public final class Functions
 	{
 		return new PartialCreation<A, B>(pred, transform);
 	}
-
+	
 	private static final class PartialCreation<A, B> implements PartialFunction<A, B>
 	{
 		private final Function1<A, Boolean> predicate;
