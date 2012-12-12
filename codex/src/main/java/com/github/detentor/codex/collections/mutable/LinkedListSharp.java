@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.monads.Option;
 
 public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, LinkedListSharp<T>>
 {
@@ -153,7 +154,10 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	@Override
 	public LinkedListSharp<T> add(final T element)
 	{
-		return new LinkedListSharp<T>(element, this);
+		final LinkedListSharp<T> prevElement = new LinkedListSharp<T>(this.head, this.tail);
+		this.head = element;
+		this.tail = prevElement;
+		return this;
 	}
 
 	@Override
@@ -164,46 +168,55 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 			return this;
 		}
 
-		if (this.head.equals(element))
+		if (Option.from(this.head).equals(Option.from(element)))
 		{
-			return this.tail;
+			this.head = this.tail.head;
+			this.tail = this.tail.tail;
 		}
 		else
 		{
-			return this.concat(tail.remove(element));
+			this.tail = this.tail.remove(element);
 		}
+		return this;
 	}
 	
-	public LinkedListSharp<T> concat(final LinkedListSharp<T> theList)
-	{
-		return this.tail = theList;
-	}
-
 	@Override
 	public LinkedListSharp<T> addAll(final Iterable<? extends T> col)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		for (T ele : col)
+		{
+			this.add(ele);
+		}
+		return this;
 	}
 
 	@Override
 	public LinkedListSharp<T> removeAll(final Iterable<T> col)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		for (T ele : col)
+		{
+			this.remove(ele);
+		}
+		return this;
 	}
 
 	@Override
-	public SharpCollection<T> clear()
+	public LinkedListSharp<T> clear()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		//ATENÇÃO: FAZER ISTO NÃO TRANSFORMARÁ A LISTA EM NIL
+		this.head = null;
+		this.tail = (LinkedListSharp<T>) Nil; 
+		return this;
 	}
 
 	@Override
 	public int size()
 	{
-		return 0;
+		if (this.equals(Nil))
+		{
+			return 0;
+		}
+		return 1 + this.tail.size();
 	}
 
 	@Override
