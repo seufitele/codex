@@ -27,9 +27,10 @@ public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollect
     int size();
 
     /**
-     * Retorna uma sub-sequência desta sequência, a partir do índice de início e fim passados como parâmetro
+     * Retorna uma sub-sequência desta sequência, a partir do índice de início (inclusive) 
+     * e fim (exclusive) passados como parâmetro
      * @param startIndex O índice onde a sub-sequência será iniciada
-     * @param endIndex O índice onde a sub-sequência terminará
+     * @param endIndex O índice onde a sub-sequência terminará (exclusive)
      * @return A sub-sequência desta sequência que representa o intervalo determinado
      */
     IndexedSeq<A> subsequence(int startIndex, int endIndex);
