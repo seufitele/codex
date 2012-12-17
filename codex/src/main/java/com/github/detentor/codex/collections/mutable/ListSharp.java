@@ -94,7 +94,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * Cria uma nova ListSharp, a partir dos valores passados como parâmetro. <br/>
 	 * Esse método é uma forma mais compacta de se criar ListSharp.
 	 * @param <A> O tipo de dados da ListSharp a ser retornada. 
-	 * @param collection A ListSharp a ser criada, a partir dos valores
+	 * @param valores A ListSharp a ser criada, a partir dos valores
 	 * @return Uma nova ListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
 	public static <T> ListSharp<T> from(final T... valores)
