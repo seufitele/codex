@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.collections.mutable.FastList;
 import com.github.detentor.codex.collections.mutable.LinkedListSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
@@ -20,7 +21,7 @@ public class SharpCollectionTest
 	public void testListSharp() 
 	{
 		ListSharp<Class<?>> listas = 
-				ListSharp.<Class<?>>from(SetSharp.class, ListSharp.class, LinkedListSharp.class);
+				ListSharp.<Class<?>>from(SetSharp.class, ListSharp.class, LinkedListSharp.class, FastList.class);
 		
 		for(Class<?> ele : listas)
 		{
