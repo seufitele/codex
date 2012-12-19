@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.collections.builders.LinkedListBuilder;
 import com.github.detentor.codex.monads.Option;
 
 public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, LinkedListSharp<T>>
@@ -13,17 +14,16 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	private LinkedListSharp<T> tail;
 
 	// O objeto vazio
-	private static final LinkedListSharp<Object> Nil = new LinkedListSharp<Object>() {};
+	private static final LinkedListSharp<Object> Nil = new LinkedListSharp<Object>(null, null);
 
 	/**
 	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
-	@SuppressWarnings("unchecked")
 	protected LinkedListSharp()
 	{
-		this(null, (LinkedListSharp<T>) Nil);
+		this(null, null);
 	}
-	
+
 	/**
 	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
@@ -63,11 +63,11 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	 */
 	public static <T> LinkedListSharp<T> from(final T... valores)
 	{
-		LinkedListSharp<T> retorno = null;
+		final LinkedListSharp<T> retorno = LinkedListSharp.empty();
 
 		for (final T ele : valores)
 		{
-			retorno = retorno == null ? new LinkedListSharp<T>(ele) : retorno.add(ele);
+			retorno.add(ele);
 		}
 		return retorno;
 	}
@@ -82,11 +82,11 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	 */
 	public static <T> LinkedListSharp<T> from(final Iterable<T> theIterable)
 	{
-		LinkedListSharp<T> retorno = new LinkedListSharp<T>();
+		final LinkedListSharp<T> retorno = LinkedListSharp.empty();
 
 		for (final T ele : theIterable)
 		{
-			retorno = retorno.add(ele);
+			retorno.add(ele);
 		}
 		return retorno;
 	}
@@ -109,7 +109,7 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 			@Override
 			public boolean hasNext()
 			{
-				return ! curEle[0].equals(Nil);
+				return ! Nil.equals(curEle[0]);
 			}
 
 			@Override
@@ -143,7 +143,7 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
-		return null;
+		return new LinkedListBuilder<B>();
 	}
 
 	/**
@@ -203,9 +203,8 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	@Override
 	public LinkedListSharp<T> clear()
 	{
-		//ATENÇÃO: FAZER ISTO NÃO TRANSFORMARÁ A LISTA EM NIL
 		this.head = null;
-		this.tail = (LinkedListSharp<T>) Nil; 
+		this.tail = null; 
 		return this;
 	}
 
@@ -276,5 +275,4 @@ public class LinkedListSharp<T> extends AbstractMutableGenericCollection<T, Link
 	{
 		return mkString("[", ", ", "]");
 	}
-
 }
