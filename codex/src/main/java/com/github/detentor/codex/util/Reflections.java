@@ -147,7 +147,7 @@ public final class Reflections
 	 * @param fromClass A instância da classe onde o método será chamado
 	 * @param method O método a ser chamado
 	 * @param params A lista de parâmetros esperada pela classe
-	 * @return
+	 * @return O valor retornado pelo método
 	 */
 	@SuppressWarnings("unchecked")
 	public static <A, B> B invokeSafe(final Class<A> fromClass, final Method method, final Object ... params)
