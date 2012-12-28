@@ -16,17 +16,16 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
-
 /**
  * Essa classe representa uma lista mutável, cujos elementos são armazenados num ArrayList usando composição. <br/>
  * 
- * Os métodos desta classe são utilizados para favorecer a programação funcional, e possuem a mesma nomeclatura 
- * encontrada no Scala. Os métodos desta classe são extremamente poderosos, e simplificam a codificação de estruturas
- *  mais complexas.<br/> <br/>
+ * Os métodos desta classe são utilizados para favorecer a programação funcional, e possuem a mesma nomeclatura encontrada no Scala. Os
+ * métodos desta classe são extremamente poderosos, e simplificam a codificação de estruturas mais complexas.<br/>
+ * <br/>
  * 
  * Coleções como funções parciais: <br/>
- * Coleções podem ser vistas como funções parciais. ListSharp, por exemplo, é uma função que faz corresponder, 
- * para cada inteiro, um elemento do tipo T.
+ * Coleções podem ser vistas como funções parciais. ListSharp, por exemplo, é uma função que faz corresponder, para cada inteiro, um
+ * elemento do tipo T.
  * 
  * @author Vinícius Seufitele Pinto
  */
@@ -51,6 +50,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 
 	/**
 	 * Constrói uma instância de ListSharp vazia.
+	 * 
 	 * @param <A> O tipo de dados da instância
 	 * @return Uma instância de ListSharp vazia.
 	 */
@@ -62,6 +62,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	/**
 	 * Cria uma instância de ListSharp a partir da lista passada como parâmetro. <br/>
 	 * ATENÇÃO: Mudanças estruturais na lista original também afetam esta lista.
+	 * 
 	 * @param <T> O tipo de dados guardado pela lista
 	 * @param theList A lista a partir da qual esta ListSharp será criada
 	 * @return Uma listSharp que contém a referência à lista passada como parâmetro
@@ -72,9 +73,8 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	/**
-	 * Cria uma instância de ListSharp a partir dos elementos existentes
-	 * no iterable passado como parâmetro. A ordem da adição dos elementos será
-	 * a mesma ordem do iterable.
+	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos elementos
+	 * será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -89,11 +89,12 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		}
 		return retorno;
 	}
-	
+
 	/**
 	 * Cria uma nova ListSharp, a partir dos valores passados como parâmetro. <br/>
 	 * Esse método é uma forma mais compacta de se criar ListSharp.
-	 * @param <A> O tipo de dados da ListSharp a ser retornada. 
+	 * 
+	 * @param <A> O tipo de dados da ListSharp a ser retornada.
 	 * @param valores A ListSharp a ser criada, a partir dos valores
 	 * @return Uma nova ListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
@@ -152,7 +153,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	{
 		return new ArrayBuilder<B>();
 	}
-	
+
 	@Override
 	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
 	{
@@ -218,14 +219,14 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	/**
-	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br>
-	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção,
-	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de
-	 * elementos desta coleção que retornam aquele valor à função.
+	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> Em outras palavras, aplica a função
+	 * passada como parâmetro a cada elemento desta coleção, criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma
+	 * coleção de elementos desta coleção que retornam aquele valor à função.
+	 * 
 	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
-	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção de elementos
-	 * cujo resultado da função aplicada seja o mesmo.
+	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção de elementos cujo resultado da função aplicada seja o
+	 *         mesmo.
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
 	{
@@ -234,17 +235,16 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		for (final T curEle : this)
 		{
 			final A value = function.apply(curEle);
-			mapaRetorno.add(value, mapaRetorno.getOrElse(value, ListSharp.<T>empty()).add(curEle));
+			mapaRetorno.add(value, mapaRetorno.getOrElse(value, ListSharp.<T> empty()).add(curEle));
 		}
 		return mapaRetorno;
 	}
-	
+
 	/**
-	 * Transforma esta coleção em um mapa de acordo com uma função discriminadora. </br>
-	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção,
-	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é o elemento. <br/>
-	 * Se esta coleção possuir elementos repetidos, então o elemento do mapa será o último a ser
-	 * retornado pelo iterador desta coleção. 
+	 * Transforma esta coleção em um mapa de acordo com uma função discriminadora. </br> Em outras palavras, aplica a função passada como
+	 * parâmetro a cada elemento desta coleção, criando um mapa onde a chave é o resultado da função aplicada, e o valor é o elemento. <br/>
+	 * Se esta coleção possuir elementos repetidos, então o elemento do mapa será o último a ser retornado pelo iterador desta coleção.
+	 * 
 	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
 	 * @return Um mapa, onde a chave é o resultado da função, e o valor é o elemento usado para gerar a chave
@@ -262,19 +262,21 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 
 	/**
 	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
-	 * Esse método não está definido quando os elementos contidos nesta lista não
-	 * são instâncias de {@link Comparable} ou {@link Comparator}.
+	 * Esse método não está definido quando os elementos contidos nesta lista não são instâncias de {@link Comparable} ou {@link Comparator}
+	 * .
+	 * 
 	 * @return Esta lista com os elementos ordenados
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings(
+	{ "rawtypes", "unchecked" })
 	public ListSharp<T> sorted()
 	{
 		return sorted(new DefaultComparator());
 	}
-	
+
 	/**
-	 * Retorna esta lista, após a ordenação de seus elementos de acordo com a função
-	 * de comparação passada como parâmetro. <br/>
+	 * Retorna esta lista, após a ordenação de seus elementos de acordo com a função de comparação passada como parâmetro. <br/>
+	 * 
 	 * @return Esta lista após a ordenação dos elementos ordenados
 	 */
 	public ListSharp<T> sorted(final Comparator<T> comparator)
@@ -286,7 +288,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		Collections.sort(backingList, comparator);
 		return this;
 	}
-	
+
 	@Override
 	public IndexedSeq<T> subsequence(int startIndex, int endIndex)
 	{
@@ -306,6 +308,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	/**
 	 * Retorna a referência à lista que contém os elementos desta coleção. <br/>
 	 * ATENÇÃO: Mudanças estruturais na lista retornada também afetam esta coleção.
+	 * 
 	 * @return A referência à lista que serve como container de dados desta coleção
 	 */
 	@Override
@@ -320,9 +323,9 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 
-    /**
-     * Classe com a implementação default do comparator
-     */
+	/**
+	 * Classe com a implementação default do comparator
+	 */
 	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
 	{
 		private static final long serialVersionUID = 4989261028786246998L;
