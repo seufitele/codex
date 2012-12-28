@@ -1,20 +1,39 @@
 package com.github.detentor.codex.collections.immutable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.ArrayBuilder;
+import com.github.detentor.codex.collections.builders.ImArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
+/**
+ * Implementação de ListSharp imútável. <br/>
+ * Sempre que possível, deve-se favorecer essa implementação em detrimento da mutável, pois apresenta os seguintes ganhos: <br/>
+ * 
+ * 1 - Totalmente thread-safe, por ser imutável. <br/>
+ * 2 - Performance muito superior para a grande parte das operações. <br/>
+ * 3 - Custo de memória constante ao lidar com sub-listas (padrão Flyweight, assim como String). <br/>
+ * 
+ * 
+ * @author f9540702 Vinícius Seufitele Pinto
+ * 
+ * @param <T>
+ */
 public class ListSharp<T> extends AbstractIndexedSeq<T>
 {
-	private final List<T> backingList;
+	private final int startIndex;
+	private final int theSize;
+
+	private final Object[] data;
+	private Integer lazyHashCode = null;
 
 	// Singleton, pois como é imutável não faz sentido criar várias
 	private static final ListSharp<Object> EMPTY_LIST = new ListSharp<Object>();
@@ -24,12 +43,45 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	 */
 	protected ListSharp()
 	{
-		backingList = new ArrayList<T>(0);
+		startIndex = 0;
+		theSize = 0;
+		data = new Object[0];
 	}
 
-	protected ListSharp(final List<T> backList)
+	/**
+	 * Construtor privado, que reutiliza o objeto theData passado.
+	 */
+	protected ListSharp(final Object[] theData)
 	{
-		this.backingList = backList;
+		this(theData, 0, theData.length);
+	}
+
+	/**
+	 * Construtor privado, que reutiliza o objeto theData passado.
+	 * 
+	 * @param theData
+	 * @param theStart Representa onde vai começar o índice da lista
+	 * @param theEnd Representa onde vai terminar a lista (exclusive)
+	 */
+	protected ListSharp(final Object[] theData, final int theStart, final int theEnd)
+	{
+		startIndex = theStart;
+		theSize = theEnd - theStart;
+		data = theData;
+	}
+	
+	/**
+	 * Construtor privado, que reutiliza o objeto passado.
+	 * 
+	 * @param prevList
+	 * @param theStart Representa onde vai começar o índice da lista
+	 * @param theEnd Representa onde vai terminar a lista (exclusive)
+	 */
+	protected ListSharp(final ListSharp<T> prevList, final int theStart, final int theEnd)
+	{
+		startIndex = theStart;
+		theSize = theEnd - theStart;
+		data = prevList.data;
 	}
 
 	/**
@@ -41,12 +93,13 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	@SuppressWarnings("unchecked")
 	public static <A> ListSharp<A> empty()
 	{
+		// Retorna sempre a mesma lista - afinal, ela é imutável
 		return (ListSharp<A>) EMPTY_LIST;
 	}
 
 	/**
-	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. 
-	 * A ordem da adição dos elementos será a mesma ordem do iterable.
+	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos elementos
+	 * será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -54,13 +107,14 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	 */
 	public static <T> ListSharp<T> from(final Iterable<T> theIterable)
 	{
+		// por enquanto está bem porco, melhorar
 		final List<T> listaRetorno = new ArrayList<T>();
 
 		for (final T ele : theIterable)
 		{
 			listaRetorno.add(ele);
 		}
-		return new ListSharp<T>(listaRetorno);
+		return new ListSharp<T>(listaRetorno.toArray());
 	}
 
 	/**
@@ -73,52 +127,73 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	 */
 	public static <T> ListSharp<T> from(final T... valores)
 	{
-		final List<T> listaRetorno = new ArrayList<T>();
-
-		for (final T ele : valores)
-		{
-			listaRetorno.add(ele);
-		}
-		return new ListSharp<T>(listaRetorno);
+		return new ListSharp<T>(Arrays.copyOf(valores, valores.length));
 	}
 
 	@Override
 	public int size()
 	{
-		return backingList.size();
+		return theSize;
 	}
 
 	@Override
 	public ListSharp<T> subsequence(final int startIndex, final int endIndex)
 	{
-		return ListSharp.from(backingList.subList(Math.max(startIndex, 0), Math.min(endIndex, this.size())));
+		return new ListSharp<T>(this, Math.max(startIndex, 0), Math.min(endIndex, this.size()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T apply(final Integer param)
 	{
-		return backingList.get(param);
+		return (T) data[startIndex + param];
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		/**
-		 * ATENÇÃO: REESCREVER O ITERATOR PARA NÃO PERMITIR EXCLUSÕES
-		 */
-		return backingList.iterator();
+		final int[] curPos = new int[1];
+		curPos[0] = 0;
+
+		return new Iterator<T>()
+		{
+			@Override
+			public boolean hasNext()
+			{
+				return curPos[0] < size();
+			}
+
+			@Override
+			public T next()
+			{
+				return apply(curPos[0]++);
+			}
+
+			@Override
+			public void remove()
+			{
+				throw new UnsupportedOperationException("Operação não suportada para listas imutáveis");
+			}
+		};
 	}
 
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
-		return new ArrayBuilder<B>();
+		return new ImArrayBuilder<B>();
 	}
 
 	@Override
 	public <B> ListSharp<B> map(final Function1<? super T, B> function)
 	{
-		return (ListSharp<B>) super.map(function);
+		return new ListSharp<B>(data, startIndex, this.startIndex + this.size())
+		{
+			@Override
+			public B apply(Integer param)
+			{
+				return function.apply(ListSharp.this.apply(param));
+			}
+		};
 	}
 
 	@Override
@@ -132,7 +207,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	{
 		return (ListSharp<B>) super.flatMap(function);
 	}
-	
+
 	@Override
 	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
@@ -148,10 +223,29 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	@Override
 	public int hashCode()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (backingList == null ? 0 : backingList.hashCode());
-		return result;
+		if (lazyHashCode == null)
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + calculateHashCode();
+			lazyHashCode = result;
+		}
+		return lazyHashCode;
+	}
+
+	/**
+	 * Calcula o hashCode os elementos deste array
+	 * @return
+	 */
+	private int calculateHashCode()
+	{
+        int result = 1;
+        
+        for (Object element : this)
+        {
+        	result = 31 * result + (element == null ? 0 : element.hashCode());
+        }
+        return result;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -162,26 +256,27 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 		{
 			return true;
 		}
-		if (obj == null)
+		if (obj == null || getClass() != obj.getClass())
 		{
 			return false;
 		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
+		
 		final ListSharp other = (ListSharp) obj;
-		if (backingList == null)
+
+		if (this.size() != other.size())
 		{
-			if (other.backingList != null)
+			return false;
+		}
+
+		//Verifica se os elementos são iguais
+		for (int i = 0; i < this.size(); i++)
+		{
+			if (! Option.from(this.apply(i)).equals(Option.from(other.apply(i))))
 			{
 				return false;
 			}
 		}
-		else if (!backingList.equals(other.backingList))
-		{
-			return false;
-		}
 		return true;
 	}
+
 }
