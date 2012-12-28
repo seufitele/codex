@@ -2,6 +2,7 @@ package com.github.detentor.operations;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
+import com.github.detentor.codex.monads.Option;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link Integer}.
@@ -24,6 +25,18 @@ public final class IntegerOps
 			public Boolean apply(final Integer param)
 			{
 				return param > num;
+			}
+		};
+	}
+	
+	public static final Function1<Integer, Boolean> equal(final Integer num)
+	{
+		return new Function1<Integer, Boolean>()
+		{
+			@Override
+			public Boolean apply(final Integer param)
+			{
+				return Option.from(num).equals(Option.from(param));
 			}
 		};
 	}
