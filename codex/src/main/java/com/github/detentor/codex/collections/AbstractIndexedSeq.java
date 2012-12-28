@@ -31,7 +31,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 {
 	/**
 	 * Retorna a sub-sequência a partir do índice passado como parâmetro, até o fim dela. <br/>
-	 * Este método equivale a chamar o método subsequence com startIndex, this.size() - 1.
+	 * Este método equivale a chamar o método subsequence com startIndex, this.size().
 	 * 
 	 * @param startIndex O índice a partir do qual a sub-sequência será extraída
 	 * @return A sub-sequência desta sequência, iniciada a partir do índice passado como parâmetro
@@ -107,56 +107,62 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	public IndexedSeq<T> tail()
 	{
 		ensureNotEmpty("tail foi chamado para uma coleção vazia");
-		return this.subsequence(1);
+		return this.drop(1);
 	}
 
 	@Override
 	public IndexedSeq<T> take(final Integer num)
 	{
-		return this.subsequence(0, num);
+		final int nEle = num < 0 ? 0 : num;
+		return this.subsequence(0, nEle);
 	}
 
 	@Override
 	public IndexedSeq<T> takeRight(final Integer num)
 	{
-		return this.subsequence(this.size() - num);
+		final int nEle = num < 0 ? 0 : num;
+		return this.drop(Math.min(this.size() - nEle, this.size()));
 	}
 
 	@Override
 	public IndexedSeq<T> drop(final Integer num)
 	{
-		return this.subsequence(num + 1);
+		final int nEle = num < 0 ? 0 : num;
+		return this.subsequence(Math.min(this.size(), nEle));
 	}
 
 	@Override
 	public IndexedSeq<T> dropRight(final Integer num)
 	{
-		return this.subsequence(0, this.size() - num);
+		final int nEle = num < 0 ? 0 : num;
+		return this.take(this.size() - nEle);
 	}
 
 	@Override
 	public IndexedSeq<T> dropWhile(final Function1<T, Boolean> pred)
 	{
-		return this.subsequence(indexWhere(Functions.not(pred)));
+		final int theIndex = indexWhere(Functions.not(pred));
+		return this.drop(theIndex == - 1 ? this.size() : theIndex);
 	}
 
 	@Override
 	public IndexedSeq<T> dropRightWhile(final Function1<T, Boolean> pred)
 	{
-		final int index = lastIndexWhere(Functions.not(pred));
-		return dropRight(index == -1 ? 0 : this.size() - (index + 1));
+		final int theIndex = lastIndexWhere(Functions.not(pred));
+		return this.dropRight(theIndex == -1 ? this.size() : this.size() - (theIndex + 1));
 	}
 
 	@Override
 	public IndexedSeq<T> takeWhile(final Function1<T, Boolean> pred)
 	{
-		return this.subsequence(0, indexWhere(Functions.not(pred)));
+		final int theIndex = indexWhere(Functions.not(pred));
+		return this.take(theIndex == -1 ? this.size() : theIndex);
 	}
 
 	@Override
 	public IndexedSeq<T> takeRightWhile(final Function1<T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
-		return takeRight(index == -1 ? 0 : this.size() - (index + 1));
+		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
 	}
 }
