@@ -47,7 +47,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	 * @param pred O predicado a ser verificado
 	 * @return O índice do elemento que satisfaz o predicado, ou -1 se ele não existir
 	 */
-	protected int indexWhere(final Function1<T, Boolean> pred)
+	protected int indexWhere(final Function1<? super T, Boolean> pred)
 	{
 		for (int i = 0; i < this.size(); i++)
 		{
@@ -65,7 +65,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	 * @param pred O predicado a ser verificado
 	 * @return O índice do elemento que satisfaz o predicado, ou -1 se ele não existir
 	 */
-	protected int lastIndexWhere(final Function1<T, Boolean> pred)
+	protected int lastIndexWhere(final Function1<? super T, Boolean> pred)
 	{
 		for (int i = this.size() - 1; i > -1; i--)
 		{
@@ -139,28 +139,28 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 	}
 
 	@Override
-	public IndexedSeq<T> dropWhile(final Function1<T, Boolean> pred)
+	public IndexedSeq<T> dropWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = indexWhere(Functions.not(pred));
 		return this.drop(theIndex == - 1 ? this.size() : theIndex);
 	}
 
 	@Override
-	public IndexedSeq<T> dropRightWhile(final Function1<T, Boolean> pred)
+	public IndexedSeq<T> dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = lastIndexWhere(Functions.not(pred));
 		return this.dropRight(theIndex == -1 ? this.size() : this.size() - (theIndex + 1));
 	}
 
 	@Override
-	public IndexedSeq<T> takeWhile(final Function1<T, Boolean> pred)
+	public IndexedSeq<T> takeWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = indexWhere(Functions.not(pred));
 		return this.take(theIndex == -1 ? this.size() : theIndex);
 	}
 
 	@Override
-	public IndexedSeq<T> takeRightWhile(final Function1<T, Boolean> pred)
+	public IndexedSeq<T> takeRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
