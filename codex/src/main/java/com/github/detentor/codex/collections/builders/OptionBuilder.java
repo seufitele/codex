@@ -24,7 +24,6 @@ public class OptionBuilder<E> implements Builder<E, SharpCollection<E>>
 		{
 			throw new IllegalStateException("tentou-se adicionar mais de um elemento no builder do option");
 		}
-		
 		added = true;
 		valor = element;
 	}
