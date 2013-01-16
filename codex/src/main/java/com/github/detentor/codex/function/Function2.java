@@ -7,7 +7,7 @@ package com.github.detentor.codex.function;
  *
  * @param <A> O tipo de dado do primeiro parâmetro
  * @param <B> O tipo de dado do segundo parâmetro
- * @param <B> O tipo de dado de saída da função
+ * @param <C> O tipo de dado de saída da função
  */
 public interface Function2<A, B, C>
 {
