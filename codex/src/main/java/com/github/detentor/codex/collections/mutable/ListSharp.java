@@ -279,7 +279,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * 
 	 * @return Esta lista após a ordenação dos elementos ordenados
 	 */
-	public ListSharp<T> sorted(final Comparator<T> comparator)
+	public ListSharp<T> sorted(final Comparator<? super T> comparator)
 	{
 		if (this.isEmpty())
 		{
