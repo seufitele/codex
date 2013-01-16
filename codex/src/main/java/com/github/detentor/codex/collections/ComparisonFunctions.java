@@ -10,7 +10,6 @@ import java.util.Comparator;
  */
 public interface ComparisonFunctions<T>
 {
-	
 	/**
 	 * Retorna o valor mínimo desta coleção, desde que esta coleção possua elementos que assinem
 	 * a interface Comparator.
