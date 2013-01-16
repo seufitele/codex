@@ -3,7 +3,6 @@ package com.github.detentor.codex.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -149,14 +148,6 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	SharpCollection<T> dropRight(final Integer num);
 	
 	/**
-	 * Retorna o primeiro elemento (ordem definida pelo iterador da coleção) que satisfaz o predicado. <br/>
-	 * 
-	 * @param pred O predicado a ser utilizado para testar o elemento
-	 * @return Uma Option que conterá o elemento se ele existir.
-	 */
-	Option<T> find(final Function1<T, Boolean> pred);
-	
-	/**
 	 * Chama o método toString em cada elemento desta coleção, concatenando os resultados.
 	 * @return Uma string que representa a chamada ao método toString em cada elemento da coleção.
 	 */
@@ -195,5 +186,23 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * @return Uma coleção de tuplas, onde o primeiro elemento é o elemento original, e o segundo o seu índice
 	 */
 	SharpCollection<Tuple2<T, Integer>> zipWithIndex();
-
+	
+	/**
+	 * Calcula a interseção desta coleção com a coleção passada como parâmetro. <br/>
+	 * Um elemento pertence à coleção retornada se, e somente se, ele está contido
+	 * nesta coleção e na coleção passada como parâmetro. <br/><br/>
+	 * @see java.util.Collection#retainAll
+	 * @param <E> O tipo de dados desta coleção
+	 * @param withCollection A coleção a ser verificada a interseção
+	 * @return Uma nova coleção com todos os elementos desta coleção que também existem na coleção
+	 * passada como parâmetro.
+	 */
+	SharpCollection<T> intersect(final SharpCollection<T> withCollection);
+	
+	/**
+	 * Retorna uma coleção que possui somente elementos distintos entre si (de acordo com o equals). <br/>
+	 * A ordem é preservada, se ela estiver bem-definida.
+	 * @return Uma coleção onde os elementos são todos distintos entre si.
+	 */
+	SharpCollection<T> distinct();
 }
