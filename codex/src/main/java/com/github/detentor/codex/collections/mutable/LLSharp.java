@@ -8,9 +8,14 @@ import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.monads.Option;
 
 /**
- * Implementação da LinkedList.
- * FALTA APENAS ALTERAR O BUILDER PRA ADICIONAR OS ELEMENTOS CORRETAMENTE - A ORDEM FICA SEMPRE INVERSA
- * (O CONSTRUTOR COM ITERATOR TAMBÉM)
+ * Implementação mutável da lista encadeada. <br/> 
+ * A mutabilidade da lista é limitada: ela permite adicionar e remover elementos 'inplace' (ou seja,
+ * a estrutura interna da lista é modificada depois da adição ou remoção), mas não é possível setar,
+ * diretamente, o valor do head ou do tail. <br/><br/>
+ * 
+ *  A lista encadeada é ideal para remoção do primeiro elemento, ou adição de elementos. Note-se que a 
+ *  lista encadeada adiciona elementos como uma pilha (FILO). Além disso, é a estrutura ideal para 
+ *  a criação de listas (potencialmente) infinitas.
  * 
  * @author Vinicius Seufitele
  *
@@ -103,13 +108,13 @@ public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
 	 */
 	public static <T> LLSharp<T> from(final Iterable<T> theIterable)
 	{
-		final LLSharp<T> retorno = LLSharp.empty();
-
+		final LinkedListBuilder<T> builder = new LinkedListBuilder<T>();
+		
 		for (final T ele : theIterable)
 		{
-			retorno.add(ele);
+			builder.add(ele);
 		}
-		return retorno;
+		return builder.result();
 	}
 
 	@Override
@@ -297,7 +302,7 @@ public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
 	
 	
 	/**
-	 * Essa classe é um builder para SharpCollection baseado em um ListSharp.
+	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp.
 	 * 
 	 * @author Vinícius Seufitele Pinto
 	 *
