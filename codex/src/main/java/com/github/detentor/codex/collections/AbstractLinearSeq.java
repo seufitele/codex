@@ -59,7 +59,7 @@ public abstract class AbstractLinearSeq<T> extends AbstractSharpCollection<T, Li
 	}
 
 	@Override
-	public LinearSeq<T> dropWhile(final Function1<T, Boolean> pred)
+	public LinearSeq<T> dropWhile(final Function1<? super T, Boolean> pred)
 	{
 		if (!pred.apply(this.head()))
 		{
@@ -69,20 +69,20 @@ public abstract class AbstractLinearSeq<T> extends AbstractSharpCollection<T, Li
 	}
 
 	@Override
-	public SharpCollection<T> dropRightWhile(final Function1<T, Boolean> pred)
+	public SharpCollection<T> dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public SharpCollection<T> takeWhile(final Function1<T, Boolean> pred)
+	public SharpCollection<T> takeWhile(final Function1<? super T, Boolean> pred)
 	{
 		return null;
 	}
 
 	@Override
-	public SharpCollection<T> takeRightWhile(final Function1<T, Boolean> pred)
+	public SharpCollection<T> takeRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		// TODO Auto-generated method stub
 		return null;
