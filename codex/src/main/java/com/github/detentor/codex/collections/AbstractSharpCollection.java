@@ -118,7 +118,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 	
 	@Override
-	public Option<T> find(final Function1<T, Boolean> pred)
+	public Option<T> find(final Function1<? super T, Boolean> pred)
 	{
 		final Iterator<T> ite = this.iterator();
 		
@@ -136,7 +136,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	
 	@SuppressWarnings(UNCHECKED)
 	@Override
-	public U filter(final Function1<T, Boolean> pred)
+	public U filter(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		
@@ -151,7 +151,27 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 	
 	@Override
-	public boolean exists(final Function1<T, Boolean> pred)
+	public Tuple2<SharpCollection<T>, SharpCollection<T>> partition(final Function1<? super T, Boolean> pred)
+	{
+		final Builder<T, SharpCollection<T>> predTrue = builder();
+		final Builder<T, SharpCollection<T>> predFalse = builder();
+		
+		for (final T ele : this)
+		{
+			if (pred.apply(ele))
+			{
+				predTrue.add(ele);
+			}
+			else
+			{
+				predFalse.add(ele);
+			}
+		}
+		return Tuple2.from(predTrue.result(), predFalse.result());
+	}
+	
+	@Override
+	public boolean exists(final Function1<? super T, Boolean> pred)
 	{
 		for (final T ele : this)
 		{
@@ -164,7 +184,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public boolean forall(final Function1<T, Boolean> pred)
+	public boolean forall(final Function1<? super T, Boolean> pred)
 	{
 		for (final T ele : this)
 		{
@@ -177,7 +197,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 	
 	@Override
-	public Integer count(final Function1<T, Boolean> pred)
+	public Integer count(final Function1<? super T, Boolean> pred)
 	{
 		int numElementos = 0;
 		
@@ -192,7 +212,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 	
 	@Override
-	public <B> B foldLeft(final B startValue, final Function2<B, T, B> function)
+	public <B> B foldLeft(final B startValue, final Function2<B, ? super T, B> function)
 	{
 		B accumulator = startValue;
 
