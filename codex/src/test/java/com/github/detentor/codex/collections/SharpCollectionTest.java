@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.junit.Test;
 
 import com.github.detentor.codex.collections.mutable.FastList;
-import com.github.detentor.codex.collections.mutable.LinkedListSharp;
+import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
 import com.github.detentor.codex.function.Function1;
@@ -26,7 +26,9 @@ public class SharpCollectionTest
 				//Recolocar: SetSharp, LinkedListSharp
 				//SetSharp está com erro porque provavelmente o iterator está retornando diferente
 				//FastList.class
-				ListSharp.<Class<?>>from(ListSharp.class, com.github.detentor.codex.collections.immutable.ListSharp.class);
+				ListSharp.<Class<?>>from(ListSharp.class,
+						LLSharp.class,
+						com.github.detentor.codex.collections.immutable.ListSharp.class);
 		
 		for(Class<?> ele : listas)
 		{
