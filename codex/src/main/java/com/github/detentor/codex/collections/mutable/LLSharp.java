@@ -71,10 +71,7 @@ public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
 	 */
 	public static <T> LLSharp<T> from(final T valor)
 	{
-		final LLSharp<T> retorno = LLSharp.empty();
-
-		retorno.head = valor;
-		return retorno;
+		return LLSharp.<T>empty().add(valor);
 	}
 
 	/**
@@ -308,14 +305,23 @@ public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
 	 */
 	private static final class LinkedListBuilder<E> implements Builder<E, SharpCollection<E>>
 	{
-		private final LLSharp<E> list = LLSharp.empty();
-		private LLSharp<E> last = LLSharp.empty();
+		private LLSharp<E> list = LLSharp.empty();
+		private LLSharp<E> last;
 
 		@Override
 		public void add(final E element)
 		{
-			last = LLSharp.from(element);
-			list.tail = last;
+			if (list.isEmpty())
+			{
+				list = LLSharp.from(element);
+				last = list;
+			}
+			else
+			{
+				final LLSharp<E> novoEle = LLSharp.from(element);
+				last.tail = novoEle;
+				last = novoEle;
+			}
 		}
 
 		@Override
@@ -323,7 +329,6 @@ public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
 		{
 			return list;
 		}
-
 	}
 	
 }
