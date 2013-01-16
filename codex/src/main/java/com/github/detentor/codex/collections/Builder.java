@@ -7,7 +7,10 @@ package com.github.detentor.codex.collections;
  * 
  * Com builders é possível determinar exatamente o tipo de objeto que será criado quando uma função
  * de ordem superior for chamada. Por exemplo, é possível passar um builder de LinkedHashSet, que assegurará
- * a ordem de inclusão dos elementos.
+ * a ordem de inclusão dos elementos. <br/><br/>
+ * 
+ * Se coleções forem vistas como mônades, builders são o 'unit' ou 'return': eles fornecem uma interface comum
+ * para a criação destas mônades. 
  * 
  * @author Vinícius Seufitele Pinto
  *
@@ -27,5 +30,4 @@ public interface Builder<From, To extends Iterable<From>>
 	 * @return A coleção criada pelo Builder
 	 */
 	To result();
-
 }
