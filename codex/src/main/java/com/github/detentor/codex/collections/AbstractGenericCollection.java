@@ -15,33 +15,36 @@ import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Classe que provê a implementação padrão de diversos métodos de coleções, para simplificar a 
- * criação de classes que os estenda. <br/> <br/>
+ * Classe que provê a implementação padrão de diversos métodos de coleções, para simplificar a criação de classes que os estenda. <br/>
+ * <br/>
  * 
- * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/> <br/>
+ * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/>
+ * <br/>
  * 
- * {@link Iterable#iterator() iterator()}, {@link SharpCollection#size() size()} , 
- * {@link SharpCollection#builder() builder()} <br/> <br/>
+ * {@link Iterable#iterator() iterator()}, {@link SharpCollection#size() size()} , {@link SharpCollection#builder() builder()} <br/>
+ * <br/>
  * 
- * Não esquecer de sobrescrever o equals e o hashcode também. <br/><br/>
+ * Não esquecer de sobrescrever o equals e o hashcode também. <br/>
+ * <br/>
  * 
- * Para coleções mutáveis, veja {@link AbstractMutableCollection}. <br/><br/>
- * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/> <br/>
+ * Para coleções mutáveis, veja {@link AbstractMutableCollection}. <br/>
+ * <br/>
+ * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/>
+ * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} 
- * e {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics,
- * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
- * classe é suficiente).
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} e
+ * {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o tipo
+ * de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).
  * 
  * @author Vinícius Seufitele Pinto
- *
+ * 
  */
-public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>> 
-									implements SharpCollection<T>, Convertable<T>, ComparisonFunctions<T>
+public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>> implements SharpCollection<T>, Convertable<T>,
+		ComparisonFunctions<T>
 {
 	private static final String UNCHECKED = "unchecked";
 
-    @Override
+	@Override
 	public boolean isEmpty()
 	{
 		return this.size() == 0;
@@ -50,7 +53,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	@Override
 	public boolean notEmpty()
 	{
-		return ! isEmpty();
+		return !isEmpty();
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	{
 		for (final T ele : col)
 		{
-			if (! this.contains(ele))
+			if (!this.contains(ele))
 			{
 				return false;
 			}
@@ -85,13 +88,13 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		ensureNotEmpty("head foi chamado para uma coleção vazia");
 		return this.iterator().next();
 	}
-	
+
 	@Override
 	public Option<T> headOption()
 	{
-		return this.isEmpty() ? Option.<T>empty() : Option.from(this.head());
+		return this.isEmpty() ? Option.<T> empty() : Option.from(this.head());
 	}
-	
+
 	@Override
 	public T last()
 	{
@@ -101,7 +104,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	@Override
 	public Option<T> lastOption()
 	{
-		return this.isEmpty() ? Option.<T>empty() : Option.from(this.last());
+		return this.isEmpty() ? Option.<T> empty() : Option.from(this.last());
 	}
 
 	@SuppressWarnings(UNCHECKED)
@@ -112,16 +115,16 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 
 		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
 		final Iterator<T> ite = this.iterator();
-		
-		ite.next(); //Pula o primeiro elemento
-		
+
+		ite.next(); // Pula o primeiro elemento
+
 		while (ite.hasNext())
 		{
 			colecaoRetorno.add(ite.next());
 		}
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U take(final Integer num)
@@ -129,14 +132,14 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
 		final Iterator<T> ite = this.iterator();
 		int count = 0;
-		
+
 		while (count++ < num && ite.hasNext())
 		{
 			colecaoRetorno.add(ite.next());
 		}
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U takeRight(final Integer num)
@@ -145,18 +148,18 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
 		final Iterator<T> ite = this.iterator();
 		int curCount = 0;
-		
+
 		while (ite.hasNext() && curCount < eleToSkip)
 		{
 			ite.next();
 			curCount++;
 		}
-		
+
 		while (ite.hasNext())
 		{
 			colecaoRetorno.add(ite.next());
 		}
-		
+
 		return (U) colecaoRetorno.result();
 	}
 
@@ -166,9 +169,9 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		int count = 0;
-		
+
 		while (count++ < num && ite.hasNext())
 		{
 			ite.next();
@@ -178,10 +181,10 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		{
 			colecaoRetorno.add(ite.next());
 		}
-		
+
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U dropRight(final Integer num)
@@ -189,14 +192,14 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		final int toAdd = Math.max(0, this.size() - num);
 		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		int count = 0;
-		
+
 		while (ite.hasNext() && count++ < toAdd)
 		{
 			colecaoRetorno.add(ite.next());
 		}
-		
+
 		return (U) colecaoRetorno.result();
 	}
 
@@ -217,7 +220,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	{
 		final StringBuilder sBuilder = new StringBuilder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		sBuilder.append(start);
 
 		while (ite.hasNext())
@@ -231,61 +234,61 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		sBuilder.append(end);
 		return sBuilder.toString();
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
-	public U dropWhile(final Function1<T, Boolean> pred)
+	public U dropWhile(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
-			
-			if (! pred.apply(curEle))
+
+			if (!pred.apply(curEle))
 			{
 				colecaoRetorno.add(curEle);
 				break;
 			}
 		}
-		
-		while(ite.hasNext())
+
+		while (ite.hasNext())
 		{
 			colecaoRetorno.add(ite.next());
 		}
 
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public U dropRightWhile(final Function1<T, Boolean> pred)
+	public U dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		Builder<T, SharpCollection<T>> tempCollection = builder();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
 
 			if (pred.apply(curEle))
 			{
-				//Esse predicado pode ser o último
+				// Esse predicado pode ser o último
 				tempCollection.add(curEle);
 			}
 			else
 			{
-				//Adiciona os elementos que seriam descartados
-				for (T ele : tempCollection.result())
+				// Adiciona os elementos que seriam descartados
+				for (final T ele : tempCollection.result())
 				{
 					colecaoRetorno.add(ele);
 				}
-				//Adiciona o elemento atual
+				// Adiciona o elemento atual
 				colecaoRetorno.add(curEle);
-				tempCollection = builder(); //reseta o builder
+				tempCollection = builder(); // reseta o builder
 			}
 		}
 		return (U) colecaoRetorno.result();
@@ -293,15 +296,15 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
-	public U takeWhile(final Function1<T, Boolean> pred)
+	public U takeWhile(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
-			
+
 			if (pred.apply(curEle))
 			{
 				colecaoRetorno.add(curEle);
@@ -316,33 +319,33 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public U takeRightWhile(final Function1<T, Boolean> pred)
+	public U takeRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		final Iterator<T> ite = this.iterator();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
 
 			if (pred.apply(curEle))
 			{
-				//Coleta os elementos que satisfazem o predicado
+				// Coleta os elementos que satisfazem o predicado
 				colecaoRetorno.add(curEle);
 			}
 			else
 			{
-				colecaoRetorno = builder(); //reseta o builder
+				colecaoRetorno = builder(); // reseta o builder
 			}
 		}
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@Override
-	public Option<T> find(final Function1<T, Boolean> pred)
+	public Option<T> find(final Function1<? super T, Boolean> pred)
 	{
 		final Iterator<T> ite = this.iterator();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
@@ -354,13 +357,13 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return Option.empty();
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
-	public U filter(final Function1<T, Boolean> pred)
+	public U filter(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		
+
 		for (final T ele : this)
 		{
 			if (pred.apply(ele))
@@ -371,23 +374,28 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		return (U) colecaoRetorno.result();
 	}
 	
-	@SuppressWarnings(UNCHECKED)
-	public U filterNot(final Function1<T, Boolean> pred)
+	@Override
+	public Tuple2<SharpCollection<T>, SharpCollection<T>> partition(final Function1<? super T, Boolean> pred)
 	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		final Builder<T, SharpCollection<T>> predTrue = builder();
+		final Builder<T, SharpCollection<T>> predFalse = builder();
 		
 		for (final T ele : this)
 		{
-			if (!pred.apply(ele))
+			if (pred.apply(ele))
 			{
-				colecaoRetorno.add(ele);
+				predTrue.add(ele);
+			}
+			else
+			{
+				predFalse.add(ele);
 			}
 		}
-		return (U) colecaoRetorno.result();
+		return Tuple2.from(predTrue.result(), predFalse.result());
 	}
 
 	@Override
-	public boolean exists(final Function1<T, Boolean> pred)
+	public boolean exists(final Function1<? super T, Boolean> pred)
 	{
 		for (final T ele : this)
 		{
@@ -400,23 +408,23 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public boolean forall(final Function1<T, Boolean> pred)
+	public boolean forall(final Function1<? super T, Boolean> pred)
 	{
 		for (final T ele : this)
 		{
-			if (! pred.apply(ele))
+			if (!pred.apply(ele))
 			{
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	@Override
-	public Integer count(final Function1<T, Boolean> pred)
+	public Integer count(final Function1<? super T, Boolean> pred)
 	{
 		int numElementos = 0;
-		
+
 		for (final T ele : this)
 		{
 			if (pred.apply(ele))
@@ -428,7 +436,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public <B> B foldLeft(final B startValue, final Function2<B, T, B> function)
+	public <B> B foldLeft(final B startValue, final Function2<B, ? super T, B> function)
 	{
 		B accumulator = startValue;
 
@@ -450,7 +458,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return colecaoRetorno.result();
 	}
-	
+
 	@Override
 	public <B> SharpCollection<B> collect(final PartialFunction<? super T, B> pFunction)
 	{
@@ -480,15 +488,15 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return colecaoRetorno.result();
 	}
-	
+
 	@Override
 	public T maxWith(final Comparator<T> comparator)
 	{
 		ensureNotEmpty();
-		
+
 		final Iterator<T> ite = this.iterator();
 		T maxValue = ite.next();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
@@ -499,7 +507,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return maxValue;
 	}
-	
+
 	@Override
 	public T minWith(final Comparator<T> comparator)
 	{
@@ -507,7 +515,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 
 		final Iterator<T> ite = this.iterator();
 		T minValue = ite.next();
-		
+
 		while (ite.hasNext())
 		{
 			final T curEle = ite.next();
@@ -518,7 +526,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return minValue;
 	}
-	
+
 	@SuppressWarnings({ UNCHECKED, "rawtypes" })
 	@Override
 	public T min()
@@ -532,14 +540,14 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	{
 		return maxWith(new DefaultComparator());
 	}
-	
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U intersect(final SharpCollection<T> withCollection)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		
-		for (T ele : this)
+
+		for (final T ele : this)
 		{
 			if (withCollection.contains(ele))
 			{
@@ -555,8 +563,8 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 		int count = -1;
-		
-		for (T ele : this)
+
+		for (final T ele : this)
 		{
 			if (!this.take(++count).contains(ele))
 			{
@@ -565,18 +573,18 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		}
 		return (U) colecaoRetorno.result();
 	}
-	
+
 	@Override
 	public SharpCollection<Tuple2<T, Integer>> zipWithIndex()
 	{
 		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
 		int curIndex = -1;
-		
-		for (T ele : this)
+
+		for (final T ele : this)
 		{
 			colecaoRetorno.add(Tuple2.from(ele, ++curIndex));
 		}
-		return (SharpCollection<Tuple2<T, Integer>>) colecaoRetorno.result();
+		return colecaoRetorno.result();
 	}
 
 	@Override
@@ -621,7 +629,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 			throw new IllegalArgumentException(message);
 		}
 	}
-	
+
 	/**
 	 * Método protegido, para métodos que precisam assegurar que a lista contenha elementos
 	 */
@@ -631,8 +639,8 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 
 	/**
-     * Classe com a implementação default do comparator
-     */
+	 * Classe com a implementação default do comparator
+	 */
 	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
 	{
 		private static final long serialVersionUID = 6163897449143010763L;
@@ -643,5 +651,5 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 			return ob1.compareTo(ob2);
 		}
 	}
-	
+
 }
