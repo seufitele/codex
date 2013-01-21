@@ -12,7 +12,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollection<A>
+public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollection<A>, Seq<A>
 {
 	/**
 	 * Retorna o elemento vinculado à posição especificada
