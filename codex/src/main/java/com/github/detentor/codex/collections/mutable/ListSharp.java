@@ -249,8 +249,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * 
 	 * @return Esta lista com os elementos ordenados
 	 */
-	@SuppressWarnings(
-	{ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ListSharp<T> sorted()
 	{
 		return sorted(new DefaultComparator());

@@ -53,12 +53,13 @@ public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapS
 
 	/**
 	 * Cria uma instância de MapSharp a partir do mapa passado como parâmetro. <br/>
-	 * ATENÇÃO: Mudanças estruturais no mapa original também afetam este mapa.
+	 * Os elementos do mapa serão copiados para o MapSharp, portanto mudanças estruturais 
+	 * no mapa original não afetarão este mapa.
 	 * 
 	 * @param T O tipo de dados da chave
 	 * @param U O tipo de dados do valor
 	 * @param theMap O mapa a partir do qual este mapa será criado
-	 * @return Um MapSharp que contém a referência ao mapa passado como parâmetro
+	 * @return Um MapSharp que contém os elementos do mapa passado como parâmetro
 	 */
 	public static <T, U> MapSharp<T, U> from(final Map<T, U> theMap)
 	{
