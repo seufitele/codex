@@ -40,25 +40,6 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		backingSet = new HashSet<T>();
 	}
 
-	protected SetSharp(final Set<T> backSet)
-	{
-		super();
-		this.backingSet = backSet;
-	}
-
-	/**
-	 * Cria uma instância de SetSharp a partir do set passado como parâmetro. <br/>
-	 * ATENÇÃO: Mudanças estruturais no set original também afetam este set.
-	 * 
-	 * @param <T> O tipo de dados guardado pelo set
-	 * @param theSet O set a partir do qual este SetSharp será criado
-	 * @return Uma setSharp que contém a referência ao set passado como parâmetro
-	 */
-	public static <T> SetSharp<T> from(final Set<T> theSet)
-	{
-		return new SetSharp<T>(theSet);
-	}
-
 	/**
 	 * Cria uma instância de SetSharp a partir dos elementos existentes no iterable 
 	 * passado como parâmetro. A ordem da adição dos elementos será a mesma ordem do iterable.
