@@ -43,11 +43,6 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		backingList = new ArrayList<T>();
 	}
 
-	protected ListSharp(final List<T> backList)
-	{
-		this.backingList = backList;
-	}
-
 	/**
 	 * Constrói uma instância de ListSharp vazia.
 	 * 
@@ -57,19 +52,6 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	public static <A> ListSharp<A> empty()
 	{
 		return new ListSharp<A>();
-	}
-
-	/**
-	 * Cria uma instância de ListSharp a partir da lista passada como parâmetro. <br/>
-	 * ATENÇÃO: Mudanças estruturais na lista original também afetam esta lista.
-	 * 
-	 * @param <T> O tipo de dados guardado pela lista
-	 * @param theList A lista a partir da qual esta ListSharp será criada
-	 * @return Uma listSharp que contém a referência à lista passada como parâmetro
-	 */
-	public static <T> ListSharp<T> from(final List<T> theList)
-	{
-		return new ListSharp<T>(theList);
 	}
 
 	/**
