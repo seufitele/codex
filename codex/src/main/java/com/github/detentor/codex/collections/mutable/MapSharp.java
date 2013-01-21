@@ -39,12 +39,6 @@ public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapS
 		backingMap = new HashMap<K, V>();
 	}
 
-	protected MapSharp(final Map<K, V> backMap)
-	{
-		super();
-		this.backingMap = backMap;
-	}
-	
 	@Override
 	public V apply(final K param)
 	{
@@ -68,7 +62,13 @@ public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapS
 	 */
 	public static <T, U> MapSharp<T, U> from(final Map<T, U> theMap)
 	{
-		return new MapSharp<T, U>(theMap);
+		final MapSharp<T, U> retorno = new MapSharp<T, U>();
+
+		for (final Entry<T, U> ele : theMap.entrySet())
+		{
+			retorno.add(Tuple2.from(ele.getKey(), ele.getValue()));
+		}
+		return retorno;
 	}
 
 	/**
