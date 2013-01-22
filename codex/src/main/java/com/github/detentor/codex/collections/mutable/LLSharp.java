@@ -2,7 +2,7 @@ package com.github.detentor.codex.collections.mutable;
 
 import java.util.Iterator;
 
-import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
+import com.github.detentor.codex.collections.AbstractMutableLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.monads.Option;
@@ -21,7 +21,7 @@ import com.github.detentor.codex.monads.Option;
  *
  * @param <T>
  */
-public class LLSharp<T> extends AbstractMutableGenericCollection<T, LLSharp<T>>
+public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 {
 	private T head;
 	private LLSharp<T> tail;

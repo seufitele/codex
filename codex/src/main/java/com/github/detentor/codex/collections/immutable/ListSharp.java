@@ -2,7 +2,6 @@ package com.github.detentor.codex.collections.immutable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.detentor.codex.collections.AbstractIndexedSeq;
@@ -147,34 +146,6 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	public T apply(final Integer param)
 	{
 		return (T) data[startIndex + param];
-	}
-
-	@Override
-	public Iterator<T> iterator()
-	{
-		final int[] curPos = new int[1];
-		curPos[0] = 0;
-
-		return new Iterator<T>()
-		{
-			@Override
-			public boolean hasNext()
-			{
-				return curPos[0] < size();
-			}
-
-			@Override
-			public T next()
-			{
-				return apply(curPos[0]++);
-			}
-
-			@Override
-			public void remove()
-			{
-				throw new UnsupportedOperationException("Operação não suportada para listas imutáveis");
-			}
-		};
 	}
 
 	@Override

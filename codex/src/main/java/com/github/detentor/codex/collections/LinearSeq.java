@@ -22,7 +22,7 @@ public interface LinearSeq<A> extends PartialFunction<Integer, A>, SharpCollecti
      * {@inheritDoc}
 	 * <br/>Esta operação tem garantia de ser executada em tempo constante.
 	 */
-    IndexedSeq<A> tail();
+    LinearSeq<A> tail();
     
     /**
      * {@inheritDoc}

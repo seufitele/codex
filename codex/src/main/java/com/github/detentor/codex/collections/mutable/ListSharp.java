@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.detentor.codex.collections.AbstractMutableIndexedSeq;
@@ -101,12 +100,6 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	public boolean contains(final T element)
 	{
 		return backingList.contains(element);
-	}
-
-	@Override
-	public Iterator<T> iterator()
-	{
-		return backingList.iterator();
 	}
 
 	@Override

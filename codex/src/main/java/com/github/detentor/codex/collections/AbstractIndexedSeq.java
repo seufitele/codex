@@ -1,5 +1,7 @@
 package com.github.detentor.codex.collections;
 
+import java.util.Iterator;
+
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction;
@@ -10,7 +12,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * 
  * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/> <br/>
  * 
- * {@link Iterable#iterator() iterator()} , {@link SharpCollection#size() size()} , 
+ * {@link SharpCollection#size() size()} , 
  * {@link #subsequence(int, int)} , 
  * {@link #apply(Integer)} ,
  * {@link SharpCollection#builder() builder()} <br/> <br/>
@@ -165,4 +167,35 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 		final int index = lastIndexWhere(Functions.not(pred));
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
 	}
+
+	@Override
+	public Iterator<T> iterator()
+	{
+		final int[] curIndex = new int[1];
+		final int count = this.size();
+		
+		return new Iterator<T>()
+		{
+			@Override
+			public boolean hasNext()
+			{
+				return curIndex[0] < count;
+			}
+
+			@Override
+			public T next()
+			{
+				return AbstractIndexedSeq.this.apply(curIndex[0]++);
+			}
+
+			@Override
+			public void remove()
+			{
+				throw new UnsupportedOperationException("Operação de remoção não suportada");
+			}
+		};
+	}
+	
+	
+	
 }

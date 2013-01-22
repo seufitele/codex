@@ -159,7 +159,6 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		{
 			colecaoRetorno.add(ite.next());
 		}
-
 		return (U) colecaoRetorno.result();
 	}
 
