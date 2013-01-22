@@ -3,6 +3,13 @@ package com.github.detentor.codex.monads;
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
 
+/**
+ * Mônade cujos dados são calculados de maneira 'lazy'. 
+ * 
+ * @author Vinicius Seufitele Pinto
+ *
+ * @param <A>
+ */
 public class LazyMonad<A> implements Monad<A>
 {
 	private final Function0<A> theValue;
