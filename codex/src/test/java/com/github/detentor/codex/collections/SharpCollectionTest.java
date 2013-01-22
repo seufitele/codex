@@ -1,20 +1,21 @@
 package com.github.detentor.codex.collections;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 
 import org.junit.Test;
 
-import com.github.detentor.codex.collections.mutable.FastList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
+import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.util.Reflections;
 import com.github.detentor.operations.IntegerOps;
 import com.github.detentor.operations.ObjectOps;
-
-import static org.junit.Assert.*;
 
 public class SharpCollectionTest
 {
@@ -23,11 +24,14 @@ public class SharpCollectionTest
 	public void testListSharp() 
 	{
 		ListSharp<Class<?>> listas = 
-				//Recolocar: SetSharp, LinkedListSharp
+				//Recolocar: SetSharp
 				//SetSharp está com erro porque provavelmente o iterator está retornando diferente
 				//FastList.class
-				ListSharp.<Class<?>>from(ListSharp.class,
+				ListSharp.<Class<?>>from(
+						ListSharp.class,
 						LLSharp.class,
+						SetSharp.class,
+//						MapSharp.class,
 						com.github.detentor.codex.collections.immutable.ListSharp.class);
 		
 		for(Class<?> ele : listas)
@@ -46,24 +50,24 @@ public class SharpCollectionTest
 	
 	public void testCollection(Class<SharpCollection<?>> theClass) 
 	{
-		final Function1<Object[], SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
+		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
 		final Option<Method> func2 = Reflections.getMethodFromName(theClass, "empty");
 		
-		SharpCollection<Integer> listaOri = func.apply(new Object[] {new Object[] { 1, 2, 3, 4, 5} });
-		SharpCollection<Integer> lista = func.apply(new Object[] {new Object[] { 1, 2, 3, 4, 5} });
+		SharpCollection<Integer> listaOri = func.apply(1, 2, 3, 4, 5);
+		SharpCollection<Integer> lista = func.apply(1, 2, 3, 4, 5);
 		SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
 		
-		SharpCollection<Integer> listaDrop1 = func.apply(new Object[] {new Object[] {2, 3, 4, 5} });
-		SharpCollection<Integer> listaDrop2 = func.apply(new Object[] {new Object[] {3, 4, 5} }); 
+		SharpCollection<Integer> listaDrop1 = func.apply(2, 3, 4, 5);
+		SharpCollection<Integer> listaDrop2 = func.apply(3, 4, 5); 
 		
-		SharpCollection<Integer> listaTake1 = func.apply(new Object[] {new Object[] {1}});
-		SharpCollection<Integer> listaTake2 = func.apply(new Object[] {new Object[] {1, 2}});
+		SharpCollection<Integer> listaTake1 = func.apply(1);
+		SharpCollection<Integer> listaTake2 = func.apply(1, 2);
 		
-		SharpCollection<Integer> listaTakeRight1 = func.apply(new Object[] {new Object[] {5}});
-		SharpCollection<Integer> listaTakeRight2 = func.apply(new Object[] {new Object[] {4, 5}}); 
+		SharpCollection<Integer> listaTakeRight1 = func.apply(5);
+		SharpCollection<Integer> listaTakeRight2 = func.apply(4, 5); 
 		
-		SharpCollection<Integer> listaDropRight1 = func.apply(new Object[] {new Object[] { 1, 2, 3, 4} });
-		SharpCollection<Integer> listaDropRight2 = func.apply(new Object[] {new Object[] { 1, 2, 3} });
+		SharpCollection<Integer> listaDropRight1 = func.apply(1, 2, 3, 4);
+		SharpCollection<Integer> listaDropRight2 = func.apply(1, 2, 3);
 		
 		if (lista instanceof IndexedSeq<?>)
 		{
@@ -239,7 +243,7 @@ public class SharpCollectionTest
 				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) != 14);
 			
 			//Map
-				assertTrue(sharpCol.map(ObjectOps.toString).mkString().equals("12345"));
+				assertTrue(sharpCol.mkString().equals("12345"));
 
 			//Collect DEFINIR MÉTODO DE TESTE
 	}
