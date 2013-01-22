@@ -79,7 +79,7 @@ public final class Reflections
 			@Override
 			public C apply(final B... params)
 			{
-				return invokeSafe(fromClass, theMethod, params);
+				return invokeSafe(fromClass, theMethod, new Object[] { params });
 			}
 		};
 	}
