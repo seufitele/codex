@@ -9,9 +9,8 @@ package com.github.detentor.codex.function.arrow;
 public interface Arrow
 {
 	/**
-	 * Retorna a aridade da função (número de parâmetros que ela espera)
-	 * @return
+	 * Retorna a aridade da seta (número de parâmetros que ela espera)
+	 * @return O número de parâmetros desta seta
 	 */
 	int getArity();
-
 }
