@@ -1,5 +1,6 @@
 package com.github.detentor.codex.collections.immutable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +11,6 @@ import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.builders.ImArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -26,13 +26,14 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T>
  */
-public class ListSharp<T> extends AbstractIndexedSeq<T>
+public class ListSharp<T> extends AbstractIndexedSeq<T> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final int startIndex;
 	private final int theSize;
 
 	private final Object[] data;
-	private Integer lazyHashCode = null;
 
 	// Singleton, pois como é imutável não faz sentido criar várias
 	private static final ListSharp<Object> EMPTY_LIST = new ListSharp<Object>();
@@ -68,7 +69,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 		theSize = theEnd - theStart;
 		data = theData;
 	}
-	
+
 	/**
 	 * Construtor privado, que reutiliza o objeto passado.
 	 * 
@@ -97,8 +98,8 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	}
 
 	/**
-	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos elementos
-	 * será a mesma ordem do iterable.
+	 * Cria uma instância de ListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos
+	 * elementos será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -159,6 +160,8 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	{
 		return new ListSharp<B>(data, startIndex, this.startIndex + this.size())
 		{
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public B apply(Integer param)
 			{
@@ -190,64 +193,4 @@ public class ListSharp<T> extends AbstractIndexedSeq<T>
 	{
 		return mkString("[", ", ", "]");
 	}
-
-	@Override
-	public int hashCode()
-	{
-		if (lazyHashCode == null)
-		{
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + calculateHashCode();
-			lazyHashCode = result;
-		}
-		return lazyHashCode;
-	}
-
-	/**
-	 * Calcula o hashCode os elementos deste array
-	 * @return
-	 */
-	private int calculateHashCode()
-	{
-        int result = 1;
-        
-        for (Object element : this)
-        {
-        	result = 31 * result + (element == null ? 0 : element.hashCode());
-        }
-        return result;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass())
-		{
-			return false;
-		}
-		
-		final ListSharp other = (ListSharp) obj;
-
-		if (this.size() != other.size())
-		{
-			return false;
-		}
-
-		//Verifica se os elementos são iguais
-		for (int i = 0; i < this.size(); i++)
-		{
-			if (! Option.from(this.apply(i)).equals(Option.from(other.apply(i))))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 }
