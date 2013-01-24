@@ -18,8 +18,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * O método {@link #size()} tem implementação baseada no iterator (complexidade O(n)). <br/>
  * <br/>
  * 
- * Não esquecer de sobrescrever o equals e o hashcode também. <br/>
- * <br/>
+ * O {@link #equals(Object)} e o {@link #hashCode()} são padrão para todas as sequências lineares. <br/><br/>
  * 
  * Para coleções mutáveis, veja {@link AbstractMutableLinearSeq}. <br/>
  * <br/>
@@ -31,7 +30,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  * 
  */
-public abstract class AbstractLinearSeq<T, U extends SharpCollection<T>> extends AbstractSharpCollection<T, LinearSeq<T>> implements LinearSeq<T>
+public abstract class AbstractLinearSeq<T, U extends SharpCollection<T>> extends AbstractSeq<T, LinearSeq<T>> implements LinearSeq<T>
 {
 	private static final String UNCHECKED = "unchecked";
 	
@@ -240,13 +239,15 @@ public abstract class AbstractLinearSeq<T, U extends SharpCollection<T>> extends
 	@Override
 	public int size()
 	{
-		int curSize = 0;
-
-		for (final T ele : this)
+		int theSize = 0;
+		LinearSeq<T> curEle = this;
+		
+		while (curEle.notEmpty())
 		{
-			curSize++;
+			curEle = curEle.tail();
+			theSize++;
 		}
-		return curSize;
+		return theSize;
 	}
 
 	@SuppressWarnings("unchecked")

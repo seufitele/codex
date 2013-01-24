@@ -136,46 +136,6 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (backingList == null ? 0 : backingList.hashCode());
-		return result;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj == null)
-		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final ListSharp other = (ListSharp) obj;
-		if (backingList == null)
-		{
-			if (other.backingList != null)
-			{
-				return false;
-			}
-		}
-		else if (!backingList.equals(other.backingList))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString()
 	{
 		return mkString("[", ", ", "]");

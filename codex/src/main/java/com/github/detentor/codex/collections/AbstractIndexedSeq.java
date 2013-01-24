@@ -17,7 +17,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * {@link #apply(Integer)} ,
  * {@link SharpCollection#builder() builder()} <br/> <br/>
  * 
- * Não esquecer de sobrescrever o equals e o hashcode também. <br/><br/>
+ * O {@link #equals(Object)} e o {@link #hashCode()} são padrão para todas as sequências indexadas. <br/><br/>
  * 
  * Para coleções mutáveis, veja {@link AbstractMutableIndexedSeq}. <br/><br/>
  * 
@@ -29,7 +29,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, IndexedSeq<T>> implements IndexedSeq<T>
+public abstract class AbstractIndexedSeq<T> extends AbstractSeq<T, IndexedSeq<T>> implements IndexedSeq<T>
 {
 	/**
 	 * Retorna a sub-sequência a partir do índice passado como parâmetro, até o fim dela. <br/>
@@ -195,7 +195,4 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSharpCollection<T, I
 			}
 		};
 	}
-	
-	
-	
 }

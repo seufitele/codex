@@ -74,4 +74,16 @@ public final class StringOps
 			return param == null ? null : param.trim().toLowerCase();
 		}
 	};
+	
+	/**
+	 * Representa a função que converte uma String para Integer
+	 */
+	public static final Function1<String, Integer> toInt = new Function1<String, Integer>()
+	{
+		@Override
+		public Integer apply(final String param)
+		{
+			return Integer.parseInt(param);
+		}
+	};
 }

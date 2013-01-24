@@ -1,7 +1,7 @@
 package com.github.detentor.codex.parsers;
 
+import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Essa classe é a implementação de um parser, que dada uma String (<code>input</code>) realiza a extração de tokens baseado em suas
@@ -145,10 +145,20 @@ public class Parser
 		if (charRule.apply(charToCheck))
 		{
 			final String value = String.valueOf(charToCheck);
-			return ParserResult.createSuccess(value, startPos + value.length());
+			return ParserResult.createSuccess(ListSharp.<Object>from(value), startPos + value.length());
 		}
 		// Não encontrou o token que era para ter sido encontrado
 		return ParserResult.createFailure(ParserErrors.UNEXPECTED_TOKEN, startPos);
+	}
+	
+	public Parser star()
+	{
+		return rep(0);
+	}
+	
+	public Parser plus()
+	{
+		return rep(1);
 	}
 
 	/**
@@ -157,7 +167,7 @@ public class Parser
 	 * 
 	 * @param min mínimo de ocorrências
 	 */
-	public Parser rep(final int min)
+	private Parser rep(final int min)
 	{
 		return rep(min, Integer.MAX_VALUE);
 	}
@@ -169,7 +179,7 @@ public class Parser
 	 * @param min mínimo de ocorrências
 	 * @param max máximo de ocorrências
 	 */
-	public Parser rep(final int min, final int max)
+	private Parser rep(final int min, final int max)
 	{
 		if (min < 0)
 		{
@@ -186,25 +196,24 @@ public class Parser
 			@Override
 			protected ParserResult parse(final String input, final Integer startPos)
 			{
-//				final List<Object> results = new ArrayList<Object>();
-//				Integer lastPos = startPos;
-//				int qtdOccur = 0;
-//
-//				Tuple2<ParserResult, Integer> result;
-//
-//				while (qtdOccur < max && !(result = Parser.this.parse(input, lastPos)).getVal1().isFailure())
-//				{
-//					lastPos = result.getVal2();
-//					results.addAll(result.getVal1().getResult());
-//					qtdOccur++;
-//				}
-//
-//				if (qtdOccur < min)
-//				{
-//					throw new ParseException(lastPos, input);
-//				}
-//				return Tuple2.from(results, lastPos);
-				return null;
+				ParserResult curParser = Parser.this.parse(input, startPos);
+				ParserResult result = curParser;
+				int qtdOccur = result.isFailure() ? 0 : 1;
+
+				while (qtdOccur < max && !(curParser = Parser.this.parse(input, result.getLastPos())).isFailure())
+				{
+					if (curParser.isSuccess())
+					{
+						qtdOccur++;
+						result = result.and(curParser);
+					}
+				}
+
+				if (qtdOccur < min)
+				{
+					return result.and(ParserResult.createFailure(ParserErrors.UNEXPECTED_TOKEN, result.getLastPos()));
+				}
+				return result;
 			}
 		};
 	}

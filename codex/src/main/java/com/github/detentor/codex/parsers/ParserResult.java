@@ -18,17 +18,6 @@ public class ParserResult
 	private final int lastPos;
 
 	/**
-	 * Cria um resultado para um parser que foi bem-sucedido, o resultado é um único elemento
-	 * 
-	 * @param result
-	 * @return
-	 */
-	public static ParserResult createSuccess(final Object result, final int theLastPos)
-	{
-		return createSuccess(ListSharp.from(result), theLastPos);
-	}
-
-	/**
 	 * Cria um resultado para um parser que foi bem-sucedido, onde os tokens pertencem à resultList
 	 * 
 	 * @param resultList
@@ -52,8 +41,7 @@ public class ParserResult
 	{
 		return new ParserResult(errorStack, resultList, true, theLastPos);
 	}
-	
-	
+
 	public static ParserResult createFailure(final LinkedList<ParserErrorCode> errorStack, final int theLastPos)
 	{
 		return createFailure(errorStack, ListSharp.empty(), theLastPos);
@@ -83,7 +71,8 @@ public class ParserResult
 		return createFailure(errStack, prevResult, theLastPos);
 	}
 
-	public static ParserResult createFailure(final LinkedList<ParserErrorCode> errorStack, final ListSharp<Object> prevResult, final int theLastPos)
+	public static ParserResult createFailure(final LinkedList<ParserErrorCode> errorStack, final ListSharp<Object> prevResult,
+			final int theLastPos)
 	{
 		return new ParserResult(errorStack, prevResult, false, theLastPos);
 	}
@@ -110,10 +99,10 @@ public class ParserResult
 	{
 		final LinkedList<ParserErrorCode> finalStack = new LinkedList<ParserErrorCode>(this.getErrorStack());
 		finalStack.addAll(theParser.getErrorStack());
-		
+
 		final int theLastPos = this.isFailure() ? this.getLastPos() : theParser.getLastPos();
 
-		final ListSharp<Object> resultTokens = ListSharp.from(this.getResult()).addAll(theParser.getResult());
+		final ListSharp<Object> resultTokens = ListSharp.empty().addAll(this.getResult()).addAll(theParser.getResult());
 
 		if (this.isFailure() || theParser.isFailure())
 		{
@@ -165,6 +154,11 @@ public class ParserResult
 	@Override
 	public String toString()
 	{
-		return isSuccess() ? "Success: " + resultList.mkString("[", ", ", "]") : "Failure : " + ListSharp.from(errorStack).mkString("\n");
+		if (isSuccess())
+		{
+			return "Success: " + resultList.mkString("[", ", ", "]");
+		}
+		return "FAILURE AT POS " + lastPos + ": " + errorStack.getFirst();
+//		return isSuccess() ? "Success: " + resultList.mkString("[", ", ", "]") : "Failure : " + ListSharp.from(errorStack).mkString("\n");
 	}
 }

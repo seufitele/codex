@@ -1,7 +1,5 @@
 package com.github.detentor.codex.collections.mutable;
 
-import java.util.Iterator;
-
 import com.github.detentor.codex.collections.AbstractMutableLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
@@ -123,37 +121,6 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 		return this.equals(Nil);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Iterator<T> iterator()
-	{
-		final LLSharp<T>[] curEle = new LLSharp[1];
-		curEle[0] = this;
-
-		return new Iterator<T>()
-		{
-			@Override
-			public boolean hasNext()
-			{
-				return ! curEle[0].isEmpty();
-			}
-
-			@Override
-			public T next()
-			{
-				final T toReturn = curEle[0].head;
-				curEle[0] = curEle[0].tail;
-				return toReturn;
-			}
-
-			@Override
-			public void remove()
-			{
-				throw new UnsupportedOperationException("Operação não suportada");
-			}
-		};
-	}
-
 	@Override
 	public T head()
 	{
@@ -233,16 +200,6 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	}
 
 	@Override
-	public int size()
-	{
-		if (this.isEmpty())
-		{
-			return 0;
-		}
-		return 1 + this.tail.size();
-	}
-
-	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
@@ -299,7 +256,6 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	{
 		return mkString("[", ", ", "]");
 	}
-	
 	
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp.
