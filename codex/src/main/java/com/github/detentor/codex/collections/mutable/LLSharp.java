@@ -118,7 +118,8 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	@Override
 	public boolean isEmpty()
 	{
-		return this.equals(Nil);
+		//Compare this to Nil:
+		return this.head() == null && this.tail() == null; 
 	}
 
 	@Override
@@ -197,58 +198,6 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 		this.head = null;
 		this.tail = null; 
 		return this;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (head == null ? 0 : head.hashCode());
-		result = prime * result + (tail == null ? 0 : tail.hashCode());
-		return result;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj == null)
-		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final LLSharp other = (LLSharp) obj;
-		if (head == null)
-		{
-			if (other.head != null)
-			{
-				return false;
-			}
-		}
-		else if (!head.equals(other.head))
-		{
-			return false;
-		}
-		if (tail == null)
-		{
-			if (other.tail != null)
-			{
-				return false;
-			}
-		}
-		else if (!tail.equals(other.tail))
-		{
-			return false;
-		}
-		return true;
 	}
 
 	@Override

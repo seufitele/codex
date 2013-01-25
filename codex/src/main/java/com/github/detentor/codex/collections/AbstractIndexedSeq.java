@@ -185,7 +185,7 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSeq<T, IndexedSeq<T>
 			@Override
 			public T next()
 			{
-				return AbstractIndexedSeq.this.apply(curIndex[0]++);
+				return apply(curIndex[0]++);
 			}
 
 			@Override
