@@ -34,6 +34,11 @@ public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollect
      * @return A sub-sequência desta sequência que representa o intervalo determinado
      */
     IndexedSeq<A> subsequence(int startIndex, int endIndex);
-
-
+    
+	/**
+	 * Retorna essa mesma sequência, na ordem inversa da ordem retornada pelo iterator
+	 * @return Uma nova sequência, onde o primeiro elemento é o último da sequência original, o 
+	 * segundo é o penúltimo, e assim sucessivamente.
+	 */
+    IndexedSeq<A> reverse();
 }

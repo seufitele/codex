@@ -26,7 +26,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T>
  */
-public class ListSharp<T> extends AbstractIndexedSeq<T> implements Serializable
+public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 

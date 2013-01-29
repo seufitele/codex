@@ -29,7 +29,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public abstract class AbstractIndexedSeq<T> extends AbstractSeq<T, IndexedSeq<T>> implements IndexedSeq<T>
+public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends AbstractSeq<T, IndexedSeq<T>> implements IndexedSeq<T>
 {
 	/**
 	 * Retorna a sub-sequência a partir do índice passado como parâmetro, até o fim dela. <br/>
@@ -38,9 +38,23 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSeq<T, IndexedSeq<T>
 	 * @param startIndex O índice a partir do qual a sub-sequência será extraída
 	 * @return A sub-sequência desta sequência, iniciada a partir do índice passado como parâmetro
 	 */
-	public IndexedSeq<T> subsequence(final int startIndex)
+	@SuppressWarnings("unchecked")
+	public U subsequence(final int startIndex)
 	{
-		return this.subsequence(startIndex, this.size());
+		return (U) this.subsequence(startIndex, this.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public U reverse()
+	{
+		final Builder<T, SharpCollection<T>> retorno = builder();
+		
+		for (int i = this.size() - 1; i > -1; i--)
+		{
+			retorno.add(this.apply(i));
+		}
+		return (U) retorno.result();
 	}
 
 	/**
@@ -106,63 +120,64 @@ public abstract class AbstractIndexedSeq<T> extends AbstractSeq<T, IndexedSeq<T>
 	}
 
 	@Override
-	public IndexedSeq<T> tail()
+	public U tail()
 	{
 		ensureNotEmpty("tail foi chamado para uma coleção vazia");
 		return this.drop(1);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public IndexedSeq<T> take(final Integer num)
+	public U take(final Integer num)
 	{
 		final int nEle = num < 0 ? 0 : num;
-		return this.subsequence(0, nEle);
+		return (U) this.subsequence(0, nEle);
 	}
 
 	@Override
-	public IndexedSeq<T> takeRight(final Integer num)
+	public U takeRight(final Integer num)
 	{
 		final int nEle = num < 0 ? 0 : num;
 		return this.drop(Math.min(this.size() - nEle, this.size()));
 	}
 
 	@Override
-	public IndexedSeq<T> drop(final Integer num)
+	public U drop(final Integer num)
 	{
 		final int nEle = num < 0 ? 0 : num;
 		return this.subsequence(Math.min(this.size(), nEle));
 	}
 
 	@Override
-	public IndexedSeq<T> dropRight(final Integer num)
+	public U dropRight(final Integer num)
 	{
 		final int nEle = num < 0 ? 0 : num;
 		return this.take(this.size() - nEle);
 	}
 
 	@Override
-	public IndexedSeq<T> dropWhile(final Function1<? super T, Boolean> pred)
+	public U dropWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = indexWhere(Functions.not(pred));
 		return this.drop(theIndex == - 1 ? this.size() : theIndex);
 	}
 
 	@Override
-	public IndexedSeq<T> dropRightWhile(final Function1<? super T, Boolean> pred)
+	public U dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = lastIndexWhere(Functions.not(pred));
 		return this.dropRight(theIndex == -1 ? this.size() : this.size() - (theIndex + 1));
 	}
 
 	@Override
-	public IndexedSeq<T> takeWhile(final Function1<? super T, Boolean> pred)
+	public U takeWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = indexWhere(Functions.not(pred));
 		return this.take(theIndex == -1 ? this.size() : theIndex);
 	}
 
 	@Override
-	public IndexedSeq<T> takeRightWhile(final Function1<? super T, Boolean> pred)
+	public U takeRightWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int index = lastIndexWhere(Functions.not(pred));
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));

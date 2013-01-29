@@ -29,7 +29,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public abstract class AbstractMutableIndexedSeq<T, U extends IndexedSeq<T>> extends AbstractIndexedSeq<T> 
+public abstract class AbstractMutableIndexedSeq<T, U extends IndexedSeq<T>> extends AbstractIndexedSeq<T, U> 
 												   implements IndexedSeq<T>, MutableSharpCollection<T>
 {
 	@SuppressWarnings("unchecked")
