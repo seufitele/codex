@@ -23,5 +23,4 @@ public interface PartialFunction<A, B> extends Function1<A, B>
 	 * @return <tt>true</tt> se a função está definida para o argumento, ou <tt>false</tt> do contrário
 	 */
 	boolean isDefinedAt(final A forValue);
-
 }
