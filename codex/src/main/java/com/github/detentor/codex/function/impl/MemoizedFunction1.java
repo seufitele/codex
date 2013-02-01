@@ -8,20 +8,20 @@ import com.github.detentor.codex.function.Function1;
 /**
  * Função que guarda na memória valores privamente calculados, utilizando um HashMap
  * 
- * @author f9540702
- *
- * @param <A>
- * @param <B>
+ * @author Vinicius Seufitele Pinto
+ * 
+ * @param <A> O tipo de dado de entrada da função
+ * @param <B> O tipo de dado de saída da função
  */
 public abstract class MemoizedFunction1<A, B> implements Function1<A, B>
 {
-	private Map<A, B> memoValues = new HashMap<A, B>();
+	private final Map<A, B> memoValues = new HashMap<A, B>();
 
 	@Override
-	public final B apply(A param)
+	public final B apply(final A param)
 	{
 		B theVal = memoValues.get(param);
-		
+
 		if (theVal != null)
 		{
 			return theVal;
@@ -30,11 +30,11 @@ public abstract class MemoizedFunction1<A, B> implements Function1<A, B>
 		memoValues.put(param, theVal);
 		return theVal;
 	}
-	
+
 	/**
 	 * Faz o efetivo cálculo da função, retornando o valor B. <br/>
-	 * Esse método será chamado somente quando não for possível contrar o valor
-	 * na tabela de memoização
+	 * Esse método será chamado somente quando não for possível contrar o valor na tabela de memoização
+	 * 
 	 * @param param O parâmetro a ser passado para a função
 	 * @return O valor, após a aplicação da função
 	 */
