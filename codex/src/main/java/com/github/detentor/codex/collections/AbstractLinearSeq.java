@@ -23,14 +23,15 @@ import com.github.detentor.codex.function.PartialFunction;
  * Para coleções mutáveis, veja {@link AbstractMutableLinearSeq}. <br/>
  * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} e
- * {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}.  
+ * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o
  * tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).
  * 
  * @author Vinícius Seufitele Pinto
  * 
  */
-public abstract class AbstractLinearSeq<T, U extends SharpCollection<T>> extends AbstractSeq<T, LinearSeq<T>> implements LinearSeq<T>
+public abstract class AbstractLinearSeq<T, U extends LinearSeq<T>> extends AbstractSeq<T, LinearSeq<T>> implements LinearSeq<T>
 {
 	private static final String UNCHECKED = "unchecked";
 	

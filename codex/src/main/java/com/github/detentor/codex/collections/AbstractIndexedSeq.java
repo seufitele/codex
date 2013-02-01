@@ -5,29 +5,33 @@ import java.util.Iterator;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Classe que provê a implementação padrão de métodos de coleções indexadas sequencialmente, para simplificar a 
- * criação de classes que os estenda. <br/> <br/>
+ * Classe que provê a implementação padrão de métodos de coleções indexadas sequencialmente, para simplificar a criação de classes que
+ * os estenda. <br/>
+ * <br/>
  * 
- * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/> <br/>
+ * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/>
+ * <br/>
  * 
- * {@link SharpCollection#size() size()} , 
- * {@link #subsequence(int, int)} , 
- * {@link #apply(Integer)} ,
- * {@link SharpCollection#builder() builder()} <br/> <br/>
+ * {@link SharpCollection#size() size()} , {@link #subsequence(int, int)} , {@link #apply(Integer)} , {@link SharpCollection#builder()
+ * builder()} <br/>
+ * <br/>
  * 
- * O {@link #equals(Object)} e o {@link #hashCode()} são padrão para todas as sequências indexadas. <br/><br/>
+ * O {@link #equals(Object)} e o {@link #hashCode()} são padrão para todas as sequências indexadas. <br/>
+ * <br/>
  * 
- * Para coleções mutáveis, veja {@link AbstractMutableIndexedSeq}. <br/><br/>
+ * Para coleções mutáveis, veja {@link AbstractMutableIndexedSeq}. <br/>
+ * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} 
- * e {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics,
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}. Devido à incompetência do Java com relação a Generics,
  * isso é necessário para assegurar que o tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super
  * classe é suficiente).
  * 
  * @author Vinícius Seufitele Pinto
- *
+ * 
  */
 public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends AbstractSeq<T, IndexedSeq<T>> implements IndexedSeq<T>
 {
@@ -43,13 +47,13 @@ public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends Abs
 	{
 		return (U) this.subsequence(startIndex, this.size());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public U reverse()
 	{
 		final Builder<T, SharpCollection<T>> retorno = builder();
-		
+
 		for (int i = this.size() - 1; i > -1; i--)
 		{
 			retorno.add(this.apply(i));
@@ -159,7 +163,7 @@ public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends Abs
 	public U dropWhile(final Function1<? super T, Boolean> pred)
 	{
 		final int theIndex = indexWhere(Functions.not(pred));
-		return this.drop(theIndex == - 1 ? this.size() : theIndex);
+		return this.drop(theIndex == -1 ? this.size() : theIndex);
 	}
 
 	@Override
@@ -183,12 +187,40 @@ public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends Abs
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public U filter(final Function1<? super T, Boolean> pred)
+	{
+		return (U) super.filter(pred);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Tuple2<U, U> partition(final Function1<? super T, Boolean> pred)
+	{
+		return (Tuple2<U, U>) super.partition(pred);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public U intersect(final SharpCollection<T> withCollection)
+	{
+		return (U) super.intersect(withCollection);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public U distinct()
+	{
+		return (U) super.distinct();
+	}
+
 	@Override
 	public Iterator<T> iterator()
 	{
 		final int[] curIndex = new int[1];
 		final int count = this.size();
-		
+
 		return new Iterator<T>()
 		{
 			@Override

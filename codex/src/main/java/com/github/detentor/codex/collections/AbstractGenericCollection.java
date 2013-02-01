@@ -32,8 +32,9 @@ import com.github.detentor.codex.product.Tuple2;
  * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/>
  * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect} e
- * {@link #flatMap(Function1) flatMap}. Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o tipo
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}.   
+ * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o tipo
  * de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).
  * 
  * @author Vinícius Seufitele Pinto
@@ -374,7 +375,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 	
 	@Override
-	public Tuple2<SharpCollection<T>, SharpCollection<T>> partition(final Function1<? super T, Boolean> pred)
+	public Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> partition(final Function1<? super T, Boolean> pred)
 	{
 		final Builder<T, SharpCollection<T>> predTrue = builder();
 		final Builder<T, SharpCollection<T>> predFalse = builder();
@@ -489,7 +490,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public T maxWith(final Comparator<T> comparator)
+	public T maxWith(final Comparator<? super T> comparator)
 	{
 		ensureNotEmpty();
 
@@ -508,7 +509,7 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 	}
 
 	@Override
-	public T minWith(final Comparator<T> comparator)
+	public T minWith(final Comparator<? super T> comparator)
 	{
 		ensureNotEmpty();
 

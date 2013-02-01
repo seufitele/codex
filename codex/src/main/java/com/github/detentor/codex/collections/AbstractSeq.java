@@ -12,7 +12,7 @@ import com.github.detentor.codex.monads.Option;
  * @author Vinícius Seufitele Pinto
  *
  */
-public abstract class AbstractSeq<T, U extends SharpCollection<T>> extends AbstractSharpCollection<T, LinearSeq<T>>
+public abstract class AbstractSeq<T, U extends Seq<T>> extends AbstractSharpCollection<T, Seq<T>>
 {
 	@Override
 	public int hashCode()

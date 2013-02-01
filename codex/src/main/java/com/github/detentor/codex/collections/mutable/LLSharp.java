@@ -3,7 +3,10 @@ package com.github.detentor.codex.collections.mutable;
 import com.github.detentor.codex.collections.AbstractMutableLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Implementação mutável da lista encadeada. <br/> 
@@ -206,6 +209,32 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 		return mkString("[", ", ", "]");
 	}
 	
+	//Overrides obrigatórios
+	
+	@Override
+	public <B> LLSharp<B> map(Function1<? super T, B> function)
+	{
+		return (LLSharp<B>) super.map(function);
+	}
+
+	@Override
+	public <B> LLSharp<B> collect(PartialFunction<? super T, B> pFunction)
+	{
+		return (LLSharp<B>) super.collect(pFunction);
+	}
+
+	@Override
+	public <B> LLSharp<B> flatMap(Function1<? super T, ? extends SharpCollection<B>> function)
+	{
+		return (LLSharp<B>) super.flatMap(function);
+	}
+
+	@Override
+	public LLSharp<Tuple2<T, Integer>> zipWithIndex()
+	{
+		return (LLSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp.
 	 * 

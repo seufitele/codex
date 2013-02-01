@@ -73,8 +73,8 @@ public interface HighOrderFunctions<T>
 	 * @return Uma tupla onde o primeiro elemento contém uma coleção cujos elementos satisfazem o predicado,
 	 * e o segundo não satisfazem
 	 */
-	Tuple2<SharpCollection<T>, SharpCollection<T>> partition(final Function1<? super T, Boolean> pred);
-	
+	Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> partition(final Function1<? super T, Boolean> pred);
+
 	/**
 	 * Verifica se o predicado passado como parâmetro é satisfeito por algum elemento desta coleção.
 	 * @param pred O predicado a ser utilizado para testar os elementos

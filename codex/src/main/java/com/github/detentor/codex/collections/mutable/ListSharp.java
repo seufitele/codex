@@ -130,15 +130,15 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	@Override
-	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
-	{
-		return (ListSharp<B>) super.collect(pFunction);
-	}
-
-	@Override
 	public String toString()
 	{
 		return mkString("[", ", ", "]");
+	}
+	
+	@Override
+	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
+	{
+		return (ListSharp<B>) super.collect(pFunction);
 	}
 
 	@Override
@@ -151,6 +151,12 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (ListSharp<B>) super.flatMap(function);
+	}
+	
+	@Override
+	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
+	{
+		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 
 	/**
@@ -249,12 +255,6 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	public List<T> toList()
 	{
 		return backingList;
-	}
-
-	@Override
-	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
-	{
-		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 
 	/**

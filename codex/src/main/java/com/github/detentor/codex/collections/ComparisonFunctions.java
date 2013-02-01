@@ -36,7 +36,7 @@ public interface ComparisonFunctions<T>
 	 * @return O elemento com o maior valor na comparação
 	 * @throws IllegalArgumentException Caso a coleção esteja vazia
 	 */
-	T maxWith(final Comparator<T> comparator);
+	T maxWith(final Comparator<? super T> comparator);
 	
 	/**
 	 * Retorna o valor mínimo, a partir da função de comparação passada como parâmetro. <br/>
@@ -46,6 +46,6 @@ public interface ComparisonFunctions<T>
 	 * @return O elemento com o menor valor na comparação
 	 * @throws IllegalArgumentException Caso a coleção esteja vazia
 	 */
-	T minWith(final Comparator<T> comparator);
+	T minWith(final Comparator<? super T> comparator);
 
 }

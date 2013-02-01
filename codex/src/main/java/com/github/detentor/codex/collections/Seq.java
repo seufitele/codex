@@ -8,7 +8,7 @@ package com.github.detentor.codex.collections;
  * @author Vinicius Seufitele Pinto
  *
  */
-public interface Seq<A> extends Iterable<A>
+public interface Seq<A> extends Iterable<A>, SharpCollection<A>
 {
 
 }
