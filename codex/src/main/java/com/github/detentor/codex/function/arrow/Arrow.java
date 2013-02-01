@@ -1,7 +1,11 @@
 package com.github.detentor.codex.function.arrow;
 
 /**
- * As setas são funções mais poderosas
+ * As setas, em teoria das categorias, são mapeamentos que preservam a estrutura entre duas
+ * entidades matemáticas. <br/><br/>
+ * 
+ * No contexto do codex, setas são funções mais poderosas
+ *  
  * 
  * @author Vinicius Seufitele Pinto
  *
