@@ -8,14 +8,11 @@ import org.junit.Test;
 
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
-import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.util.Reflections;
 import com.github.detentor.operations.IntegerOps;
-import com.github.detentor.operations.ObjectOps;
 
 public class SharpCollectionTest
 {
@@ -130,6 +127,9 @@ public class SharpCollectionTest
 			assertTrue(sharpCol.tail().equals(colDrop1));
 			assertTrue(sharpCol.tail().head() == 2);
 		
+		//Tail + Tail
+			assertTrue(sharpCol.tail().tail().equals(colDrop2));
+
 		//Last - geral
 			assertTrue(sharpCol.last() == 5);
 		
