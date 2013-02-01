@@ -79,7 +79,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 */
 	protected ListSharp(final ListSharp<T> prevList, final int theStart, final int theEnd)
 	{
-		startIndex = theStart;
+		startIndex = prevList.startIndex + theStart;
 		theSize = theEnd - theStart;
 		data = prevList.data;
 	}
