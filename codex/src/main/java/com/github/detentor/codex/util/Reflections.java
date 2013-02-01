@@ -4,8 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.FunctionN;
+import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.arrow.ArrowN;
 import com.github.detentor.codex.monads.Option;
 
 /**
@@ -29,11 +29,11 @@ public final class Reflections
 	 * parâmetros, tenha visibilidade public e um retorno diferente de void.
 	 * @return Uma função que representa o método definido pela classe.
 	 */
-	public static <A, B> Function1<A, B> lift(final Class<A> fromClass, final String methodName)
+	public static <A, B> Arrow1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
 
-		return new Function1<A, B>()
+		return new Arrow1<A, B>()
 		{
 			@Override
 			public B apply(final A param)
@@ -49,11 +49,11 @@ public final class Reflections
 	 * @param methodName O nome do método a ser transformado em função
 	 * @return Uma função que representa o método definido pela classe
 	 */
-	public static <A, B, C> Function1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
+	public static <A, B, C> Arrow1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
 
-		return new Function1<B, C>()
+		return new Arrow1<B, C>()
 		{
 			@Override
 			public C apply(final B param)
@@ -69,12 +69,12 @@ public final class Reflections
 	 * @param methodName O nome do método a ser transformado em função
 	 * @return Uma função que representa o método definido pela classe
 	 */
-	public static <A, B, C> FunctionN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
+	public static <A, B, C> ArrowN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(
 									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
 
-		return new FunctionN<B, C>()
+		return new ArrowN<B, C>()
 		{
 			@Override
 			public C apply(final B... params)
@@ -100,7 +100,7 @@ public final class Reflections
 	}
 	
 	/**
-	 * Retorna o método de uma classe a partir de seu nome.
+	 * Retorna o primeiro método de uma classe que possui o nome passado como parâmetro
 	 * @param fromClass A classe onde o método será procurado
 	 * @param methodName O nome do método a ser retornado
 	 * @return Uma instância de Option que conterá o método, se ele existir
