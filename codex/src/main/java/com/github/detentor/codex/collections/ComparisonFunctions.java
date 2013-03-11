@@ -2,6 +2,8 @@ package com.github.detentor.codex.collections;
 
 import java.util.Comparator;
 
+import com.github.detentor.codex.monads.Option;
+
 /**
  * As classes que assinam esta interface possuem diversas funções que utilizam comparação. <br/>
  * 
@@ -20,6 +22,14 @@ public interface ComparisonFunctions<T>
 	T min();
 	
 	/**
+	 * Retorna uma Option contendo o valor retornado por {@link #min()}, se esta coleção possuir
+	 * elementos, ou uma Option vazia, se esta coleção estiver vazia.
+	 * @return Uma Option que conterá o valor mínimo, caso esta coleção não esteja vazia
+	 * @throws ClassCastException Caso os elementos desta classe não sejam do tipo Comparator
+	 */
+	Option<T> minOption();
+	
+	/**
 	 * Retorna o valor máximo desta coleção, desde que esta coleção possua elementos que assinem
 	 * a interface Comparator.
 	 * @return O elemento com o maior valor na comparação
@@ -28,6 +38,14 @@ public interface ComparisonFunctions<T>
 	 */
 	T max();
 	
+	/**
+	 * Retorna uma Option contendo o valor retornado por {@link #max()}, se esta coleção possuir
+	 * elementos, ou uma Option vazia, se esta coleção estiver vazia.
+	 * @return Uma Option que conterá o valor máximo, caso esta coleção não esteja vazia
+	 * @throws ClassCastException Caso os elementos desta classe não sejam do tipo Comparator
+	 */
+	Option<T> maxOption();
+
 	/**
 	 * Retorna o valor máximo, a partir da função de comparação passada como parâmetro. <br/>
 	 * Formalmente, retorna um valor T tal que não exista um elemento U onde a U.compareTo(T) > 0. <br/>
