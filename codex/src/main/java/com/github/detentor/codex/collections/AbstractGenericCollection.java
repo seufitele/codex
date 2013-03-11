@@ -541,6 +541,18 @@ public abstract class AbstractGenericCollection<T, U extends SharpCollection<T>>
 		return maxWith(new DefaultComparator());
 	}
 
+	@Override
+	public Option<T> minOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(min());
+	}
+
+	@Override
+	public Option<T> maxOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(max());
+	}
+
 	@SuppressWarnings(UNCHECKED)
 	@Override
 	public U intersect(final SharpCollection<T> withCollection)
