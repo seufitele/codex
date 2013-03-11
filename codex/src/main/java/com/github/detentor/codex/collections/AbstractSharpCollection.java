@@ -323,6 +323,18 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	{
 		return maxWith(new DefaultComparator());
 	}
+	
+	@Override
+	public Option<T> minOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(min());
+	}
+
+	@Override
+	public Option<T> maxOption()
+	{
+		return this.isEmpty() ? Option.<T>empty() : Option.from(max());
+	}
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
