@@ -163,7 +163,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public B apply(Integer param)
+			public B apply(final Integer param)
 			{
 				return function.apply(ListSharp.this.apply(param));
 			}
@@ -193,4 +193,24 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	{
 		return mkString("[", ", ", "]");
 	}
+
+	/**
+	 * {@inheritDoc}<br/>
+	 * 
+	 */
+	@Override
+	public ListSharp<T> reverse()
+	{
+		return new ListSharp<T>(this, this.startIndex, this.startIndex + this.size())
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public T apply(final Integer param)
+			{
+				return super.apply(this.size() - 1 - param);
+			}
+		};
+	}
+
 }
