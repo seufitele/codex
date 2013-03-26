@@ -26,9 +26,7 @@ public abstract class MemoizedArrow1<A, B> extends Arrow1<A, B>
 		{
 			return theVal;
 		}
-		
-		System.out.println("Calculating for " + param);
-		
+
 		theVal = doApply(param);
 		memoValues.put(param, theVal);
 		return theVal;
