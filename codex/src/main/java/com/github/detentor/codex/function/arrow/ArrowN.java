@@ -14,8 +14,7 @@ import com.github.detentor.codex.function.FunctionN;
 public abstract class ArrowN<A, B> implements FunctionN<A, B>, Arrow
 {
 	/**
-	 * Aplica, parcialmente, a seta, ou seja, guarda um parâmetro e retorna 
-	 * uma seta com aquele parâmetro setado
+	 * Aplica, parcialmente, a seta, ou seja, guarda um parâmetro e retorna uma seta com aquele parâmetro setado
 	 * 
 	 * @param param1 O valor a ser aplicado à seta
 	 * @return Uma nova seta, com o valor já aplicado
