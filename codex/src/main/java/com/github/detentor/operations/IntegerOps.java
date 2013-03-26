@@ -53,15 +53,6 @@ public final class IntegerOps
 		};
 	}
 
-	public static final Function1<Integer, Integer> power2 = new Function1<Integer, Integer>()
-	{
-		@Override
-		public Integer apply(final Integer param)
-		{
-			return param * param;
-		}
-	};
-
 	public static final Function2<Integer, Integer, Integer> sum = new Function2<Integer, Integer, Integer>()
 	{
 		@Override
