@@ -28,7 +28,7 @@ public final class Functions
 	 * @param function2 Uma função <b>g: B -> C</b>, a ser feita a composição.
 	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas funções.
 	 */
-	public static <A, B, C> Function1<A, C> compose(final Function1<A, B> function1, final Function1<B, C> function2)
+	public static <A, B, C> Function1<A, C> compose(final Function1<? super A, B> function1, final Function1<? super B, C> function2)
 	{
 		return new Function1<A, C>()
 		{
@@ -36,6 +36,57 @@ public final class Functions
 			public C apply(final A param)
 			{
 				return function2.apply(function1.apply(param));
+			}
+		};
+	}
+	
+	/**
+	 * Faz a composição de uma função parcial com uma função de mapeamento
+	 */
+	public static <A, B, C> PartialFunction<A, C> compose(final PartialFunction<? super A, B> function1, final Function1<? super B, C> function2)
+	{
+		return new PartialFunction<A, C>()
+		{
+			@Override
+			public C apply(final A param)
+			{
+				return function2.apply(function1.apply(param));
+			}
+
+			@Override
+			public boolean isDefinedAt(A forValue)
+			{
+				return function1.isDefinedAt(forValue);
+			}
+		};
+	}
+
+	/**
+	 * Faz a composição de duas funções parciais. <br/>
+	 * A função parcial retornada está definida apenas nos pontos em que as duas funções parciais 
+	 * estão definidas.
+	 * 
+	 * @param function1
+	 * @param function2
+	 * 
+	 * @return Uma função parcial que representa a composição das duas funções parciais passadas como
+	 * parâmetro. O domínio da função parcial será a interseção dos domínios da function1 e function2
+	 */
+	public static <A, B, C> PartialFunction<A, C> compose(final PartialFunction<? super A, B> function1,
+			final PartialFunction<? super B, C> function2)
+	{
+		return new PartialFunction<A, C>()
+		{
+			@Override
+			public C apply(final A param)
+			{
+				return function2.apply(function1.apply(param));
+			}
+
+			@Override
+			public boolean isDefinedAt(final A forValue)
+			{
+				return function1.isDefinedAt(forValue) && function2.isDefinedAt(function1.apply(forValue));
 			}
 		};
 	}
@@ -69,7 +120,7 @@ public final class Functions
 	{
 		return new PartialCreation<A, B>(pred, transform);
 	}
-	
+
 	private static final class PartialCreation<A, B> implements PartialFunction<A, B>
 	{
 		private final Function1<A, Boolean> predicate;
