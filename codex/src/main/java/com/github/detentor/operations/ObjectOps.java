@@ -3,7 +3,7 @@ package com.github.detentor.operations;
 import com.github.detentor.codex.function.Function1;
 
 /**
- * Essa classe provê funções comuns ao trabalhar com {@link String}.
+ * Essa classe provê funções comuns ao trabalhar com {@link Object}.
  * 
  * @author Vinícius Seufitele Pinto
  *
@@ -27,5 +27,16 @@ public final class ObjectOps
 		}
 	};
 
-	
+	/**
+	 * Representa a função que transforma um objeto em sua representação em hashcode.
+	 */
+	public static final Function1<Object, Integer> toHashcode = new Function1<Object, Integer>()
+	{
+		@Override
+		public Integer apply(final Object param)
+		{
+			return param.hashCode();
+		}
+	};
+
 }
