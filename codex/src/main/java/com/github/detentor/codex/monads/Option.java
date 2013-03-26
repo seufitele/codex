@@ -63,7 +63,7 @@ public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> 
 	@SuppressWarnings("unchecked")
 	public static <T> Option<T> from(final T theValue)
 	{
-		return theValue == null ? (Option<T>) NONE : new Option<T>(theValue) ;
+		return theValue == null ? (Option<T>) NONE : new Option<T>(theValue);
 	}
 
 	/**
@@ -89,13 +89,13 @@ public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> 
 	 */
 	public T getOrElse(final T elsePart)
 	{
-		return value.isEmpty() ? elsePart : value.get(0);
+		return value.isEmpty() ? elsePart : get();
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.isEmpty() ? "None" : "Some(" + value.get(0).toString() + ")";
+		return this.isEmpty() ? "None" : "Some(" + get().toString() + ")";
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> 
 					throw new NoSuchElementException("o iterator não possui mais elementos");
 				}
 				readValue = true;
-				return Option.this.value.get(0);
+				return Option.this.get();
 			}
 
 			@Override
@@ -187,5 +187,4 @@ public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> 
 		}
 		return value.equals(((Option) obj).value);
 	}
-
 }
