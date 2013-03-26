@@ -21,8 +21,6 @@ public class SharpCollectionTest
 	public void testListSharp() 
 	{
 		ListSharp<Class<?>> listas = 
-				//Recolocar: SetSharp
-				//SetSharp está com erro porque provavelmente o iterator está retornando diferente
 				//FastList.class
 				ListSharp.<Class<?>>from(
 						ListSharp.class,
