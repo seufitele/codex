@@ -31,24 +31,23 @@ public final class Arrows
 			{
 				return func.apply(param);
 			}
-
 		};
 	}
-	
+
 	/**
-	 * Faz a composição de duas funções passadas como parâmetro. <br/>
+	 * Faz a composição de duas setas passadas como parâmetro. <br/>
 	 * Formalmente, seja
 	 * 
 	 * <pre>
 	 * f: A -> B e g: B -> C. Então, será retornado um h: A -> C.
 	 * </pre>
 	 * 
-	 * @param <A> O tipo de dados de entrada da primeira função
-	 * @param <B> O tipo de dados de retorno da primeira função, e de entrada da segunda
-	 * @param <C> O tipo de dados de retorno da segunda função
-	 * @param arrow1 Uma função <b>f: A -> B</b>, a ser feita a composição.
-	 * @param arrow2 Uma função <b>g: B -> C</b>, a ser feita a composição.
-	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas funções.
+	 * @param <A> O tipo de dados de entrada da primeira seta
+	 * @param <B> O tipo de dados de retorno da primeira seta, e de entrada da segunda
+	 * @param <C> O tipo de dados de retorno da segunda seta
+	 * @param arrow1 Uma seta <b>f: A -> B</b>, a ser feita a composição.
+	 * @param arrow2 Uma seta <b>g: B -> C</b>, a ser feita a composição.
+	 * @return Uma seta <b>h: A -> C</b>, que representa a composição das duas setas.
 	 */
 	public static <A, B, C> Arrow1<A, C> compose(final Arrow1<A, B> arrow1, final Arrow1<B, C> arrow2)
 	{
