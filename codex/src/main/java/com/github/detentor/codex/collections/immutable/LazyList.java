@@ -348,7 +348,6 @@ public class LazyList<T> extends AbstractIndexedSeq<T, LazyList<T>> implements S
 		{
 			if (lazyValue == null)
 			{
-				System.out.println("Chamou");
 				int curIndex = 0;
 				lazyValue = new Object[originalList.size()];
 				
