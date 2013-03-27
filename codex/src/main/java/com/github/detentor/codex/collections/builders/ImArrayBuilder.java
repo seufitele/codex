@@ -9,7 +9,7 @@ import com.github.detentor.codex.collections.immutable.ListSharp;
 
 
 /**
- * Essa classe é um builder para SharpCollection baseado em um ListSharp.
+ * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
  * 
  * @author Vinícius Seufitele Pinto
  *
