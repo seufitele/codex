@@ -13,8 +13,17 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
-import com.github.detentor.operations.StringOps;
 
+/**
+ * Implementação de uma lista 'Lazy': a lista não computa o resultado dos elementos até que seja necessário. <br/>
+ *
+ * ATENÇÃO: Embora esta classe tenha passado nos testes, deve-se utilizá-la com cuidado. Alguns métodos ainda não
+ * estão lazy, e ela precisa ser melhor documentada.
+ * 
+ * @author Vinicius Seufitele
+ *
+ * @param <T>
+ */
 public class LazyList<T> extends AbstractIndexedSeq<T, LazyList<T>> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -192,8 +201,9 @@ public class LazyList<T> extends AbstractIndexedSeq<T, LazyList<T>> implements S
 	{
 		return mkString("[", ", ", "]");
 	}
-
+	
 	/**
+	 * ATENÇÃO: Não estou seguro se este método está retail. Deve-se fazer testes antes.
 	 * {@inheritDoc}<br/>
 	 * 
 	 */
@@ -320,7 +330,7 @@ public class LazyList<T> extends AbstractIndexedSeq<T, LazyList<T>> implements S
 		@Override
 		public int size()
 		{
-			return originalList.size();
+			return getLazyValue().length;
 		}
 
 		@Override
@@ -336,46 +346,24 @@ public class LazyList<T> extends AbstractIndexedSeq<T, LazyList<T>> implements S
 		 */
 		private Object[] getLazyValue()
 		{
-			System.out.println("Aplicando os valores");
-
-			int curIndex = 0;
-			lazyValue = new Object[originalList.size()];
-
-			for (int i = 0; i < lazyValue.length; i++)
+			if (lazyValue == null)
 			{
-				final A curValue = originalList.apply(i);
-				if (pFunction.isDefinedAt(curValue))
+				System.out.println("Chamou");
+				int curIndex = 0;
+				lazyValue = new Object[originalList.size()];
+				
+				for (int i = 0; i < lazyValue.length; i++)
 				{
-					lazyValue[curIndex++] = pFunction.apply(curValue);
+					final A curValue = originalList.apply(i);
+					if (pFunction.isDefinedAt(curValue))
+					{
+						lazyValue[curIndex++] = pFunction.apply(curValue);
+					}
 				}
+				lazyValue = Arrays.copyOf(lazyValue, curIndex);
 			}
-			lazyValue = Arrays.copyOf(lazyValue, curIndex);
 			return lazyValue;
 		}
 
 	}
-
-	public static void main(final String[] args)
-	{
-		final LazyList<String> valor = LazyList.from("1", "2", "3", "4", "5", "6");
-
-		final Function1<Integer, Integer> function = new Function1<Integer, Integer>()
-		{
-			@Override
-			public Integer apply(final Integer param)
-			{
-				return param * param;
-			}
-		};
-		System.out.println(valor.map(StringOps.toInt).filter(new Function1<Integer, Boolean>()
-		{
-			@Override
-			public Boolean apply(Integer param)
-			{
-				return param > 3;
-			}
-		}).map(function));
-
-	}
-
 }
