@@ -60,6 +60,27 @@ public final class Functions
 			}
 		};
 	}
+	
+	/**
+	 * Faz a composição de uma função de mapeamento com uma função parcial
+	 */
+	public static <A, B, C> PartialFunction<A, C> compose(final Function1<? super A, B> function1, final PartialFunction<? super B, C> function2)
+	{
+		return new PartialFunction<A, C>()
+		{
+			@Override
+			public C apply(final A param)
+			{
+				return function2.apply(function1.apply(param));
+			}
+
+			@Override
+			public boolean isDefinedAt(A forValue)
+			{
+				return function2.isDefinedAt(function1.apply(forValue));
+			}
+		};
+	}
 
 	/**
 	 * Faz a composição de duas funções parciais. <br/>
