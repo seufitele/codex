@@ -86,4 +86,17 @@ public final class StringOps
 			return Integer.parseInt(param);
 		}
 	};
+	
+	/**
+	 * Representa a função que converte uma String para o seu tamanho
+	 */
+	public static final Function1<String, Integer> toSize = new Function1<String, Integer>()
+	{
+		@Override
+		public Integer apply(final String param)
+		{
+			return param.length();
+		}
+	};
+	
 }
