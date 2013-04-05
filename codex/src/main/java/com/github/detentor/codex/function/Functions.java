@@ -137,17 +137,17 @@ public final class Functions
 	 * @param transform A função de mapeamento, a ser usada quando a função estiver definida para o argumento
 	 * @return Uma função parcial a partir da função predicado e de transformação passadas.
 	 */
-	public static <A, B> PartialFunction<A, B> createPartial(final Function1<A, Boolean> pred, final Function1<A, B> transform)
+	public static <A, B> PartialFunction<A, B> createPartial(final Function1<? super A, Boolean> pred, final Function1<? super A, B> transform)
 	{
 		return new PartialCreation<A, B>(pred, transform);
 	}
 
 	private static final class PartialCreation<A, B> implements PartialFunction<A, B>
 	{
-		private final Function1<A, Boolean> predicate;
-		private final Function1<A, B> mappingFunction;
+		private final Function1<? super A, Boolean> predicate;
+		private final Function1<? super A, B> mappingFunction;
 
-		public PartialCreation(final Function1<A, Boolean> thePredicate, final Function1<A, B> theMappingFunction)
+		public PartialCreation(final Function1<? super A, Boolean> thePredicate, final Function1<? super A, B> theMappingFunction)
 		{
 			super();
 			this.predicate = thePredicate;
