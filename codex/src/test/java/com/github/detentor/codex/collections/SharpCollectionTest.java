@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
@@ -23,7 +24,7 @@ public class SharpCollectionTest
 		ListSharp<Class<?>> listas = 
 				//FastList.class
 				ListSharp.<Class<?>>from(
-//						LazyList.class,
+						LazyList.class,
 						ListSharp.class,
 						LLSharp.class,
 						SetSharp.class,
