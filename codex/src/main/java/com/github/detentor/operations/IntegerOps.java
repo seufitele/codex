@@ -17,6 +17,11 @@ public final class IntegerOps
 		// previne instanciação
 	}
 
+	/**
+	 * Retorna uma função que verifica se o número aplicado é maior do que o número passado como parâmetro
+	 * @param num O número a ser verificado, para cada número aplicado
+	 * @return Uma função que verifica, para o número aplicado, se ele é maior que num
+	 */
 	public static final Function1<Integer, Boolean> greaterThan(final Integer num)
 	{
 		return new Function1<Integer, Boolean>()
@@ -61,7 +66,7 @@ public final class IntegerOps
 			return param1 + param2;
 		}
 	};
-
+	
 	public static final Function2<Integer, Integer, Integer> max = new Function2<Integer, Integer, Integer>()
 	{
 		@Override
@@ -70,4 +75,5 @@ public final class IntegerOps
 			return param1.compareTo(param2) < 0 ? param2 : param1;
 		}
 	};
+
 }
