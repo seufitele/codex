@@ -186,4 +186,73 @@ public final class Reflections
 			throw new IllegalArgumentException(e);
 		}
 	}
+	
+	/**
+	 * Cria, via reflection, uma nova instancia da classe informada. <br/>
+	 * A classe deve possuir construtor público que não recebe parâmetros. <br/>
+	 * Esse método equivale a chamar {@link #newInstance(Class, Object...)} passando o segundo parâmetro nulo.
+	 * 
+	 * @param <T> o tipo da instancia desejada
+	 * @param type o tipo da instancia desejada
+	 * @return Uma nova instância da classe informada
+	 * @throws IllegalArgumentException caso aconteça erro ao se intanciar, por exemplo não ter construtor público
+	 */
+	public static <T> T newInstance(final Class<T> type) throws IllegalArgumentException
+	{
+		return newInstance(type, (Object[]) null);
+	}
+	
+	/**
+	 * Cria, via reflection, uma nova instancia da classe informada, passando os parâmetros informados. <br/>
+	 * ATENÇÃO: O construtor da classe deve ser público. Se params for nulo ou de tamanho 0, então será invocado
+	 * o construtor default da classe.
+	 * 
+	 * @param <T> o tipo da instancia desejada
+	 * @param type o tipo da instancia desejada
+	 * @param params Os parâmetros a serem passados para o construtor
+	 * @return Uma nova instância da classe informada
+	 * @throws IllegalArgumentException caso aconteça erro ao se instanciar, por exemplo não ter construtor público
+	 */
+	public static <T> T newInstance(final Class<T> type, final Object... params) throws IllegalArgumentException
+	{
+		try
+		{
+			if (params == null || params.length == 0)
+			{
+				return type.newInstance();
+			}
+
+			final Class<?>[] paramTypes = new Class<?>[params.length];
+
+			for (int i = 0; i < params.length; i++)
+			{
+				paramTypes[i] = params[i].getClass();
+			}
+			
+			return type.getConstructor(paramTypes).newInstance(params);
+		}
+		catch (final InstantiationException instEx)
+		{
+			throw new IllegalArgumentException("A classe " + type + " não possui construtor público", instEx);
+		}
+		catch (final IllegalAccessException iae)
+		{
+			throw new IllegalArgumentException(iae);
+		}
+		catch (SecurityException e)
+		{
+			throw new IllegalArgumentException("A classe " + type + 
+					" não possui um construtor público que receba os parâmetros informados", e);
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new IllegalArgumentException("A classe " + type + 
+					" não possui um construtor público que receba os parâmetros informados", e);
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new IllegalArgumentException("A classe " + type + 
+					" não possui um construtor público que receba os parâmetros informados", e);
+		}
+	}
 }
