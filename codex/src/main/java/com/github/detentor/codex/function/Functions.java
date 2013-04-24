@@ -1,5 +1,7 @@
 package com.github.detentor.codex.function;
 
+import com.github.detentor.codex.function.arrow.Arrow1;
+
 /**
  * Classe utilitária, com métodos a serem aplicados a funções.
  * 
@@ -28,9 +30,9 @@ public final class Functions
 	 * @param function2 Uma função <b>g: B -> C</b>, a ser feita a composição.
 	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas funções.
 	 */
-	public static <A, B, C> Function1<A, C> compose(final Function1<? super A, B> function1, final Function1<? super B, C> function2)
+	public static <A, B, C> Arrow1<A, C> compose(final Function1<? super A, B> function1, final Function1<? super B, C> function2)
 	{
-		return new Function1<A, C>()
+		return new Arrow1<A, C>()
 		{
 			@Override
 			public C apply(final A param)
@@ -118,9 +120,9 @@ public final class Functions
 	 * @param theFunction A função cuja lógica booleana deverá ser invertida
 	 * @return Uma função cujo resultado será o inverso do resultado da função passada como parâmetro
 	 */
-	public static <A> Function1<A, Boolean> not(final Function1<A, Boolean> theFunction)
+	public static <A> Arrow1<A, Boolean> not(final Function1<A, Boolean> theFunction)
 	{
-		return new Function1<A, Boolean>()
+		return new Arrow1<A, Boolean>()
 		{
 			@Override
 			public Boolean apply(final A param)
