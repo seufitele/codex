@@ -1,5 +1,6 @@
 package com.github.detentor.codex.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -38,14 +39,14 @@ public final class Reflections
 			@Override
 			public B apply(final A param)
 			{
-				return invokeSafe(fromClass, theMethod, (Object[]) null);
+				return invokeSafe(param, theMethod, (Object[]) null);
 			}
 		};
 	}
 
 	/**
 	 * Transforma um método estático de uma classe numa função.
-	 * @param fromClass A classe onde o método estático existe
+	 * @param fromClass A classe onde o método estático existe.
 	 * @param methodName O nome do método a ser transformado em função
 	 * @return Uma função que representa o método definido pela classe
 	 */
@@ -100,24 +101,23 @@ public final class Reflections
 	}
 	
 	/**
-	 * Retorna o primeiro método de uma classe que possui o nome passado como parâmetro
+	 * Retorna o primeiro método de uma classe que possui o nome passado como parâmetro. <br/>
 	 * @param fromClass A classe onde o método será procurado
 	 * @param methodName O nome do método a ser retornado
 	 * @return Uma instância de Option que conterá o método, se ele existir
 	 */
 	public static <A> Option<Method> getMethodFromName(final Class<A> fromClass, final String methodName)
 	{
-		Method theMethod = null;
-		
 		for (final Method curMethod : fromClass.getDeclaredMethods())
 		{
 			if (curMethod.getName().equals(methodName))
 			{
-				theMethod = curMethod;
-				break;
+				return Option.from(curMethod);
 			}
 		}
-		return Option.from(theMethod);
+
+		final Class<? super A> superClass = fromClass.getSuperclass();
+		return superClass == null ? Option.<Method>empty() : getMethodFromName(superClass, methodName);
 	}
 	
 	/**
@@ -130,17 +130,37 @@ public final class Reflections
 															  final String methodName, 
 															  final Class<?>[] parameterType)
 	{
-		Method theMethod = null;
-		
 		for (final Method curMethod : fromClass.getDeclaredMethods())
 		{
 			if (curMethod.getName().equals(methodName) && Arrays.equals(curMethod.getParameterTypes(), parameterType))
 			{
-				theMethod = curMethod;
-				break;
+				return Option.from(curMethod);
 			}
 		}
-		return Option.from(theMethod);
+
+		final Class<? super A> superClass = fromClass.getSuperclass();
+		return superClass == null ? Option.<Method>empty() : getMethodFromNameAndType(superClass, methodName, parameterType);
+	}
+
+	/**
+	 * Retorna a referência a um campo de uma classe, a partir de seu nome.<br/>
+	 * @param <A> O tipo da classe a ser procurado o campo
+	 * @param fromClass A classe onde o campo será procurado
+	 * @param fieldName O nome do campo a ser procurado
+	 * @return Uma option que conterá o campo, se ele existir
+	 */
+	public static <A> Option<Field> fieldFromName(final Class<A> fromClass, final String fieldName)
+	{
+		for (final Field curField : fromClass.getDeclaredFields())
+		{
+			if (curField.getName().equals(fieldName))
+			{
+				return Option.from(curField);
+			}
+		}
+
+		final Class<? super A> superClass = fromClass.getSuperclass();
+		return superClass == null ? Option.<Field>empty() : fieldFromName(superClass, fieldName);
 	}
 
 	/**
@@ -151,7 +171,7 @@ public final class Reflections
 	 * @return O valor retornado pelo método
 	 */
 	@SuppressWarnings("unchecked")
-	public static <A, B> B invokeSafe(final Class<A> fromClass, final Method method, final Object ... params)
+	public static <A, B> B invokeSafe(final Object fromClass, final Method method, final Object ... params)
 	{
 		try
 		{
@@ -166,5 +186,4 @@ public final class Reflections
 			throw new IllegalArgumentException(e);
 		}
 	}
-
 }
