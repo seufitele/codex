@@ -49,6 +49,12 @@ public final class Tuple3<A, B, C> implements Product
 	{
 		return new Tuple3<D, E, F>(null, null, null);
 	}
+	
+	@Override
+	public <K> Tuple4<A, B, C, K> add(final K value)
+	{
+		return Tuple4.from(this.val1, this.val2, this.val3, value);
+	}
 
 	public A getVal1()
 	{
@@ -149,5 +155,4 @@ public final class Tuple3<A, B, C> implements Product
 	{
 		return "Tuple(" + val1 + ", " + val2 + ", " + val3 + ")";
 	}
-
 }

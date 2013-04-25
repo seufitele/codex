@@ -54,6 +54,12 @@ public class Tuple2<A, B> implements Product
 	{
 		return Tuple2.from(this.getVal2(), this.getVal1());
 	}
+	
+	@Override
+	public <K> Tuple3<A, B, K> add(final K value)
+	{
+		return Tuple3.from(this.val1, this.val2, value);
+	}
 
 	public A getVal1()
 	{

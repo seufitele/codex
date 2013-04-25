@@ -60,6 +60,15 @@ public final class Tuple5<A, B, C, D, E> implements Product
 	{
 		return new Tuple5<E, F, G, H, I>(null, null, null, null, null);
 	}
+	
+	/**
+	 * ATENÇÃO: Função não suportada para Tuple5
+	 */
+	@Override
+	public <K> Tuple5<A, B, C, D, K> add(final K value)
+	{
+		throw new UnsupportedOperationException("Operação não suportada para tuplas de aridade 5");
+	}
 
 	public A getVal1()
 	{

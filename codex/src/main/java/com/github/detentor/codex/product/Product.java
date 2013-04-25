@@ -18,4 +18,12 @@ public interface Product extends Serializable
 //	 * @return A aridade deste produto
 //	 */
 //	int productArity();
+	
+	/**
+	 * Adiciona um elemento neste produto, produzindo um produto com um elemento mais mais
+	 * @param value O valor a ser adicionado neste produto
+	 * @return Um produto com um elemento a mais
+	 */
+	<K> Product add(K value);
+	
 }
