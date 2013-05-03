@@ -1,6 +1,11 @@
 package com.github.detentor.operations;
 
-import com.github.detentor.codex.function.Function1;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+import com.github.detentor.codex.collections.immutable.ListSharp;
+import com.github.detentor.codex.function.arrow.Arrow1;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link String}.
@@ -14,23 +19,11 @@ public final class StringOps
 	{
 		//previne instanciação
 	}
-
-	/**
-	 * Representa a função identidade, ou seja, a função que retorna a própria String.
-	 */
-	public static final Function1<String, String> identity = new Function1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param;
-		}
-	};
-
+	
 	/**
 	 * Representa a função que converte uma String para uppercase. Null-safe.
 	 */
-	public static final Function1<String, String> upperCase = new Function1<String, String>()
+	public static final Arrow1<String, String> toUpperCase = new Arrow1<String, String>()
 	{
 		@Override
 		public String apply(final String param)
@@ -40,21 +33,9 @@ public final class StringOps
 	};
 	
 	/**
-	 * Representa a função que faz um trim e converte uma String para uppercase. Null-safe.
-	 */
-	public static final Function1<String, String> trimUpperCase = new Function1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param == null ? null : param.trim().toUpperCase();
-		}
-	};
-	
-	/**
 	 * Representa a função que converte uma string para lowercase. Null-safe.
 	 */
-	public static final Function1<String, String> lowerCase = new Function1<String, String>()
+	public static final Arrow1<String, String> toLowerCase = new Arrow1<String, String>()
 	{
 		@Override
 		public String apply(final String param)
@@ -64,21 +45,21 @@ public final class StringOps
 	};
 	
 	/**
-	 * Representa a função que faz um trim e converte uma String para lowercase. Null-safe.
+	 * Representa a função que faz um trim na String. Null-safe
 	 */
-	public static final Function1<String, String> trimLowerCase = new Function1<String, String>()
+	public static final Arrow1<String, String> trim = new Arrow1<String, String>()
 	{
 		@Override
 		public String apply(final String param)
 		{
-			return param == null ? null : param.trim().toLowerCase();
+			return param == null ? null : param.trim();
 		}
 	};
 	
 	/**
 	 * Representa a função que converte uma String para Integer
 	 */
-	public static final Function1<String, Integer> toInt = new Function1<String, Integer>()
+	public static final Arrow1<String, Integer> toInt = new Arrow1<String, Integer>()
 	{
 		@Override
 		public Integer apply(final String param)
@@ -90,12 +71,99 @@ public final class StringOps
 	/**
 	 * Representa a função que converte uma String para o seu tamanho
 	 */
-	public static final Function1<String, Integer> toSize = new Function1<String, Integer>()
+	public static final Arrow1<String, Integer> toSize = new Arrow1<String, Integer>()
 	{
 		@Override
 		public Integer apply(final String param)
 		{
 			return param.length();
+		}
+	};
+	
+	/**
+	 * Representa a função identidade, ou seja, a função que retorna a própria String.
+	 */
+	public static final Arrow1<String, String> identity = new Arrow1<String, String>()
+	{
+		@Override
+		public String apply(final String param)
+		{
+			return param;
+		}
+	};
+	
+	/**
+	 * Representa a função que converte uma string para properCase. Null-safe.
+	 */
+	public static final Arrow1<String, String> toProperCase = new Arrow1<String, String>()
+	{
+		@Override
+		public String apply(final String param)
+		{
+			if (param == null)
+			{
+				return null;
+			}
+
+			final List<String> excecoes = Arrays.asList("da", "de", "di", "do", "du", "das", "des", "dis", "dos", "dus", "na", "ne", "ni",
+					"no", "nu", "em", "com", "não", "ao");
+
+			// Transforma a "frase" em palavras
+			final String[] palavras = param.split(" ");
+
+			final char letraa = 'a';
+			final char letraz = 'z';
+
+			// A distância da letra minúscula para a maiúscula é 32
+			final int caseDistance = 32;
+			final int ignoreWordSize = 4;
+			final Locale localeBR = new Locale("pt", "BR");
+
+			for (int i = 0; i < palavras.length; i++)
+			{
+				// Converte a palavra para caixa baixa
+				palavras[i] = palavras[i].toLowerCase(localeBR);
+
+				// Se o tamanho da palavra for maior que 1,
+				// ou se for a primeira palavra, converte a primeira
+				// letra para maiúscula
+				if ((palavras[i].length() > 1) || (i == 0))
+				{
+					final char[] letras = palavras[i].toCharArray();
+					int firstLetter = 0;
+
+					// Pula os chars não ascii
+					while ((firstLetter < letras.length) && (letras[firstLetter] < letraa || letras[firstLetter] > letraz))
+					{
+						firstLetter++;
+					}
+
+					// A distância da letra minúscula para a maiúscula é 32
+					if (firstLetter < letras.length)
+					{
+						letras[firstLetter] -= caseDistance;
+					}
+
+					// Verifica as exceções somente se não for a primeira palavra,
+					// e se o tamanho da palavra for menor que 4.
+					if ((palavras[i].length() < ignoreWordSize) && (i > 0))
+					{
+						final String curPalavra = String.valueOf(letras).trim().toLowerCase(localeBR);
+
+						// Converte a palavra para o lower case
+						if (excecoes.contains(curPalavra))
+						{
+							// Retorna a palavra para o char original
+							if (firstLetter < letras.length)
+							{
+								letras[firstLetter] += caseDistance;
+							}
+						}
+					}
+					palavras[i] = String.valueOf(letras);
+				}
+			}
+			return ListSharp.from(palavras).mkString(" ");
 		}
 	};
 	
