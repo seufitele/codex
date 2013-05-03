@@ -176,6 +176,17 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 	}
 	
 	/**
+	 * Retorna uma RichString sem whitespace no início ou no fim. <br/>
+	 * Para mais informações sobre Whitespace, veja {@link String#trim()}.
+	 * 
+	 * @return Uma RichString que representa uma String sem espaços no início ou fim.
+	 */
+	public RichString trim()
+	{
+		return from(value.trim());
+	}
+
+	/**
 	 * Retorna true se a String representada por esta coleção é equivalente à String passada como parâmetro
 	 * @return True se, e somente se, a String representada por esta coleção é equivalente à String passada como parâmetro
 	 */
