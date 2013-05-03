@@ -8,7 +8,6 @@ import java.util.List;
 import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.ImArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -212,5 +211,25 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 			}
 		};
 	}
+	
+	/**
+	 * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
+	 */
+	private class ImArrayBuilder<E> implements Builder<E, SharpCollection<E>>
+	{
+		private final List<E> list = new ArrayList<E>();
 
+		@Override
+		public void add(final E element)
+		{
+			list.add(element);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public ListSharp<E> result()
+		{
+			return (ListSharp<E>) ListSharp.from(list.toArray());
+		}
+	}
 }
