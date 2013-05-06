@@ -166,5 +166,4 @@ public final class StringOps
 			return ListSharp.from(palavras).mkString(" ");
 		}
 	};
-	
 }
