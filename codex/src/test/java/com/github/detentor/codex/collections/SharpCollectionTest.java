@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
-import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
@@ -28,7 +27,7 @@ public class SharpCollectionTest
 						ListSharp.class,
 						LLSharp.class,
 						SetSharp.class,
-//						MapSharp.class,
+//						MapSharp.class, <- removido porque MapSharp é criado de maneira diferente
 						com.github.detentor.codex.collections.immutable.ListSharp.class);
 		
 		for(Class<?> ele : listas)
