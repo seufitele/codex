@@ -6,10 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.collections.AbstractGenericCollection;
+import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.OptionBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -23,7 +22,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo de dados a ser guardado no option
  */
-public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> implements Serializable
+public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -186,5 +185,32 @@ public class Option<T> extends AbstractGenericCollection<T, SharpCollection<T>> 
 			return false;
 		}
 		return value.equals(((Option) obj).value);
+	}
+	
+	/**
+	 * Essa classe é um builder para SharpCollection baseado em um Option.
+	 * @param <E> O tipo de dados do Option retornado
+	 */
+	private class OptionBuilder<E> implements Builder<E, SharpCollection<E>>
+	{
+		private boolean added = false;
+		private E valor = null;
+
+		@Override
+		public void add(final E element)
+		{
+			if (added)
+			{
+				throw new IllegalStateException("tentou-se adicionar mais de um elemento no builder do option");
+			}
+			added = true;
+			valor = element;
+		}
+
+		@Override
+		public Option<E> result()
+		{
+			return Option.from(valor);
+		}
 	}
 }

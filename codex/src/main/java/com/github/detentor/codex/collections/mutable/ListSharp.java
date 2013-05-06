@@ -10,7 +10,6 @@ import com.github.detentor.codex.collections.AbstractMutableIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -39,7 +38,13 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 */
 	protected ListSharp()
 	{
-		backingList = new ArrayList<T>();
+		this(new ArrayList<T>());
+	}
+	
+	protected ListSharp(final List<T> fromList)
+	{
+		super();
+		backingList = fromList;
 	}
 
 	/**
@@ -270,5 +275,25 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 			return ob1.compareTo(ob2);
 		}
 	}
+	
+	/**
+	 * Essa classe é um builder para SharpCollection baseado em um ListSharp.
+	 * @param <E> O tipo de dados do ListSharp retornado
+	 */
+	protected final static class ArrayBuilder<E> implements Builder<E, SharpCollection<E>>
+	{
+		private final List<E> list = new ArrayList<E>();
 
+		@Override
+		public void add(final E element)
+		{
+			list.add(element);
+		}
+
+		@Override
+		public ListSharp<E> result()
+		{
+			return new ListSharp<E>(list);
+		}
+	}
 }

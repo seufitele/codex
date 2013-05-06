@@ -29,7 +29,7 @@ import com.github.detentor.codex.product.Tuple2;
  * @author Vinícius Seufitele Pinto
  * 
  */
-public abstract class AbstractMutableGenericCollection<T, U extends SharpCollection<T>> extends AbstractGenericCollection<T, U> implements
+public abstract class AbstractMutableGenericCollection<T, U extends SharpCollection<T>> extends AbstractSharpCollection<T, U> implements
 		MutableSharpCollection<T>
 {
 	@SuppressWarnings("unchecked")

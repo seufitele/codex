@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.arrow.Arrow1;
 
 /**
- * Função que guarda na memória valores privamente calculados, utilizando um HashMap
+ * A representação de uma {@link Function1} que guarda na memória valores previamente calculados.
  * 
  * @author Vinicius Seufitele Pinto
  * 

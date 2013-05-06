@@ -22,7 +22,7 @@ public final class Files
 	{
 		//previne instanciação
 	}
-	
+
 	/**
 	 * Retorna um vetor com os bytes lidos de um arquivo.
 	 * 

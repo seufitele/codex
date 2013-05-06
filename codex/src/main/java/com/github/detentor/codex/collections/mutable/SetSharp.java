@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
+import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.HashSetBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -32,12 +32,19 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	private final Set<T> backingSet;
 
 	/**
-	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
 	protected SetSharp()
 	{
+		this(new HashSet<T>());
+	}
+
+	/**
+	 * Construtor privado. Instâncias devem ser criadas com o 'from'
+	 */
+	protected SetSharp(final Set<T> fromSet)
+	{
 		super();
-		backingSet = new HashSet<T>();
+		backingSet = fromSet;
 	}
 
 	/**
@@ -218,5 +225,26 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	public String toString()
 	{
 		return backingSet.toString();
+	}
+	
+	/**
+	 * Essa classe é um builder para Set baseado em um HashSet. <br/>
+	 * @param <E> O tipo de dados armazenado no HashSet.
+	 */
+	private static final class HashSetBuilder<E> implements Builder<E, SharpCollection<E>>
+	{
+		private final Set<E> backingSet = new HashSet<E>();
+
+		@Override
+		public void add(final E element)
+		{
+			backingSet.add(element);
+		}
+
+		@Override
+		public SetSharp<E> result()
+		{
+			return new SetSharp<E>(backingSet);
+		}
 	}
 }

@@ -20,7 +20,6 @@ import com.github.detentor.codex.product.Tuple2;
  * 2 - Performance muito superior para a grande parte das operações. <br/>
  * 3 - Custo de memória constante ao lidar com sub-listas (padrão Flyweight, assim como String). <br/>
  * 
- * 
  * @author f9540702 Vinícius Seufitele Pinto
  * 
  * @param <T>
@@ -225,11 +224,10 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 			list.add(element);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public ListSharp<E> result()
 		{
-			return (ListSharp<E>) ListSharp.from(list.toArray());
+			return new ListSharp<E>(list.toArray());
 		}
 	}
 }

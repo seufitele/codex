@@ -16,7 +16,9 @@ import com.github.detentor.operations.StringOps;
 
 /**
  * RichString é um encapsulamento feito sobre uma String, para que seja
- * possível trabalhar com Strings como se trabalha com SharpCollection. <br/>
+ * possível trabalhar com Strings como se trabalha com uma @link {@link SharpCollection}. <br/> <br/>
+ * 
+ * ATENÇÃO: Versão beta.
  * 
  * @author Vinicius Seufitele Pinto
  *

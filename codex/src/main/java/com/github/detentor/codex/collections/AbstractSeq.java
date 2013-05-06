@@ -14,6 +14,17 @@ import com.github.detentor.codex.monads.Option;
  */
 public abstract class AbstractSeq<T, U extends Seq<T>> extends AbstractSharpCollection<T, Seq<T>>
 {
+	//ATENÇÃO: Esse método está aqui apenas para permitir ao tipo 'U' ser acessado pelas classes
+	//inferiores. Se esse método for removido, então a classe mais abaixo não vai conseguir saber
+	//o tipo 'U', pois o método tail() também está definido em LinearSeq
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public U tail()
+	{
+		return (U) super.tail();
+	}
+
 	@Override
 	public int hashCode()
 	{

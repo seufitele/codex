@@ -6,11 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.detentor.codex.collections.AbstractGenericCollection;
+import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.builders.ArrayBuilder;
-import com.github.detentor.codex.collections.builders.HashMapBuilder;
+import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -24,7 +23,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
+public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -35,8 +34,16 @@ public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapS
 	 */
 	protected MapSharp()
 	{
+		this(new HashMap<K, V>());
+	}
+	
+	/**
+	 * Construtor privado. Instâncias devem ser criadas com o 'from'
+	 */
+	protected MapSharp(final Map<K, V> fromMap)
+	{
 		super();
-		backingMap = new HashMap<K, V>();
+		backingMap = fromMap;
 	}
 
 	@Override
@@ -423,5 +430,26 @@ public class MapSharp<K, V> extends AbstractGenericCollection<Tuple2<K, V>, MapS
 	public String toString()
 	{
 		return backingMap.toString();
+	}
+	
+	/**
+	 * Essa classe é um builder para Set baseado em um MapSharp. <br/>
+	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
+	 */
+	private class HashMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
+	{
+		private final Map<X, Y> hashMap = new HashMap<X, Y>();
+
+		@Override
+		public void add(final Tuple2<X, Y> element)
+		{
+			hashMap.put(element.getVal1(), element.getVal2());
+		}
+
+		@Override
+		public MapSharp<X, Y> result()
+		{
+			return new MapSharp<X, Y>(hashMap);
+		}
 	}
 }

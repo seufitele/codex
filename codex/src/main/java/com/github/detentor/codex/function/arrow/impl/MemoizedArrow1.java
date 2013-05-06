@@ -6,9 +6,9 @@ import java.util.Map;
 import com.github.detentor.codex.function.arrow.Arrow1;
 
 /**
- * Função que guarda na memória valores privamente calculados, utilizando um HashMap
+ * A representação de uma {@link Arrow1} que guarda na memória valores previamente calculados.
  * 
- * @author f9540702
+ * @author Vinícius Seufitele Pinto
  *
  * @param <A>
  * @param <B>
@@ -34,8 +34,7 @@ public abstract class MemoizedArrow1<A, B> extends Arrow1<A, B>
 
 	/**
 	 * Faz o efetivo cálculo da função, retornando o valor B. <br/>
-	 * Esse método será chamado somente quando não for possível contrar o valor
-	 * na tabela de memoização
+	 * Esse método será chamado somente quando não for possível encontrar o valor na tabela de memoização
 	 * @param param O parâmetro a ser passado para a função
 	 * @return O valor, após a aplicação da função
 	 */

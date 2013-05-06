@@ -206,10 +206,7 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	/**
-	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp.
-	 * 
-	 * @author Vinícius Seufitele Pinto
-	 *
+	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp. IMUTÁVEL. 
 	 * @param <E> O tipo de dados do ListSharp retornado
 	 */
 	private static final class LinkedListBuilder<E> implements Builder<E, SharpCollection<E>>
