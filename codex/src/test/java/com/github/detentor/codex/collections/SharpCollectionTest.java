@@ -24,7 +24,7 @@ public class SharpCollectionTest
 		ListSharp<Class<?>> listas = 
 				//FastList.class
 				ListSharp.<Class<?>>from(
-						LazyList.class,
+//						LazyList.class,
 						ListSharp.class,
 						LLSharp.class,
 						SetSharp.class,
