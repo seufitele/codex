@@ -29,7 +29,7 @@
     <connection>scm:git:git@github.com:detentor/codex.git</connection>
 	<url>scm:git:git@github.com:detentor/codex.git</url>
 	<developerConnection>scm:git:git@github.com:detentor/codex.git</developerConnection>
-    <tag>codexCollections-0.0.16</tag>
+    <tag>codexCollections-0.0.16-SNAPSHOT</tag>
   </scm>
   
   <developers>
