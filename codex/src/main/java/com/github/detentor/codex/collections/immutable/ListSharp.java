@@ -14,11 +14,12 @@ import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Implementação de ListSharp imútável. <br/>
- * Sempre que possível, deve-se favorecer essa implementação em detrimento da mutável, pois apresenta os seguintes ganhos: <br/>
+ * Sempre que possível, deve-se favorecer essa implementação em detrimento da mutável, pois apresenta os seguintes benefícios: <br/>
  * 
  * 1 - Totalmente thread-safe, por ser imutável. <br/>
- * 2 - Performance muito superior para a grande parte das operações. <br/>
- * 3 - Custo de memória constante ao lidar com sub-listas (padrão Flyweight, assim como String). <br/>
+ * 2 - Subsequence é O(1), o que torna quase todas as operações também O(1) (tail, take, takeRight, drop, dropRight, reverse, etc.).
+ * 3 - Custo de memória constante nas operações O(1) (inclusive a operação map), 
+ * pois a referência à lista original é compartilhada (padrão Flyweight). <br/>
  * 
  * @author f9540702 Vinícius Seufitele Pinto
  * 
