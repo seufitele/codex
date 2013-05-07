@@ -186,7 +186,32 @@ public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends Abs
 		final int index = lastIndexWhere(Functions.not(pred));
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
 	}
+	
+	@Override
+	public Tuple2<U, U> splitAt(final Integer num)
+	{
+		return Tuple2.from(take(num), drop(num));
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public IndexedSeq<U> grouped(final Integer size)
+	{
+		if (size <= 0)
+		{
+			throw new IllegalArgumentException("size deve ser maior do que zero");
+		}
+
+		final Builder<U, SharpCollection<U>> retorno = builder();
+		int curIndex = 0;
+		
+		while (curIndex < this.size())
+		{
+			retorno.add((U) this.subsequence(curIndex, curIndex += size));
+		}
+		return (IndexedSeq<U>) retorno.result();
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public U filter(final Function1<? super T, Boolean> pred)

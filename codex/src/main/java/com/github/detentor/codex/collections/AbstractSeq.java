@@ -3,6 +3,7 @@ package com.github.detentor.codex.collections;
 import java.util.Iterator;
 
 import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.product.Tuple2;
 
 
 /**
@@ -23,6 +24,20 @@ public abstract class AbstractSeq<T, U extends Seq<T>> extends AbstractSharpColl
 	public U tail()
 	{
 		return (U) super.tail();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Tuple2<? extends U, ? extends U> splitAt(final Integer num)
+	{
+		return (Tuple2<U, U>) super.splitAt(num);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Seq<? extends U> grouped(final Integer size)
+	{
+		return (Seq<U>) super.grouped(size);
 	}
 
 	@Override

@@ -148,6 +148,21 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	SharpCollection<T> dropRight(final Integer num);
 	
 	/**
+	 * Divide esta coleção em duas na posição definida. <br/>
+	 * Equivalente a {@link #take(num)} e {@link #drop(num)}, mas mais eficiente.
+	 * @param num A posição em que a lista será dividida (exclusive).
+	 * @return Um par de listas que consiste nos 'num' primeiros elementos, e os outros restantes.
+	 */
+	Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> splitAt(final Integer num);
+	
+	/**
+	 * Particiona esta coleção em coleções de tamanho fixo.
+	 * @param size O tamanho de cada coleção a ser retornada
+	 * @return Uma coleção de coleções, onde cada uma delas terá size itens. A última pode estar possivelmente truncada.
+	 */
+	SharpCollection<? extends SharpCollection<T>> grouped(final Integer size);
+
+	/**
 	 * Chama o método toString em cada elemento desta coleção, concatenando os resultados.
 	 * @return Uma string que representa a chamada ao método toString em cada elemento da coleção.
 	 */

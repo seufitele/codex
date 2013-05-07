@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction;
@@ -197,7 +198,71 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 
 		return (U) colecaoRetorno.result();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Tuple2<? extends U, ? extends U> splitAt(final Integer num)
+	{
+		final Builder<T, SharpCollection<T>> colRetorno1 = this.builder();
+		final Iterator<T> ite = this.iterator();
+		int count = 0;
 
+		while (count++ < num && ite.hasNext())
+		{
+			colRetorno1.add(ite.next());
+		}
+		
+		final Builder<T, SharpCollection<T>> colRetorno2 = this.builder();
+		
+		while (ite.hasNext())
+		{
+			colRetorno2.add(ite.next());
+		}
+		return Tuple2.from((U) colRetorno1.result(), (U) colRetorno2.result());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public SharpCollection<? extends U> grouped(final Integer size)
+	{
+		if (size <= 0)
+		{
+			throw new IllegalArgumentException("size deve ser maior do que zero");
+		}
+
+		final Builder<U, SharpCollection<U>> colOfCols = this.builder();
+		final Iterator<T> ite = this.iterator();
+		
+		int count = 0;
+
+		Builder<T, SharpCollection<T>> curColecao = this.builder();
+		
+		while (ite.hasNext())
+		{
+			count++;
+			curColecao.add(ite.next());
+			
+			if (count == size)
+			{
+				colOfCols.add((U)curColecao.result());
+				curColecao = this.builder();
+				count = 0;
+			}
+		}
+
+		if (count != 0)
+		{
+			colOfCols.add((U)curColecao.result());
+		}
+		return colOfCols.result();
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(ListSharp.from(1, 2, 3, 4, 5).grouped(0));
+		System.out.println(ListSharp.from(1, 2, 3, 4, 5).splitAt(3));
+	}
+	
 	@Override
 	public String mkString()
 	{
