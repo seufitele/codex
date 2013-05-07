@@ -6,7 +6,7 @@
   <artifactId>codexCollections</artifactId>
   <packaging>jar</packaging>
   <name>Codex Collections</name>
-  <version>0.0.16-SNAPSHOT</version>
+  <version>0.0.16</version>
   
   <description>Coleções que objetivam complementar as coleções padrão do Java.</description>
   <url>git://github.com/detentor/codex.git</url>
