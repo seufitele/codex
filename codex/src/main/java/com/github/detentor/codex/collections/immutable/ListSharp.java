@@ -3,11 +3,13 @@ package com.github.detentor.codex.collections.immutable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -212,6 +214,90 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 		};
 	}
 	
+	/**
+	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
+	 * Esse método não está definido quando os elementos contidos nesta lista não são instâncias 
+	 * de {@link Comparable} ou {@link Comparator}.
+	 * 
+	 * @return Esta lista com os elementos ordenados
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ListSharp<T> sorted()
+	{
+		return sorted(new DefaultComparator());
+	}
+
+	/**
+	 * Retorna esta lista, após a ordenação de seus elementos de acordo com a função de comparação passada como parâmetro. <br/>
+	 * 
+	 * @return Esta lista após a ordenação dos elementos ordenados
+	 */
+	@SuppressWarnings("unchecked")
+	public ListSharp<T> sorted(final Comparator<? super T> comparator)
+	{
+		if (this.isEmpty())
+		{
+			return this;
+		}
+
+		final T[] novosDados = (T[]) Arrays.copyOf(data, data.length);
+		Arrays.sort(novosDados, comparator);
+		return new ListSharp<T>(novosDados, startIndex, startIndex + theSize);
+	}
+	
+	/**
+	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> 
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
+	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de 
+	 * elementos desta coleção que retornam aquele valor à função.
+	 * 
+	 * @param <B> O tipo de retorno da função
+	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
+	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
+	 * de elementos cujo resultado da função aplicada seja o mesmo.
+	 */
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
+	{
+		//ATENÇÃO: VERIFICAR SE O CÓDIGO NÃO PODE SER REESCRITO PARA SER MAIS OTIMIZADO
+		final MapSharp<A, Builder<T, SharpCollection<T>>> mapaIntermediario = MapSharp.empty();
+
+		for (final T curEle : this)
+		{
+			final A value = function.apply(curEle);
+			Builder<T, SharpCollection<T>> builder = mapaIntermediario.get(value);
+			
+			if (builder == null)
+			{
+				builder = new ImArrayBuilder<T>();
+				mapaIntermediario.add(value, builder);
+			}
+			builder.add(curEle);
+		}
+		
+		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.empty();
+		
+		for (final A curEle : mapaIntermediario.keySet())
+		{
+			mapaRetorno.add(curEle, (ListSharp<T>) mapaIntermediario.get(curEle).result());
+		}
+
+		return mapaRetorno;
+	}
+	
+	/**
+	 * Classe com a implementação default do comparator
+	 */
+	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
+	{
+		private static final long serialVersionUID = 4989261028786246998L;
+
+		@Override
+		public int compare(final A ob1, final A ob2)
+		{
+			return ob1.compareTo(ob2);
+		}
+	}
+
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
 	 */
