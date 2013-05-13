@@ -43,6 +43,26 @@ public final class Functions
 	}
 	
 	/**
+	 * Faz a composição de duas setas booleanas, de forma que a seta retornada 
+	 * só retornará true caso a aplicação das duas funções seja true.
+	 * 
+	 * @param function1 A primeira função a ser feita a composição
+	 * @param function2 A segunda função a ser feita a composição
+	 * @return Uma seta que retornará true somente se a aplicação das duas funções passadas como parâmetro retornar true.
+	 */
+	public static <A, B, C> Arrow1<A, Boolean> composeBool(final Function1<? super A, Boolean> function1, final Function1<? super A, Boolean> function2)
+	{
+		return new Arrow1<A, Boolean>()
+		{
+			@Override
+			public Boolean apply(final A param)
+			{
+				return function1.apply(param) && function2.apply(param);
+			}
+		};
+	}
+
+	/**
 	 * Faz a composição de uma função parcial com uma função de mapeamento
 	 */
 	public static <A, B, C> PartialFunction<A, C> compose(final PartialFunction<? super A, B> function1, final Function1<? super B, C> function2)

@@ -1,6 +1,5 @@
 package com.github.detentor.operations;
 
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.arrow.Arrow1;
 
 /**
