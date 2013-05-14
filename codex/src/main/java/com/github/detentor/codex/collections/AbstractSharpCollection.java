@@ -713,9 +713,14 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	/**
 	 * Classe com a implementação default do comparator
 	 */
-	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
+	protected static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
 	{
 		private static final long serialVersionUID = 6163897449143010763L;
+
+		public DefaultComparator()
+		{
+			//Definindo só para aumentar a visibilidade do construtor
+		}
 
 		@Override
 		public int compare(final A ob1, final A ob2)
