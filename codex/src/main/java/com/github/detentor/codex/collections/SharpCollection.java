@@ -1,5 +1,6 @@
 package com.github.detentor.codex.collections;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -220,4 +221,21 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * @return Uma coleção onde os elementos são todos distintos entre si.
 	 */
 	SharpCollection<T> distinct();
+	
+	/**
+	 * Retorna esta coleção, após a ordenação de seus elementos. <br/>
+	 * Esse método não está definido quando os elementos contidos nesta coleção não são instâncias 
+	 * de {@link Comparable} ou {@link Comparator}.
+	 * 
+	 * @return Esta coleção com os elementos ordenados
+	 */
+	SharpCollection<T> sorted();
+
+	/**
+	 * Retorna esta coleção após a ordenação de seus elementos 
+	 * de acordo com a função de comparação passada como parâmetro. <br/>
+	 * 
+	 * @return Esta coleção após a ordenação dos elementos ordenados
+	 */
+	SharpCollection<T> sorted(final Comparator<? super T> comparator);
 }

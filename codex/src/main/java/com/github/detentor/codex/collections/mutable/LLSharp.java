@@ -1,8 +1,11 @@
 package com.github.detentor.codex.collections.mutable;
 
+import java.util.Comparator;
+
 import com.github.detentor.codex.collections.AbstractMutableLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.monads.Option;
@@ -233,6 +236,19 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	public LLSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
 		return (LLSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public LLSharp<T> sorted()
+	{
+		return sorted(new DefaultComparator());
+	}
+
+	@Override
+	public LLSharp<T> sorted(Comparator<? super T> comparator)
+	{
+		return from(ListSharp.from(this).sorted(comparator));
 	}
 
 	/**

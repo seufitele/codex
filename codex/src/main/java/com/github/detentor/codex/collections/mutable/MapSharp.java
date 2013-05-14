@@ -1,10 +1,16 @@
 package com.github.detentor.codex.collections.mutable;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
@@ -13,7 +19,6 @@ import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
-
 
 /**
  * Essa classe representa um mapa mutável, cujos elementos são armazenados num HashMap usando composição. <br/>
@@ -109,6 +114,34 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return new MapSharp<T, U>();
 	}
+	
+	/**
+	 * Constrói uma instância de MapSharp vazia, baseado no tipo passado como parâmetro.
+	 * 
+	 * @param mapType O tipo de MapSharp a ser construído
+	 * @param <T> O tipo de dados da instância
+	 * @return Uma instância de MapSharp vazia, do tipo definido.
+	 */
+	public static <T, U> MapSharp<T, U> empty(final MapSharpType mapType)
+	{
+		Map<T, U> mapInstance = null;
+		
+		switch(mapType)
+		{
+			case HASH_MAP:
+				mapInstance = new HashMap<T, U>();
+				break;
+			case LINKED_HASH_MAP:
+				mapInstance = new LinkedHashMap<T, U>();
+				break;
+			case TREE_MAP:
+				mapInstance = new TreeMap<T, U>();
+				break;
+			default:
+				throw new IllegalArgumentException("Tipo de MapSharp não reconhecido");
+		}
+		return new MapSharp<T, U>(mapInstance);
+	}
 
 	@Override
 	public int size()
@@ -185,7 +218,25 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
-		return new HashMapBuilder();
+		Builder<B, SharpCollection<B>> builderRetorno = null;
+		
+		if (backingMap instanceof HashSet<?>)
+		{
+			builderRetorno = new HashMapBuilder();
+		}
+		else if (backingMap instanceof LinkedHashSet<?>)
+		{
+			builderRetorno = new LinkedHashMapBuilder();
+		}
+		else if (backingMap instanceof TreeSet<?>)
+		{
+			builderRetorno = new TreeMapBuilder();
+		}
+		else
+		{
+			throw new IllegalArgumentException("Tipo de instância não reconhecida");
+		}
+		return builderRetorno;
 	}
 	
 	/**
@@ -451,5 +502,81 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		{
 			return new MapSharp<X, Y>(hashMap);
 		}
+	}
+	
+	/**
+	 * Essa classe é um builder para MapSharp baseado no LinkedHashMap. <br/>
+	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
+	 */
+	private class LinkedHashMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
+	{
+		private final Map<X, Y> hashMap = new LinkedHashMap<X, Y>();
+
+		@Override
+		public void add(final Tuple2<X, Y> element)
+		{
+			hashMap.put(element.getVal1(), element.getVal2());
+		}
+
+		@Override
+		public MapSharp<X, Y> result()
+		{
+			return new MapSharp<X, Y>(hashMap);
+		}
+	}
+	
+	/**
+	 * Essa classe é um builder para MapSharp baseado no TreeMap. <br/>
+	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
+	 */
+	private class TreeMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
+	{
+		private final Map<X, Y> hashMap = new TreeMap<X, Y>();
+
+		@Override
+		public void add(final Tuple2<X, Y> element)
+		{
+			hashMap.put(element.getVal1(), element.getVal2());
+		}
+
+		@Override
+		public MapSharp<X, Y> result()
+		{
+			return new MapSharp<X, Y>(hashMap);
+		}
+	}
+	
+	public enum MapSharpType
+	{
+		HASH_MAP, LINKED_HASH_MAP, TREE_MAP;
+	}
+
+	/**
+	 * Ordena o mapa, de acordo com a ordenação natural das chaves.  <br/>
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public MapSharp<K, V> sorted()
+	{
+		return (MapSharp<K, V>) sorted(new DefaultComparator());
+	}
+
+	/**
+	 * Ordena o mapa, de acordo com a ordenação definida pelo comparator passado como parâmetro.  <br/>
+	 * ATENÇÃO: O mapa retornado será uma instância de LinkedHashMap, 
+	 * portanto a adição de novos elementos poderá, potencialmente, corromper a ordenação. 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MapSharp<K, V> sorted(final Comparator<? super Tuple2<K, V>> comparator)
+	{
+		final MapSharp<K, V> mapaRetorno = empty(MapSharpType.LINKED_HASH_MAP);
+		
+		for (Tuple2<K, V> curEle : ListSharp.from(this).sorted(comparator))
+		{
+			mapaRetorno.add(curEle);
+		}
+		return mapaRetorno;
 	}
 }

@@ -2,12 +2,13 @@ package com.github.detentor.codex.collections.immutable;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.mutable.ListSharp;
+import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -247,6 +248,12 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 	public String toString()
 	{
 		return value;
+	}
+	
+	@Override
+	public RichString sorted(final Comparator<? super Character> comparator)
+	{
+		return from(ListSharp.from(this).sorted(comparator).mkString());
 	}
 
 	/**

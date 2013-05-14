@@ -2,6 +2,7 @@ package com.github.detentor.codex.monads;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -157,6 +158,18 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	public Option<Tuple2<T, Integer>> zipWithIndex()
 	{
 		return (Option<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+	
+	@Override
+	public Option<T> sorted()
+	{
+		return this;
+	}
+
+	@Override
+	public Option<T> sorted(Comparator<? super T> comparator)
+	{
+		return this;
 	}
 
 	@Override

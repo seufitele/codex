@@ -285,20 +285,6 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	}
 	
 	/**
-	 * Classe com a implementação default do comparator
-	 */
-	private static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
-	{
-		private static final long serialVersionUID = 4989261028786246998L;
-
-		@Override
-		public int compare(final A ob1, final A ob2)
-		{
-			return ob1.compareTo(ob2);
-		}
-	}
-
-	/**
 	 * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
 	 */
 	private class ImArrayBuilder<E> implements Builder<E, SharpCollection<E>>

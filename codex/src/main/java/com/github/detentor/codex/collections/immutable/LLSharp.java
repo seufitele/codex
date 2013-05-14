@@ -1,5 +1,7 @@
 package com.github.detentor.codex.collections.immutable;
 
+import java.util.Comparator;
+
 import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
@@ -236,5 +238,17 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 			return list;
 		}
 	}
-	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public LLSharp<T> sorted()
+	{
+		return sorted(new DefaultComparator());
+	}
+
+	@Override
+	public LLSharp<T> sorted(Comparator<? super T> comparator)
+	{
+		return from(ListSharp.from(this).sorted(comparator));
+	}
 }
