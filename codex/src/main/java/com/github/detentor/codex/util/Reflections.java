@@ -121,9 +121,11 @@ public final class Reflections
 	}
 	
 	/**
-	 * Retorna o método de uma classe a partir de seu nome.
+	 * Retorna o método de uma classe a partir de seu nome e da sua lista de parâmetros. 
+	 * Passar um array vazio significa sem parâmetros.
 	 * @param fromClass A classe onde o método será procurado
 	 * @param methodName O nome do método a ser retornado
+	 * @param parameterType Um array com as classes que representam a assinatura do método
 	 * @return Uma instância de Option que conterá o método, se ele existir
 	 */
 	public static <A> Option<Method> getMethodFromNameAndType(final Class<A> fromClass, 
