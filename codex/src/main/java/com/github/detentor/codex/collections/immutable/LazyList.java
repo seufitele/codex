@@ -7,7 +7,6 @@ import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -139,16 +138,21 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	//Overrides obrigatórios
 	
 	@Override
-	public <B> LazyList<B> map(Function1<? super T, B> function)
+	public <B> LazyList<B> map(final Function1<? super T, B> function)
 	{
-//		return (LazyList<B>) super.map(function);
 		return (LazyList<B>) new MapMonadic<T, B>(this.iterator(), function);
+	}
+	
+	@Override
+	public LazyList<T> filter(final Function1<? super T, Boolean> pred)
+	{
+		return new FilterMonadic<T>(this.iterator(), pred);
 	}
 
 	@Override
 	public <B> LazyList<B> collect(PartialFunction<? super T, B> pFunction)
 	{
-		return (LazyList<B>) super.collect(pFunction);
+		return (LazyList<B>)  new FMapMonadic<T, B>(this.iterator(), pFunction);
 	}
 
 	@Override
@@ -256,11 +260,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * Lazy List criada a partir de um iterable
-	 * 
-	 * @author Vinicius Seufitele Pinto
-	 *
-	 * @param <T>
+	 * Lazy List criada a partir de um iterable, sem operação alguma definida
 	 */
 	private static class LazyListI<T> extends LazyMonadic<T>
 	{
@@ -289,10 +289,8 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * 
-	 * @author Vinicius Seufitele Pinto
-	 *
-	 * @param <T>
+	 * Classe responsável por definir o comportamento de operações monádicas que
+	 * incluem somente Map
 	 */
 	private static final class MapMonadic<T, B> extends LazyMonadic<B>
 	{
@@ -323,12 +321,10 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * 
-	 * @author Vinicius Seufitele Pinto
-	 *
-	 * @param <T>
+	 * Classe responsável por definir o comportamento de operações monádicas que
+	 * incluem somente Filter
 	 */
-	private static final class FilterMonadic<T, B> extends LazyMonadic<B>
+	private static final class FilterMonadic<T> extends LazyMonadic<T>
 	{
 		private final Iterator<T> iterator;
 		private final Function1<? super T, Boolean> filterFunction;
@@ -350,7 +346,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 				if (filterFunction.apply(curEle))
 				{
 					head = curEle;
-					tail = new FilterMonadic<T, B>(iterator, filterFunction);
+					tail = new FilterMonadic<T>(iterator, filterFunction);
 					return;
 				}
 			}
@@ -359,6 +355,10 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		}
 	}
 	
+	/**
+	 * Classe responsável por definir o comportamento de operações monádicas que
+	 * incluem Map e Filter juntas (método collect).
+	 */
 	private static final class FMapMonadic<T, A> extends LazyMonadic<A>
 	{
 		private final Iterator<T> iterator;
@@ -369,32 +369,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			super();
 			this.iterator = theIterator;
 			this.pFunction = thePartialFunction;
-		}
-		
-		@Override
-		public <B> LazyList<B> map(final Function1<? super A, B> function)
-		{
-			return new FMapMonadic<T, B>(iterator, Functions.compose(pFunction, function));
-		}
-		
-		@Override
-		public LazyList<A> filter(final Function1<? super A, Boolean> pred)
-		{
-			//ATENÇÃO: COMPOSIÇÃO NÃO OTIMIZADA
-			return new FMapMonadic<T, A>(iterator, new PartialFunction<T, A>()
-			{
-				@Override
-				public A apply(T param)
-				{
-					return pFunction.apply(param);
-				}
-
-				@Override
-				public boolean isDefinedAt(T forValue)
-				{
-					return pFunction.isDefinedAt(forValue) && pred.apply(pFunction.apply(forValue));
-				}
-			});
 		}
 
 		@Override
@@ -415,5 +389,4 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			tail = null;
 		}
 	}
-	
 }
