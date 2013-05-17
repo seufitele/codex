@@ -228,7 +228,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			@Override
 			public T apply()
 			{
-				if (! consumeIterator().getVal1().hasNext())
+				if (! isDefined())
 				{
 					throw new IllegalArgumentException("Apply chamado para uma função não definida");
 				}
