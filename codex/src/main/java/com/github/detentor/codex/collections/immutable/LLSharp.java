@@ -10,15 +10,26 @@ import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Implementação mutável da lista encadeada. <br/> 
- * A mutabilidade da lista é limitada: ela permite adicionar e remover elementos 'inplace' (ou seja,
- * a estrutura interna da lista é modificada depois da adição ou remoção), mas não é possível setar,
- * diretamente, o valor do head ou do tail. <br/><br/>
+ * Implementação imutável da lista encadeada. <br/> <br/>
  * 
- *  A lista encadeada é ideal para remoção do primeiro elemento, ou adição de elementos. Note-se que a 
- *  lista encadeada adiciona elementos como uma pilha (FILO). Além disso, é a estrutura ideal para 
- *  a criação de listas (potencialmente) infinitas.
- * 
+ *  A lista encadeada possui vantagens e desvantagens:  <br/><br/>
+ *  
+ *  <b>Vantagens</b>: <br/><br/>
+ *  
+ *  1 - Operações de adição, head, tail são O(1)
+ *  2 - A estrutura naturalmente recursiva da lista facilita a codificação dos métodos,
+ *  e é especialmente útil para criação de listas cujo tamanho não é conhecido previamente (por exemplo,
+ *  listas criadas a partir de um iterator), ou, até mesmo, listas infinitas.
+ *  
+ *  <br/><br/>
+ *  
+ *  <b>Desvantagens</b>: <br/><br/>
+ *  
+ *  1 - Tem um maior custo de memória do que listas baseadas em Array. <br/>
+ *  2 - Calcular o tamanho da lista tem um custo de O(n). <br/>
+ *  3 - Acesso a elementos em uma posição aleatória 'n' tem custo O(n)
+ *  4 - A adição de elementos representa uma pilha (FIFO), não uma fila (LILO)
+ *  
  * @author Vinicius Seufitele
  *
  * @param <T>

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
+import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction;
 import com.github.detentor.codex.product.Tuple2;
@@ -29,8 +30,10 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	protected Object head = UNINITIALIZED;
 	protected LazyList<T> tail;
 
-	// O objeto vazio
-	private static final LazyList<Object> Nil = new LazyList<Object>(null, null);
+	/**
+	 * Esse objeto representa uma lista (genérica) vazia
+	 */
+	public static final LazyList<Object> Nil = new LazyList<Object>(null, null);
 
 	//Valor ainda não carregado lazy
 	private static final Object UNINITIALIZED = new Uninitialized();
@@ -44,12 +47,12 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		head = theHead;
 		tail = theTail;
 	}
-	
+
 	/**
-	 * Retorna uma instância de LinkedListSharp vazia
+	 * Retorna uma instância de LazyList vazia. Como LazyList é imutável, retorna sempre {@link #Nil}.
 	 * 
 	 * @param <A> O tipo de dados da instância
-	 * @return Uma instância de LLSharp vazia.
+	 * @return Uma instância de LazyList vazia.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <A> LazyList<A> empty()
@@ -58,12 +61,12 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Cria uma nova LinkedListSharp, a partir do valor passado como parâmetro. <br/>
-	 * Esse método é uma forma mais compacta de se criar LinkedListSharp.
+	 * Cria uma nova LazyList, a partir do valor passado como parâmetro. <br/>
+	 * Esse método é uma forma mais compacta de se criar LazyList.
 	 * 
-	 * @param <A> O tipo de dados da LinkedListSharp a ser retornada.
-	 * @param valor O valor da LinkedListSharp
-	 * @return Uma nova LinkedListSharp, cujo elemento será o valor passado como parâmetro
+	 * @param <A> O tipo de dados da LazyList a ser retornada.
+	 * @param valor O valor da LazyList
+	 * @return Uma nova LazyList, cujo elemento será o valor passado como parâmetro
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> LazyList<T> from(final T valor)
@@ -72,12 +75,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * Cria uma nova LinkedListSharp, a partir dos valores passados como parâmetro. <br/>
-	 * Esse método é uma forma mais compacta de se criar LinkedListSharp.
+	 * Cria uma nova LazyList, a partir dos valores passados como parâmetro. <br/>
+	 * Como os valores passados pertencem a um Array, então os elementos são "realizados" imediatamente.
+	 * Esse método é uma forma mais compacta de se criar LazyList.
 	 * 
-	 * @param <A> O tipo de dados da LinkedListSharp a ser retornada.
-	 * @param valores A LinkedListSharp a ser criada, a partir dos valores
-	 * @return Uma nova LinkedListSharp, cujos elementos são os elementos passados como parâmetro
+	 * @param <A> O tipo de dados da LazyList a ser retornada.
+	 * @param valores A LazyList a ser criada, a partir dos valores
+	 * @return Uma nova LazyList, cujos elementos são os elementos passados como parâmetro
 	 */
 	public static <T> LazyList<T> from(final T... valores)
 	{
@@ -91,8 +95,8 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Cria uma instância de LinkedListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos
-	 * elementos será a mesma ordem do iterable.
+	 * Cria uma instância de LazyList a partir dos elementos existentes no iterable passado como parâmetro. <br/>
+	 * A ordem dos elementos será a mesma ordem do iterable, e o iterable só será consumido quando for necessário.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -103,6 +107,19 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return new LazyListI<T>(theIterable.iterator());
 	}
 
+	/**
+	 * Cria uma instância da LazyList a partir a função geradora. 
+	 * Cada elemento da lista (potencialmente infinita) será definido pela chamada sucessiva à genFunction. <br/>
+	 * ATENÇÃO: A lista só terá fim se em algum momento a função geradora retornar {@link #Nil}
+	 * 
+	 * @param genFunction A função que gerará os elementos da LazyList
+	 * @return Uma lista infinita, cujos elementos só serão computados quando forem chamados
+	 */
+	public static <T> LazyList<T> unfold(final Function0<T> genFunction)
+	{
+		return new UnfoldedList<T>(genFunction);
+	}
+	
 	@Override
 	public boolean isEmpty()
 	{
@@ -122,6 +139,16 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	{
 		return tail;
 	}
+	
+	/**
+	 * {@inheritDoc} <br/>
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public int size()
+	{
+		return super.size();
+	}
 
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
@@ -132,7 +159,30 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public String toString()
 	{
-		return mkString("[", ", ", "]");
+		if (this.isEmpty())
+		{
+			return "[]";
+		}
+
+		final StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("[" + this.head());
+
+		LazyList<T> curTail = this.tail;
+
+		while (curTail.head != UNINITIALIZED && curTail.notEmpty())
+		{
+			sBuilder.append(", " + curTail.head());
+			curTail = curTail.tail;
+		}
+
+		if (! curTail.isEmpty())
+		{
+			sBuilder.append(", ?");
+		}
+		
+		sBuilder.append(']');
+		
+		return sBuilder.toString();
 	}
 	
 	//Overrides obrigatórios
@@ -152,7 +202,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public <B> LazyList<B> collect(PartialFunction<? super T, B> pFunction)
 	{
-		return (LazyList<B>)  new FMapMonadic<T, B>(this.iterator(), pFunction);
+		return (LazyList<B>) new FMapMonadic<T, B>(this.iterator(), pFunction);
 	}
 
 	@Override
@@ -207,16 +257,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	@Override
-	public LazyList<T> sorted(Comparator<? super T> comparator)
+	public LazyList<T> sorted(final Comparator<? super T> comparator)
 	{
 		return from(ListSharp.from(this).sorted(comparator));
 	}
 	
 	/**
-	 * 
-	 * @author Vinicius Seufitele Pinto
-	 *
-	 * @param <T>
+	 * Base para as classes {@link UnfoldedList}, {@link MapMonadic}, {@link FilterMonadic}, {@link FMapMonadic}.
 	 */
 	private static abstract class LazyMonadic<T> extends LazyList<T>
 	{
@@ -228,7 +275,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		
 		/**
 		 * Função que seta os valores do head e do tail
-		 * @return
 		 */
 		protected abstract void extractValues();
 		
@@ -260,7 +306,29 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * Lazy List criada a partir de um iterable, sem operação alguma definida
+	 * UnfoldedList são listas geradas a partir de uma função geradora. <br/>
+	 */
+	private static final class UnfoldedList<T> extends LazyMonadic<T>
+	{
+		private final Function0<T> genFunction;
+		
+		protected UnfoldedList(final Function0<T> theGenFunction)
+		{
+			super();
+			this.genFunction = theGenFunction;
+		}
+
+		@Override
+		protected void extractValues()
+		{
+			head = genFunction.apply();
+			tail = new UnfoldedList<T>(genFunction);
+		}
+	}
+
+	/**
+	 * Lazy List criada a partir de um iterable, sem operação alguma definida. <br/>
+	 * Base para as classes {@link MapMonadic}, {@link FilterMonadic}, {@link FMapMonadic}.
 	 */
 	private static class LazyListI<T> extends LazyMonadic<T>
 	{
