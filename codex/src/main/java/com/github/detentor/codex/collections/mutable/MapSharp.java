@@ -17,7 +17,7 @@ import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -28,7 +28,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction<K, V>, Serializable
+public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction1<K, V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -376,13 +376,13 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
 	 */
 	@SuppressWarnings("unchecked")
-	public <W, Y> MapSharp<W, Y> collect(final PartialFunction<Tuple2<K, V>, Tuple2<W, Y>> pFunction)
+	public <W, Y> MapSharp<W, Y> collect(final PartialFunction1<Tuple2<K, V>, Tuple2<W, Y>> pFunction)
 	{
 		return (MapSharp<W, Y>) super.collect(pFunction);
 	}
 
 	@Override
-	public <B> SharpCollection<B> collect(final PartialFunction<? super Tuple2<K, V>, B> pFunction)
+	public <B> SharpCollection<B> collect(final PartialFunction1<? super Tuple2<K, V>, B> pFunction)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
 

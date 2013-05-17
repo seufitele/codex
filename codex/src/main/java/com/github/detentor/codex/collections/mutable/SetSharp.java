@@ -12,7 +12,7 @@ import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -27,7 +27,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>> implements PartialFunction<T, Boolean>, Serializable
+public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>> implements PartialFunction1<T, Boolean>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -202,7 +202,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	}
 	
 	@Override
-	public <B> SetSharp<B> collect(final PartialFunction<? super T, B> pFunction)
+	public <B> SetSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (SetSharp<B>) super.collect(pFunction);
 	}

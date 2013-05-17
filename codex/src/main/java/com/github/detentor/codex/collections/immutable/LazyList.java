@@ -9,6 +9,7 @@ import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
+import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -215,6 +216,92 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	public LazyList<Tuple2<T, Integer>> zipWithIndex()
 	{
 		return (LazyList<Tuple2<T, Integer>>) super.zipWithIndex();
+	}
+	
+	
+
+	@Override
+	public LazyList<T> drop(Integer num)
+	{
+		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, Integer>, T>(Tuple2.from(this.iterator(), num))
+		{
+			@Override
+			public T apply()
+			{
+				if (! consumeIterator().getVal1().hasNext())
+				{
+					throw new IllegalArgumentException("Apply chamado para uma função não definida");
+				}
+				return state.getVal1().next();
+			}
+
+			//Anda as casas necessárias do iterator
+			private Tuple2<Iterator<T>, Integer> consumeIterator()
+			{
+				int curCount = state.getVal2();
+
+				while (curCount-- > 0 && state.getVal1().hasNext())
+				{
+					//Pula o elemento
+					state.getVal1().next();
+				}
+				//Seta de volta o valor 0
+				state.setVal2(curCount);
+				return state;
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return consumeIterator().getVal1().hasNext();
+			}
+		});
+	}
+	
+	@Override
+	public LazyList<T> take(Integer num)
+	{
+		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, Integer>, T>(Tuple2.from(this.iterator(), num))
+		{
+			@Override
+			public T apply()
+			{
+				if (! isDefined())
+				{
+					throw new IllegalArgumentException("Apply chamado para uma função não definida");
+				}
+				state.setVal2(state.getVal2() - 1);
+				return state.getVal1().next();
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return state.getVal2() > 0 && state.getVal1().hasNext();
+			}
+		});
+	}
+	
+	/**
+	 * Força a realização de todos os elementos desta lista lazy
+	 * 
+	 * @return A referência a esta lista, após a realização de todos os elementos
+	 */
+	public LazyList<T> force()
+	{
+		if (this.isEmpty())
+		{
+			return this;
+		}
+		
+		LazyList<T> curTail = this.tail();
+		
+		while (curTail.notEmpty())
+		{
+			curTail = curTail.tail();
+		}
+		
+		return this;
 	}
 
 	/**

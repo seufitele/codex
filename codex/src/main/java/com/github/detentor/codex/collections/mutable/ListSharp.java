@@ -11,7 +11,7 @@ import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -27,7 +27,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> implements PartialFunction<Integer, T>, Serializable
+public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> implements PartialFunction1<Integer, T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -141,7 +141,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 	
 	@Override
-	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
+	public <B> ListSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (ListSharp<B>) super.collect(pFunction);
 	}
