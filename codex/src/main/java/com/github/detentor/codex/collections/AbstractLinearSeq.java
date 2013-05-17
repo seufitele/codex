@@ -3,7 +3,7 @@ package com.github.detentor.codex.collections;
 import java.util.Iterator;
 
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 
 /**
  * Classe que provê a implementação padrão de métodos de coleções lineares, para simplificar a criação de classes que os estenda. <br/>
@@ -23,7 +23,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * Para coleções mutáveis, veja {@link AbstractMutableLinearSeq}. <br/>
  * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction1) collect},
  * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}.  
  * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o
  * tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).

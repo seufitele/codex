@@ -1,7 +1,7 @@
 package com.github.detentor.codex.function.arrow;
 
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 
 /**
  * 
@@ -20,7 +20,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @param <A> O tipo de dados de entrada
  * @param <B> O tipo de dados da saída
  */
-public abstract class PartialArrow<A, B> extends Arrow1<A, B> implements PartialFunction<A, B>
+public abstract class PartialArrow1<A, B> extends Arrow1<A, B> implements PartialFunction1<A, B>
 {
 	/**
 	 * Retorna <tt>true</tt> se, e somente se, essa seta possui um retorno válido para o argumento passado como parâmetro.
@@ -39,20 +39,20 @@ public abstract class PartialArrow<A, B> extends Arrow1<A, B> implements Partial
 	 * 
 	 */
 	@Override
-	public <C> PartialArrow<A, C> and(final Function1<? super B, C> func)
+	public <C> PartialArrow1<A, C> and(final Function1<? super B, C> func)
 	{
-		return new PartialArrow<A, C>()
+		return new PartialArrow1<A, C>()
 		{
 			@Override
 			public C apply(final A param)
 			{
-				return func.apply(PartialArrow.this.apply(param));
+				return func.apply(PartialArrow1.this.apply(param));
 			}
 
 			@Override
 			public boolean isDefinedAt(final A forValue)
 			{
-				return PartialArrow.this.isDefinedAt(forValue);
+				return PartialArrow1.this.isDefinedAt(forValue);
 			}
 		};
 	}

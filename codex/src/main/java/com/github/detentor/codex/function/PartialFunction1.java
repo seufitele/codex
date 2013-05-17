@@ -14,7 +14,7 @@ package com.github.detentor.codex.function;
  * @param <A> O tipo de dados de entrada
  * @param <B> O tipo de dados da saída
  */
-public interface PartialFunction<A, B> extends Function1<A, B>
+public interface PartialFunction1<A, B> extends Function1<A, B>
 {
 	/**
 	 * Retorna <tt>true</tt> se, e somente se, essa função possui um retorno válido para o argumento passado como parâmetro.

@@ -1,6 +1,6 @@
 package com.github.detentor.codex.collections;
 
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 
 /**
  * Sequências indexadas são sequências que garantem tempo constante no acesso 
@@ -12,7 +12,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public interface IndexedSeq<A> extends PartialFunction<Integer, A>, SharpCollection<A>, Seq<A>
+public interface IndexedSeq<A> extends PartialFunction1<Integer, A>, SharpCollection<A>, Seq<A>
 {
 	/**
 	 * Retorna o elemento vinculado à posição especificada

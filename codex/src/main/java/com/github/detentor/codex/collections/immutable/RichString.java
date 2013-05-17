@@ -10,7 +10,7 @@ import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.operations.CharOps;
 import com.github.detentor.operations.StringOps;
@@ -108,12 +108,12 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 	}
 
 	@Override
-	public <B> IndexedSeq<B> collect(final PartialFunction<? super Character, B> pFunction)
+	public <B> IndexedSeq<B> collect(final PartialFunction1<? super Character, B> pFunction)
 	{
 		return ListSharp.from(CharOps.lift(value.toCharArray())).collect(pFunction);
 	}
 
-	public RichString collect(final PartialFunction<? super Character, Character> pFunction)
+	public RichString collect(final PartialFunction1<? super Character, Character> pFunction)
 	{
 		return (RichString) super.collect(pFunction);
 	}

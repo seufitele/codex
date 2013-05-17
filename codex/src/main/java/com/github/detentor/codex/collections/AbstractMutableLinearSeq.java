@@ -1,7 +1,7 @@
 package com.github.detentor.codex.collections;
 
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -23,7 +23,7 @@ import com.github.detentor.codex.product.Tuple2;
  * Para coleções imutáveis, veja {@link AbstractLinearSeq}. <br/>
  * <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction1) collect},
  * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}. 
  * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o
  * tipo de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).

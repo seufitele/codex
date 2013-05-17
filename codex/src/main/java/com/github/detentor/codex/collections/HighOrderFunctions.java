@@ -2,7 +2,7 @@ package com.github.detentor.codex.collections;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -125,7 +125,7 @@ public interface HighOrderFunctions<T>
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
 	 */
-	<B> SharpCollection<B> collect(final PartialFunction<? super T, B> pFunction);
+	<B> SharpCollection<B> collect(final PartialFunction1<? super T, B> pFunction);
 
 	/**
 	 * Constrói uma nova coleção, a partir da aplicação da função passada 

@@ -11,7 +11,7 @@ import java.util.Set;
 import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -28,7 +28,7 @@ import com.github.detentor.codex.product.Tuple2;
  * Para coleções mutáveis, veja {@link AbstractMutableCollection}. <br/><br/>
  * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/> <br/>
  * 
- * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction) collect},
+ * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction1) collect},
  * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}.   
  * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o tipo
  * de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).
@@ -520,7 +520,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public <B> SharpCollection<B> collect(final PartialFunction<? super T, B> pFunction)
+	public <B> SharpCollection<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
 

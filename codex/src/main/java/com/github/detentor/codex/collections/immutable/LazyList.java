@@ -6,9 +6,9 @@ import java.util.Iterator;
 import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction0;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -115,7 +115,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 * @param genFunction A função que gerará os elementos da LazyList
 	 * @return Uma lista infinita, cujos elementos só serão computados quando forem chamados
 	 */
-	public static <T> LazyList<T> unfold(final Function0<T> genFunction)
+	public static <T> LazyList<T> unfold(final PartialFunction0<T> genFunction)
 	{
 		return new UnfoldedList<T>(genFunction);
 	}
@@ -200,7 +200,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	@Override
-	public <B> LazyList<B> collect(PartialFunction<? super T, B> pFunction)
+	public <B> LazyList<B> collect(PartialFunction1<? super T, B> pFunction)
 	{
 		return (LazyList<B>) new FMapMonadic<T, B>(this.iterator(), pFunction);
 	}
@@ -306,13 +306,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	/**
-	 * UnfoldedList são listas geradas a partir de uma função geradora. <br/>
+	 * UnfoldedList são listas geradas a partir de uma função parcial geradora. <br/>
 	 */
 	private static final class UnfoldedList<T> extends LazyMonadic<T>
 	{
-		private final Function0<T> genFunction;
+		private final PartialFunction0<T> genFunction;
 		
-		protected UnfoldedList(final Function0<T> theGenFunction)
+		protected UnfoldedList(final PartialFunction0<T> theGenFunction)
 		{
 			super();
 			this.genFunction = theGenFunction;
@@ -321,11 +321,20 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		@Override
 		protected void extractValues()
 		{
-			head = genFunction.apply();
-			tail = new UnfoldedList<T>(genFunction);
+			if (genFunction.isDefined())
+			{
+				head = genFunction.apply();
+				tail = new UnfoldedList<T>(genFunction);
+			}
+			else
+			{
+				//Finaliza as chamadas para a lista
+				head = null;
+				tail = null;
+			}
 		}
 	}
-
+	
 	/**
 	 * Lazy List criada a partir de um iterable, sem operação alguma definida. <br/>
 	 * Base para as classes {@link MapMonadic}, {@link FilterMonadic}, {@link FMapMonadic}.
@@ -430,9 +439,9 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	private static final class FMapMonadic<T, A> extends LazyMonadic<A>
 	{
 		private final Iterator<T> iterator;
-		private final PartialFunction<? super T, A> pFunction;
+		private final PartialFunction1<? super T, A> pFunction;
 
-		protected FMapMonadic(final Iterator<T> theIterator, final PartialFunction<? super T, A> thePartialFunction)
+		protected FMapMonadic(final Iterator<T> theIterator, final PartialFunction1<? super T, A> thePartialFunction)
 		{
 			super();
 			this.iterator = theIterator;

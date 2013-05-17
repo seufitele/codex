@@ -1,6 +1,6 @@
 package com.github.detentor.codex.collections;
 
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 
 /**
  * Sequências Lineares são sequências que garantem tempo constante para os métodos
@@ -10,7 +10,7 @@ import com.github.detentor.codex.function.PartialFunction;
  * @author Vinícius Seufitele Pinto
  *
  */
-public interface LinearSeq<A> extends PartialFunction<Integer, A>, SharpCollection<A>, Seq<A>
+public interface LinearSeq<A> extends PartialFunction1<Integer, A>, SharpCollection<A>, Seq<A>
 {
 	 /**
 	 * {@inheritDoc}

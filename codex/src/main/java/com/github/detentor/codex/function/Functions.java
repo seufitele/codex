@@ -65,9 +65,9 @@ public final class Functions
 	/**
 	 * Faz a composição de uma função parcial com uma função de mapeamento
 	 */
-	public static <A, B, C> PartialFunction<A, C> compose(final PartialFunction<? super A, B> function1, final Function1<? super B, C> function2)
+	public static <A, B, C> PartialFunction1<A, C> compose(final PartialFunction1<? super A, B> function1, final Function1<? super B, C> function2)
 	{
-		return new PartialFunction<A, C>()
+		return new PartialFunction1<A, C>()
 		{
 			@Override
 			public C apply(final A param)
@@ -86,9 +86,9 @@ public final class Functions
 	/**
 	 * Faz a composição de uma função de mapeamento com uma função parcial
 	 */
-	public static <A, B, C> PartialFunction<A, C> compose(final Function1<? super A, B> function1, final PartialFunction<? super B, C> function2)
+	public static <A, B, C> PartialFunction1<A, C> compose(final Function1<? super A, B> function1, final PartialFunction1<? super B, C> function2)
 	{
-		return new PartialFunction<A, C>()
+		return new PartialFunction1<A, C>()
 		{
 			@Override
 			public C apply(final A param)
@@ -115,10 +115,10 @@ public final class Functions
 	 * @return Uma função parcial que representa a composição das duas funções parciais passadas como
 	 * parâmetro. O domínio da função parcial será a interseção dos domínios da function1 e function2
 	 */
-	public static <A, B, C> PartialFunction<A, C> compose(final PartialFunction<? super A, B> function1,
-			final PartialFunction<? super B, C> function2)
+	public static <A, B, C> PartialFunction1<A, C> compose(final PartialFunction1<? super A, B> function1,
+			final PartialFunction1<? super B, C> function2)
 	{
-		return new PartialFunction<A, C>()
+		return new PartialFunction1<A, C>()
 		{
 			@Override
 			public C apply(final A param)
@@ -159,12 +159,12 @@ public final class Functions
 	 * @param transform A função de mapeamento, a ser usada quando a função estiver definida para o argumento
 	 * @return Uma função parcial a partir da função predicado e de transformação passadas.
 	 */
-	public static <A, B> PartialFunction<A, B> createPartial(final Function1<? super A, Boolean> pred, final Function1<? super A, B> transform)
+	public static <A, B> PartialFunction1<A, B> createPartial(final Function1<? super A, Boolean> pred, final Function1<? super A, B> transform)
 	{
 		return new PartialCreation<A, B>(pred, transform);
 	}
 
-	private static final class PartialCreation<A, B> implements PartialFunction<A, B>
+	private static final class PartialCreation<A, B> implements PartialFunction1<A, B>
 	{
 		private final Function1<? super A, Boolean> predicate;
 		private final Function1<? super A, B> mappingFunction;

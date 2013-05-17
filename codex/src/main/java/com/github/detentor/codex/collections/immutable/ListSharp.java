@@ -11,7 +11,7 @@ import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.PartialFunction;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -172,7 +172,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	}
 
 	@Override
-	public <B> ListSharp<B> collect(final PartialFunction<? super T, B> pFunction)
+	public <B> ListSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (ListSharp<B>) super.collect(pFunction);
 	}
