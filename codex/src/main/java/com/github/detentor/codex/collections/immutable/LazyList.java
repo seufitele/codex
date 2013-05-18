@@ -28,7 +28,7 @@ import com.github.detentor.codex.product.Tuple2;
  */
 public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 {
-	protected Object head = UNINITIALIZED;
+	protected Object head;
 	protected LazyList<T> tail;
 
 	/**
@@ -36,10 +36,9 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 */
 	public static final LazyList<Object> Nil = new LazyList<Object>(null, null);
 
-	//Valor ainda não carregado lazy
-	private static final Object UNINITIALIZED = new Uninitialized();
-	private static final class Uninitialized { }
-
+//	//Valor ainda não carregado lazy
+//	private static final Object UNINITIALIZED = new Uninitialized();
+	
 	/**
 	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
@@ -170,7 +169,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 
 		LazyList<T> curTail = this.tail;
 
-		while (curTail.head != UNINITIALIZED && curTail.notEmpty())
+		while ( !(curTail.head instanceof Uninitialized) && curTail.notEmpty())
 		{
 			sBuilder.append(", " + curTail.head());
 			curTail = curTail.tail;
@@ -218,6 +217,19 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return (LazyList<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
 	
+	/**
+	 * Classe que guarda objetos não inicializados
+	 */
+	private static final class Uninitialized 
+	{ 
+		protected final Object keptObject;
+
+		private Uninitialized(Object keptObject)
+		{
+			super();
+			this.keptObject = keptObject;
+		}
+	}
 	
 
 	@Override
@@ -355,9 +367,9 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	private static abstract class LazyMonadic<T> extends LazyList<T>
 	{
 		@SuppressWarnings("unchecked")
-		protected LazyMonadic()
+		protected LazyMonadic(final Object valueToKeep)
 		{
-			super((T) UNINITIALIZED, null);
+			super((T) new Uninitialized(valueToKeep), null);
 		}
 		
 		/**
@@ -376,7 +388,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		@Override
 		public T head()
 		{
-			if (head == UNINITIALIZED)
+			if (head instanceof Uninitialized)
 			{
 				extractValues();
 			}
@@ -397,17 +409,17 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 */
 	private static final class UnfoldedList<T> extends LazyMonadic<T>
 	{
-		private final PartialFunction0<T> genFunction;
-		
 		protected UnfoldedList(final PartialFunction0<T> theGenFunction)
 		{
-			super();
-			this.genFunction = theGenFunction;
+			super(theGenFunction);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void extractValues()
 		{
+			final PartialFunction0<T> genFunction = (PartialFunction0<T>) ((Uninitialized) head).keptObject;
+			
 			if (genFunction.isDefined())
 			{
 				head = genFunction.apply();
@@ -415,8 +427,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 			else
 			{
-				//Finaliza as chamadas para a lista
-				head = null;
+				head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 				tail = null;
 			}
 		}
@@ -428,17 +439,17 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 */
 	private static class LazyListI<T> extends LazyMonadic<T>
 	{
-		private final Iterator<T> iterator;
-
 		protected LazyListI(final Iterator<T> theIterator)
 		{
-			super();
-			this.iterator = theIterator;
+			super(theIterator);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void extractValues()
 		{
+			final Iterator<T> iterator = (Iterator<T>) ((Uninitialized) head).keptObject;
+			
 			if (iterator.hasNext())
 			{
 				head = iterator.next();
@@ -446,110 +457,109 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 			else
 			{
-				head = null;
+				head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 				tail = null;
+				
 			}
 		}
 	}
-	
+
 	/**
 	 * Classe responsável por definir o comportamento de operações monádicas que
 	 * incluem somente Map
 	 */
 	private static final class MapMonadic<T, B> extends LazyMonadic<B>
 	{
-		private final Iterator<T> iterator;
-		private final Function1<? super T, B> mappingFunction;
-
 		protected MapMonadic(final Iterator<T> theIterator, final Function1<? super T, B> theMappingFunction)
 		{
-			super();
-			this.iterator = theIterator;
-			this.mappingFunction = theMappingFunction;
+			super(Tuple2.from(theIterator, theMappingFunction));
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void extractValues()
 		{
-			if (iterator.hasNext())
+			final Tuple2<Iterator<T>, Function1<? super T, B>> tuple = 
+					(Tuple2<Iterator<T>, Function1<? super T, B>>) ((Uninitialized) head).keptObject;
+			
+			if (tuple.getVal1().hasNext())
 			{
-				head = mappingFunction.apply(iterator.next());
-				tail = new MapMonadic<T, B>(iterator, mappingFunction);
+				head = tuple.getVal2().apply(tuple.getVal1().next());
+				tail = new MapMonadic<T, B>(tuple.getVal1(), tuple.getVal2());
 			}
 			else
 			{
-				head = null;
+				head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 				tail = null;
 			}
 		}
 	}
-	
+
 	/**
 	 * Classe responsável por definir o comportamento de operações monádicas que
 	 * incluem somente Filter
 	 */
 	private static final class FilterMonadic<T> extends LazyMonadic<T>
 	{
-		private final Iterator<T> iterator;
-		private final Function1<? super T, Boolean> filterFunction;
-
 		protected FilterMonadic(final Iterator<T> theIterator, final Function1<? super T, Boolean> theFilterFunction)
 		{
-			super();
-			this.iterator = theIterator;
-			this.filterFunction = theFilterFunction;
+			super(Tuple2.from(theIterator, theFilterFunction));
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void extractValues()
 		{
-			while (iterator.hasNext())
+			final Tuple2<Iterator<T>, Function1<? super T, Boolean>> tuple = 
+					(Tuple2<Iterator<T>, Function1<? super T, Boolean>>) ((Uninitialized) head).keptObject;
+			
+			while (tuple.getVal1().hasNext())
 			{
-				final T curEle = iterator.next();
+				final T curEle = tuple.getVal1().next();
 				
-				if (filterFunction.apply(curEle))
+				if (tuple.getVal2().apply(curEle))
 				{
 					head = curEle;
-					tail = new FilterMonadic<T>(iterator, filterFunction);
+					tail = new FilterMonadic<T>(tuple.getVal1(), tuple.getVal2());
 					return;
 				}
 			}
-			head = null;
+			head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 			tail = null;
 		}
 	}
-	
+
 	/**
 	 * Classe responsável por definir o comportamento de operações monádicas que
 	 * incluem Map e Filter juntas (método collect).
 	 */
 	private static final class FMapMonadic<T, A> extends LazyMonadic<A>
 	{
-		private final Iterator<T> iterator;
-		private final PartialFunction1<? super T, A> pFunction;
-
 		protected FMapMonadic(final Iterator<T> theIterator, final PartialFunction1<? super T, A> thePartialFunction)
 		{
-			super();
-			this.iterator = theIterator;
-			this.pFunction = thePartialFunction;
+			super(Tuple2.from(theIterator, thePartialFunction));
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void extractValues()
 		{
-			while (iterator.hasNext())
+			final Tuple2<Iterator<T>, PartialFunction1<? super T, A>> tuple = 
+					(Tuple2<Iterator<T>, PartialFunction1<? super T, A>>) ((Uninitialized) head).keptObject;
+			
+			while (tuple.getVal1().hasNext())
 			{
-				final T curEle = iterator.next();
+				final T curEle = tuple.getVal1().next();
 				
-				if (pFunction.isDefinedAt(curEle))
+				if (tuple.getVal2().isDefinedAt(curEle))
 				{
-					head = pFunction.apply(curEle);
-					tail = new FMapMonadic<T, A>(iterator, pFunction);
+					head = tuple.getVal2().apply(curEle);
+					tail = new FMapMonadic<T, A>(tuple.getVal1(), tuple.getVal2());
 					return;
 				}
 			}
-			head = null;
+			
+			head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 			tail = null;
 		}
 	}
