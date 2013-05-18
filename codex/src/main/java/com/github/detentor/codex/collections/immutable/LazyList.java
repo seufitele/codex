@@ -13,15 +13,10 @@ import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Lista encadeada Lazy. O principal benefício é poder executar
- * as funções
+ * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
  * 
- * ATENÇÃO:  <br/>
- * 1 - Remover, após usar o iterator, a referência a ele, para evitar que ele fique com a referência 'presa'. <br/>
- * 2 - Analisar a possibilidade de remover os atributos de iterator e function, mergindo eles no valor do head, para
- * otimizar o gasto de memória. Como os valores são utilizados somente uma vez, então é possível criar uma classe
- * 'Uninitialized', que teria os atributos, e seria o valor inicial. 
- *   
+ * Lista encadeada Lazy. O principal benefício é poder executar as funções
+ * 
  * @author Vinicius Seufitele
  *
  * @param <T>
@@ -36,9 +31,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 */
 	public static final LazyList<Object> Nil = new LazyList<Object>(null, null);
 
-//	//Valor ainda não carregado lazy
-//	private static final Object UNINITIALIZED = new Uninitialized();
-	
 	/**
 	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
