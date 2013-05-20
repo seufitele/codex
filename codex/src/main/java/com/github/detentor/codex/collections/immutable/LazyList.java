@@ -7,6 +7,7 @@ import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
@@ -225,7 +226,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	
 
 	@Override
-	public LazyList<T> drop(Integer num)
+	public LazyList<T> drop(final Integer num)
 	{
 		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, Integer>, T>(Tuple2.from(this.iterator(), num))
 		{
@@ -263,7 +264,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	@Override
-	public LazyList<T> take(Integer num)
+	public LazyList<T> take(final Integer num)
 	{
 		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, Integer>, T>(Tuple2.from(this.iterator(), num))
 		{
@@ -282,6 +283,35 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			public boolean isDefined()
 			{
 				return state.getVal2() > 0 && state.getVal1().hasNext();
+			}
+		});
+	}
+	
+	/**
+	 * Produz uma coleção contendo resultados cumulativos ao aplicar a função passada como parâmetro
+	 * da esquerda para a direita. A coleção retornada será calculada de maneira lazy. <br/>
+	 * Esse método é o {@link #foldLeft(Object, Function2) foldLeft} lazy. 
+	 * 
+	 * @param startValue O valor inicial da computação
+	 * @param func A função a ser aplicada a cada passo da computação
+	 * @return Uma coleção contendo os valores ao aplicar a função cumulativamente
+	 */
+	public <B> LazyList<B> scanLeft(final B startValue, final Function2<B, T, B> func)
+	{
+		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, B>, B>(Tuple2.from(this.iterator(), startValue))
+		{
+			@Override
+			public B apply()
+			{
+				final B retorno = func.apply(state.getVal2(), state.getVal1().next());
+				state.setVal2(retorno);
+				return retorno;
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return state.getVal1().hasNext();
 			}
 		});
 	}
