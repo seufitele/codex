@@ -10,6 +10,7 @@ import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.MapSharp;
+import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
@@ -249,7 +250,8 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> 
 	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
 	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de 
-	 * elementos desta coleção que retornam aquele valor à função.
+	 * elementos desta coleção que retornam aquele valor à função. <br/>
+	 * O o mapa retornado será criado a partir de um HashMap.
 	 * 
 	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
@@ -258,8 +260,25 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
 	{
+		return groupBy(function, MapSharpType.HASH_MAP);
+	}
+	
+	/**
+	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> 
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
+	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de 
+	 * elementos desta coleção que retornam aquele valor à função.
+	 * 
+	 * @param <B> O tipo de retorno da função
+	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
+	 * @param mapType O tipo de mapa a ser criado pelo groupBy.
+	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
+	 * de elementos cujo resultado da função aplicada seja o mesmo.
+	 */
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function, final MapSharpType mapType)
+	{
 		//ATENÇÃO: VERIFICAR SE O CÓDIGO NÃO PODE SER REESCRITO PARA SER MAIS OTIMIZADO
-		final MapSharp<A, Builder<T, SharpCollection<T>>> mapaIntermediario = MapSharp.empty();
+		final MapSharp<A, Builder<T, SharpCollection<T>>> mapaIntermediario = MapSharp.empty(mapType);
 
 		for (final T curEle : this)
 		{
@@ -274,7 +293,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 			builder.add(curEle);
 		}
 		
-		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.empty();
+		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.empty(mapType);
 		
 		for (final A curEle : mapaIntermediario.keySet())
 		{
