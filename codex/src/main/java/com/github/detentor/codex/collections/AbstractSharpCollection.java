@@ -294,6 +294,27 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 		sBuilder.append(end);
 		return sBuilder.toString();
 	}
+	
+	@Override
+	public String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction)
+	{
+		final StringBuilder sBuilder = new StringBuilder();
+		final Iterator<T> ite = this.iterator();
+
+		sBuilder.append(start);
+
+		while (ite.hasNext())
+		{
+			sBuilder.append(mapFunction.apply(ite.next()));
+			if (ite.hasNext())
+			{
+				sBuilder.append(separator);
+			}
+		}
+
+		sBuilder.append(end);
+		return sBuilder.toString();
+	}
 
 	@SuppressWarnings(UNCHECKED)
 	@Override

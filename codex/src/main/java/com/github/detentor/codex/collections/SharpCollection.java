@@ -173,7 +173,7 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * Mostra todos os elementos desta coleção numa string utilizando, entre elas o separador passado
 	 * como parâmetro.
 	 * @param separator O separador a ser utilizado entre cada chamada ao método toString
-	 * @return Uma string representada pela chamada ao método toString de cada método desta coleção, separados
+	 * @return Uma string representada pela chamada ao método toString de cada elemento desta coleção, separados
 	 * pelo separador passado como parâmetro.
 	 */
 	String mkString(final String separator);
@@ -184,7 +184,7 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	 * @param start A string a ser colocada no início
 	 * @param separator O separador a ser utilizado entre cada chamada ao método toString
 	 * @param end A string a ser colocada no fim
-	 * @return Uma string representada pela chamada ao método toString de cada método desta coleção, separados
+	 * @return Uma string representada pela chamada ao método toString de cada elemento desta coleção, separados
 	 * pelo separador passado como parâmetro, começando por start e terminando com end.
 	 */
 	String mkString(final String start, final String separator, final String end);
