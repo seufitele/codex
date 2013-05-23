@@ -12,6 +12,7 @@ import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.codex.util.RichIterator;
 
 /**
  * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
@@ -279,6 +280,73 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		});
 	}
 	
+	@Override
+	public LazyList<T> dropWhile(final Function1<? super T, Boolean> pred)
+	{
+		return unfold(new StatePartialArrow0<Tuple2<RichIterator<T>, Boolean>, T>(
+				Tuple2.from(RichIterator.from(this.iterator()), true))
+		{
+			@Override
+			public T apply()
+			{
+				return state.getVal1().next();
+			}
+
+			//Irá andar até que acabe o 'drop'
+			private Iterator<T> consumeIterator()
+			{
+				while (state.getVal2() && state.getVal1().hasNext() && pred.apply(state.getVal1().peekNext().get()))
+				{
+					state.getVal1().next();
+				}
+				state.setVal2(false); //Já aplicou a função
+				return state.getVal1();
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return consumeIterator().hasNext();
+			}
+		});
+	}
+	
+	@Override
+	public LazyList<T> takeWhile(final Function1<? super T, Boolean> pred)
+	{
+		return unfold(new StatePartialArrow0<Tuple2<RichIterator<T>, Boolean>, T>(
+				Tuple2.from(RichIterator.from(this.iterator()), true))
+		{
+			@Override
+			public T apply()
+			{
+				return state.getVal1().next();
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				if (state.getVal2())
+				{
+					state.setVal2(state.getVal1().peekNext().notEmpty() && pred.apply(state.getVal1().peekNext().get()));
+				}
+				return state.getVal2();
+			}
+		});
+	}
+
+	/**
+	 * {@inheritDoc} <br/>
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public LazyList<T> dropRightWhile(final Function1<? super T, Boolean> pred)
+	{
+		return super.dropRightWhile(pred);
+	}
+	
+	
+
 	/**
 	 * Produz uma coleção contendo resultados cumulativos ao aplicar a função passada como parâmetro
 	 * da esquerda para a direita. A coleção retornada será calculada de maneira lazy. <br/>
