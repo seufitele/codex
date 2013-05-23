@@ -233,10 +233,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			@Override
 			public T apply()
 			{
-				if (! isDefined())
-				{
-					throw new IllegalArgumentException("Apply chamado para uma função não definida");
-				}
 				return state.getVal1().next();
 			}
 
@@ -271,10 +267,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			@Override
 			public T apply()
 			{
-				if (! isDefined())
-				{
-					throw new IllegalArgumentException("Apply chamado para uma função não definida");
-				}
 				state.setVal2(state.getVal2() - 1);
 				return state.getVal1().next();
 			}
@@ -334,7 +326,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			curTail = curTail.tail();
 		}
-		
 		return this;
 	}
 
@@ -481,7 +472,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			{
 				head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 				tail = null;
-				
 			}
 		}
 	}
