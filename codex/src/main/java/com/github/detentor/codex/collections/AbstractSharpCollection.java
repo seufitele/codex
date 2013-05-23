@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction1;
@@ -255,12 +254,6 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 			colOfCols.add((U)curColecao.result());
 		}
 		return colOfCols.result();
-	}
-	
-	public static void main(String[] args)
-	{
-		System.out.println(ListSharp.from(1, 2, 3, 4, 5).grouped(0));
-		System.out.println(ListSharp.from(1, 2, 3, 4, 5).splitAt(3));
 	}
 	
 	@Override
