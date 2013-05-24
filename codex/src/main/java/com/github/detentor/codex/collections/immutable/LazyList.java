@@ -2,22 +2,65 @@ package com.github.detentor.codex.collections.immutable;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
+import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
+import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.RichIterator;
 
 /**
- * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
+ * Lista encadeada Lazy. <br/>
  * 
- * Lista encadeada Lazy. O principal benefício é poder executar as funções
+ *  Benefícios:
+ * 
+ * 1) Serve de wrapper para qualquer iterator, possibilitando a criação instantânea de uma SharpCollection
+ * sem custo adicional de memória (somente o custo do wrapper, que é negligível). <br/><br/>
+ * 
+ * 2) As funções de ordem superior que retornam coleções são lazy e permitem o encadeamento arbitrário de
+ * operações. Além disso, a LazyList final será criada somente uma vez, ou seja, qualquer que seja o número
+ * de funções encadeadas, o custo será sempre O(n), onde n é o número de elementos do iterator usado na hora
+ * de criar a LazyList.<br/><br/>
+ * 
+ * 3) As funções de ordem superior foram criadas de forma que não guardem uma referência ao 'head' da lista.
+ * Isso significa que, no momento que algum elemento da lista não puder mais ser acessado, ele será coletado,
+ * evitando gasto de memória desnecessário e potencial StackOverflow (comuns principalmente ao trabalhar com listas
+ * infinitas. <br/><br/>
+ * 
+ * 4) Possibilidade de criação de listas infinitas com os métodos geradores. <br/><br/><br/>
+ * 
+ * Pode-se listar diversas maneiras de se criar funções geradoras para possibilitar a criação de estruturas lazy 
+ * e listas infinitas. Listamos os mais comuns, com as suas forças e fraquezas:
+ * 
+ * 1) Usar uma função parcial que carrega o estado (método escolhido): Tem o benefício de ser matematicamente
+ * mais correto (a função para quando ela não estiver definida), mais otimizada (a mesma função é compartilhada
+ * entre as instâncias, evitando o custo de criação e armazenamento) e não guarda referência à função ou lista anterior,
+ * possibilitando o Garbage Collector limpar parte da lista que não é referenciada.
+ *  
+ * O lado ruim é que as implementações são mais complexas 
+ * (uma função parcial com estado depende pesadamente do estado para definir o seu critério de parada),
+ * dependem excessivamente de efeitos colaterais (a modificação direta do estado é uma resultante disso) e mais simples
+ * de serem feitas de maneira errada (uma modificação incorreta no estado pode corromper toda a função). Como não é guardada
+ * uma referência ao início da lista, é mais difícil implementar funções que precisam acessar o estado anterior da lista (como
+ * exemplo, a função distinct requer uma inspeção no conteúdo da lista atual antes de adicionar alguma coisa).<br/><br/>
+ * 
+ * 2) Criar os métodos baseados no foldLeft: Tem o benefício de ter a implementação mais curta e simples: o código fica menor,
+ * e é mais fácil intuir o comportamento da função a partir do código; é possível inspecionar sempre o estado anterior da lista,
+ * visto que ele é sempre 'carregado' para a próxima execução. O lado ruim é que isso impossibilita a coleta da lista na maior parte
+ * dos métodos (que não precisam ficar carregando o estado), 
+ * 
+ * 
+ * 
+ * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
  * 
  * @author Vinicius Seufitele
  *
@@ -102,9 +145,9 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Cria uma instância da LazyList a partir a função geradora. 
+	 * Cria uma instância da LazyList a partir a função parcial geradora. 
 	 * Cada elemento da lista (potencialmente infinita) será definido pela chamada sucessiva à genFunction. <br/>
-	 * ATENÇÃO: A lista só terá fim se em algum momento a função geradora retornar {@link #Nil}
+	 * ATENÇÃO: A lista só terá fim se em algum momento a função geradora não estiver definida (isDefined retornar false).
 	 * 
 	 * @param genFunction A função que gerará os elementos da LazyList
 	 * @return Uma lista infinita, cujos elementos só serão computados quando forem chamados
@@ -134,16 +177,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return tail;
 	}
 	
-	/**
-	 * {@inheritDoc} <br/>
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public int size()
-	{
-		return super.size();
-	}
-
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
@@ -194,15 +227,9 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	@Override
-	public <B> LazyList<B> collect(PartialFunction1<? super T, B> pFunction)
+	public <B> LazyList<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (LazyList<B>) new FMapMonadic<T, B>(this.iterator(), pFunction);
-	}
-
-	@Override
-	public <B> LazyList<B> flatMap(Function1<? super T, ? extends SharpCollection<B>> function)
-	{
-		return (LazyList<B>) super.flatMap(function);
 	}
 
 	@Override
@@ -334,18 +361,218 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-
-	/**
-	 * {@inheritDoc} <br/>
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
+	
 	@Override
-	public LazyList<T> dropRightWhile(final Function1<? super T, Boolean> pred)
+	public Tuple2<LazyList<T>, LazyList<T>> partition(final Function1<? super T, Boolean> pred)
 	{
-		return super.dropRightWhile(pred);
+		//Como filter é lazy, simplesmente cria um filter pra cada lista.
+		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition
+		//strict, ele teria complexidade N apenas.
+		return Tuple2.from(this.filter(pred), this.filter(Functions.not(pred)));
 	}
 	
+	/**
+	 * {@inheritDoc} 
+	 * ATENÇÃO: Se a coleção passada como parâmetro for infinita, este método pode não retornar.
+	 */
+	@Override
+	public LazyList<T> intersect(final SharpCollection<T> withCollection)
+	{
+		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
+		{
+			private final Object UNINITIALIZED = new Uninitialized(null);
+			private Object nextElement = UNINITIALIZED;
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public T apply()
+			{
+				final T toReturn = (T) nextElement;
+				nextElement = UNINITIALIZED;
+				return toReturn;
+			}
+
+			private Object consumeIterator()
+			{
+				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
+				{
+					T curEle = null;
+
+					while (state.hasNext())
+					{ 
+						if (withCollection.contains(curEle = state.next()))
+						{
+							nextElement = curEle;
+							break;
+						}
+					}
+				}
+				return nextElement; //Devolve o valor original do nextElement
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return ! (consumeIterator() instanceof Uninitialized);
+			}
+		});
+	}
 	
+	@Override
+	public LazyList<T> distinct()
+	{
+		//Cria a lista
+		final UnfoldedList<T> uList = new UnfoldedList<T>(null);
+
+		//Cria a função, e passa a lista como parâmetro
+		final StatePartialArrow0<Tuple2<Iterator<T>, LazyList<T>>, T> function = 
+				new StatePartialArrow0<Tuple2<Iterator<T>, LazyList<T>>, T>(Tuple2.from(this.iterator(), (LazyList<T>) uList))
+		{
+			private final Object UNINITIALIZED = new Uninitialized(null);
+			private Object nextElement = UNINITIALIZED;
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public T apply()
+			{
+				final T toReturn = (T) nextElement;
+				nextElement = UNINITIALIZED;
+				
+				return toReturn;
+			}
+			
+			private Object consumeIterator()
+			{
+				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
+				{
+					T curEle = null;
+
+					while (state.getVal1().hasNext())
+					{ 
+						if (! contains(state.getVal2(), curEle = state.getVal1().next()))
+						{
+							nextElement = curEle;
+							break;
+						}
+					}
+				}
+				return nextElement; //Devolve o valor original do nextElement
+			}
+			
+			//Contains privado que evita chamadas recursivas 
+			private boolean contains(final LazyList<T> theList, final T element)
+			{
+				LazyList<T> curList = theList;
+				
+				while (! (curList.head instanceof Uninitialized))
+				{
+					if (curList.head.equals(element))
+					{
+						return true;
+					}
+					curList = curList.tail;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return ! (consumeIterator() instanceof Uninitialized);
+			}
+		};
+
+		//Seta a função no head
+		uList.head = new Uninitialized(function);
+		return uList;
+	}
+	
+	@Override
+	public <B> LazyList<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	{
+		return unfold(new StatePartialArrow0<Iterator<T>, B>(this.iterator())
+		{
+			private final Object UNINITIALIZED = new Uninitialized(null);
+			private Object nextElement = UNINITIALIZED;
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public B apply()
+			{
+				final B toReturn = ((Iterator<B>) nextElement).next(); //Extrai o elemento
+				
+				if (!((Iterator<B>) nextElement).hasNext()) //Reinicializa
+				{
+					nextElement = UNINITIALIZED; 
+				}
+				return toReturn;
+			}
+
+			private Object consumeIterator()
+			{
+				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
+				{
+					SharpCollection<B> curEle = null;
+
+					while (state.hasNext())
+					{ 
+						curEle = function.apply(state.next());
+						if (curEle.notEmpty())
+						{
+							nextElement = curEle.iterator();
+							break;
+						}
+					}
+				}
+				return nextElement; //Devolve o valor original do nextElement
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return ! (consumeIterator() instanceof Uninitialized);
+			}
+		});
+	}
+
+	@Override
+	public Tuple2<LazyList<T>, LazyList<T>> splitAt(final Integer num)
+	{
+		//Como filter é lazy, simplesmente cria um filter pra cada lista.
+		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition
+		//strict, ele teria complexidade N apenas.
+		return Tuple2.from(drop(num), take(num));
+	}
+
+	@Override
+	public LazyList<LazyList<T>> grouped(final Integer size)
+	{
+		return unfold(new StatePartialArrow0<Iterator<T>, LazyList<T>>(this.iterator())
+		{
+			@Override
+			public LazyList<T> apply()
+			{
+				LazyList<T> curEle = new LazyList<T>(null, null);
+				final LazyList<T> first = curEle;
+				
+				int count = 0;
+				
+				while (count++ < size && state.hasNext())
+				{
+					curEle.head = state.next();
+					curEle.tail = new LazyList<T>(null, null);
+					curEle = curEle.tail;
+				}
+				return first;
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return state.hasNext();
+			}
+		});
+	}
 
 	/**
 	 * Produz uma coleção contendo resultados cumulativos ao aplicar a função passada como parâmetro
@@ -396,6 +623,220 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		}
 		return this;
 	}
+	
+	//MÉTODOS REESCRITOS APENAS PELA DOCUMENTAÇÃO - PARA AVISAR QUE OS MÉTODOS LAZY NÃO 
+	//IRÃO RETORNAR, CASO A LISTA SEJA INFINITA
+	
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas esse método não irá retornar.
+	 */
+	@Override
+	public T last()
+	{
+		return super.last();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public LazyList<T> takeRight(final Integer num)
+	{
+		return super.takeRight(num);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public LazyList<T> dropRight(final Integer num)
+	{
+		return super.dropRight(num);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public LazyList<T> dropRightWhile(final Function1<? super T, Boolean> pred)
+	{
+		return super.dropRightWhile(pred);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public LazyList<T> takeRightWhile(Function1<? super T, Boolean> pred)
+	{
+		return super.takeRightWhile(pred);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public Option<T> lastOption()
+	{
+		return super.lastOption();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public String mkString()
+	{
+		return super.mkString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public String mkString(final String separator)
+	{
+		return super.mkString(separator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public String mkString(final String start, final String separator, final String end)
+	{
+		return super.mkString(start, separator, end);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction)
+	{
+		return super.mkString(start, separator, end, mapFunction);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public T maxWith(final Comparator<? super T> comparator)
+	{
+		return super.maxWith(comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public T minWith(final Comparator<? super T> comparator)
+	{
+		return super.minWith(comparator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public T min()
+	{
+		return super.min();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public T max()
+	{
+		return super.max();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public Option<T> minOption()
+	{
+		return super.minOption();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public Option<T> maxOption()
+	{
+		return super.maxOption();
+	}
+	
+	/**
+	 * {@inheritDoc} <br/>
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public int size()
+	{
+		return super.size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public List<T> toList()
+	{
+		return super.toList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public List<T> toList(Builder<T, List<T>> builder)
+	{
+		return super.toList(builder);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public Set<T> toSet()
+	{
+		return super.toSet();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+	 */
+	@Override
+	public Set<T> toSet(Builder<T, Set<T>> builder)
+	{
+		return super.toSet(builder);
+	}
+	
 
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp. IMUTÁVEL. 
@@ -638,7 +1079,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 					return;
 				}
 			}
-			
 			head = null; //Essa chamada libera qualquer elemento guardado em keptObject
 			tail = null;
 		}
