@@ -232,12 +232,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return (LazyList<B>) new FMapMonadic<T, B>(this.iterator(), pFunction);
 	}
 
-	@Override
-	public LazyList<Tuple2<T, Integer>> zipWithIndex()
-	{
-		return (LazyList<Tuple2<T, Integer>>) super.zipWithIndex();
-	}
-	
 	/**
 	 * Classe que guarda objetos não inicializados
 	 */
@@ -593,6 +587,27 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 				final B retorno = func.apply(state.getVal2(), state.getVal1().next());
 				state.setVal2(retorno);
 				return retorno;
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return state.getVal1().hasNext();
+			}
+		});
+	}
+	
+	@Override
+	public LazyList<Tuple2<T, Integer>> zipWithIndex()
+	{
+		return unfold(new StatePartialArrow0<Tuple2<Iterator<T>, Integer>, Tuple2<T, Integer>>(Tuple2.from(this.iterator(), 0))
+		{
+			@Override
+			public Tuple2<T, Integer> apply()
+			{
+				final Integer curIndex = state.getVal2();
+				state.setVal2(curIndex + 1); 
+				return Tuple2.from(state.getVal1().next(), curIndex);
 			}
 
 			@Override
