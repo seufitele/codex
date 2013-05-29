@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.SetSharp;
@@ -23,12 +24,13 @@ public class SharpCollectionTest
 		ListSharp<Class<?>> listas = 
 				//FastList.class
 				ListSharp.<Class<?>>from(
-//						LazyList.class,
+						LazyList.class,
 						ListSharp.class,
+						com.github.detentor.codex.collections.immutable.ListSharp.class,
 						LLSharp.class,
-						SetSharp.class,
+						SetSharp.class
 //						MapSharp.class, <- removido porque MapSharp é criado de maneira diferente
-						com.github.detentor.codex.collections.immutable.ListSharp.class);
+						);
 		
 		for(Class<?> ele : listas)
 		{
@@ -47,7 +49,7 @@ public class SharpCollectionTest
 	public void testCollection(Class<SharpCollection<?>> theClass) 
 	{
 		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
-		final Option<Method> func2 = Reflections.getMethodFromName(theClass, "empty");
+		final Option<Method> func2 = Reflections.getMethodFromNameAndType(theClass, "empty", new Class<?>[0]);
 		
 		SharpCollection<Integer> listaOri = func.apply(1, 2, 3, 4, 5);
 		SharpCollection<Integer> lista = func.apply(1, 2, 3, 4, 5);
