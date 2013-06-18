@@ -3,14 +3,11 @@ package com.github.detentor.codex.collections.mutable;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
@@ -220,15 +217,15 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		Builder<B, SharpCollection<B>> builderRetorno = null;
 		
-		if (backingMap instanceof HashSet<?>)
+		if (backingMap instanceof HashMap<?, ?>)
 		{
 			builderRetorno = new HashMapBuilder();
 		}
-		else if (backingMap instanceof LinkedHashSet<?>)
+		else if (backingMap instanceof LinkedHashMap<?, ?>)
 		{
 			builderRetorno = new LinkedHashMapBuilder();
 		}
-		else if (backingMap instanceof TreeSet<?>)
+		else if (backingMap instanceof TreeMap<?, ?>)
 		{
 			builderRetorno = new TreeMapBuilder();
 		}
