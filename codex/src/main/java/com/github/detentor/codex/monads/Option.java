@@ -14,21 +14,22 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Option é uma mônade que representa uma operação que pode ou não retornar um valor. <br/>
- * <br/>
+ * Option é uma mônade que representa um container que pode ou não conter um elemento. <br/><br/>
+ * Option também pode ser vista como uma lista que pode ter, no máximo, um elemento. O valor
+ * informado na criação da Option determinará se ela estará vazia ou não (a passagem do parâmetro com valor nulo cria uma
+ * Option vazia). <br/><br/>
  * 
- * Option pode ser vista como uma lista, que estará vazia se a operação não foi bem-sucedida, ou conterá um elemento se ela foi.
+ * Classe imutável.
  * 
  * @author Vinícius Seufitele Pinto
  * 
- * @param <T> O tipo de dados a ser guardado no option
+ * @param <T> O tipo do dado a ser guardado na Option
  */
 public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	private static final Option<Object> NONE = new Option<Object>();
-
 	private final List<T> value = new ArrayList<T>(1);
 
 	protected Option()
@@ -43,10 +44,10 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	/**
-	 * Cria um option para uma operação que falhou (Option está vazio)
+	 * Retorna uma Option vazia.
 	 * 
-	 * @param <T> O tipo de dados que option deveria conter
-	 * @return Uma option que representa uma computação não sucedida
+	 * @param <T> O tipo do dado que a Option deveria conter
+	 * @return Uma Option vazia
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Option<T> empty()
@@ -55,10 +56,11 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	/**
-	 * Cria um option para uma operação que falhou (Option está vazio)
+	 * Cria uma Option a partir do valor passado como parâmetro. <br/>
+	 * Se o valor estiver nulo, a Option retornada estará vazia. Do contrário, ela conterá o valor.
 	 * 
-	 * @param <T> O tipo de dados que option deveria conter
-	 * @return Uma option que representa uma computação não sucedida
+	 * @param <T> O tipo do dado que a Option poderá conter
+	 * @return Uma Option que conterá theValue, se ele for não-nulo
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Option<T> from(final T theValue)
@@ -67,10 +69,11 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	/**
-	 * Retorna o valor T se ele existir nesta Option. Chamar esse método com Option sem elementos causará um erro.
+	 * Retorna o valor T se ele existir nesta Option. 
+	 * Chamar esse método para uma Option vazia disparará uma exceção.
 	 * 
-	 * @return O valor T guardado nesta Option
-	 * @throws NoSuchElementException Se o Option estiver vazio
+	 * @return O valor T guardado nesta Option (se ele existir)
+	 * @throws NoSuchElementException Se a Option estiver vazio
 	 */
 	public T get()
 	{
@@ -82,7 +85,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	/**
-	 * Retorna o valor contido nesta Option, ou o valor determinado pela parte do else se ela não contém nenhum valor.
+	 * Retorna o valor contido nesta Option, ou o valor determinado pela parte do else se ela estiver vazia.
 	 * 
 	 * @param elsePart O valor a ser retornado, caso esta Option esteja vazia
 	 * @return Um valor T, que será o valor desta Option, ou a parte do else.
