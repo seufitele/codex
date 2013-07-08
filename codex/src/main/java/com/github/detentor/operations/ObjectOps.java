@@ -16,18 +16,23 @@ public final class ObjectOps
 	}
 	
 	/**
-	 * Verifica se os dois objetos são iguais. Em particular, a principal diferença deste método é ser
-	 * Null-safe, ou seja, a utilização do método não disparará {@link NullPointerException}, o que aconteceria
-	 * caso fosse usado object1.equals(object2), e object1 fosse nulo.
-	 * 
-	 * @param object1 O primeiro objeto a ser comparado
-	 * @param object2 O segundo objeto a ser comparado
-	 * @return True se, e somente se, os dois objetos são nulos, ou object1.equals(object2) retornar true.
+	 * Retorna uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'
+	 * @param theObject O objeto a ser usado como comparador para a seta.
+	 * @return Uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'
 	 */
-	public static final <A, B> boolean isEquals(final A object1, final B object2)
+	public static final Arrow1<Object, Boolean> isEquals(final Object theObject)
 	{
-		return (object1 == null && object2 == null) || 
-					(object1 != null && object2 != null && object1.equals(object2)); 
+		return new Arrow1<Object, Boolean>()
+		{
+			@Override
+			public Boolean apply(final Object param)
+			{
+				//Seria uma igual à outra?
+				//(theObject == null && param == null) || (theObject != null && param != null && theObject.equals(param))
+				return (theObject == null && param == null) || 
+						(theObject != null && theObject.equals(param));
+			}
+		};
 	}
 
 	/**

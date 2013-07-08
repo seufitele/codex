@@ -34,23 +34,6 @@ public final class DoubleOps
 	}
 	
 	/**
-	 * Retorna uma seta que valida se o número passado como parâmetro é igual a 'num'
-	 * @param num O número a ser usado como comparador para a seta.
-	 * @return Uma seta que valida se o número passado como parâmetro é igual a 'num'
-	 */
-	public static final Arrow1<Double, Boolean> equal(final Double num)
-	{
-		return new Arrow1<Double, Boolean>()
-		{
-			@Override
-			public Boolean apply(final Double param)
-			{
-				return ObjectOps.isEquals(num, param);
-			}
-		};
-	}
-
-	/**
 	 * Retorna uma seta que valida se o número passado como parâmetro é menor do que 'num'
 	 * @param num O número a ser usado como comparador para a seta.
 	 * @return Uma seta que valida se o número passado como parâmetro é menor do que 'num'

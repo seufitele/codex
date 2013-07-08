@@ -81,18 +81,6 @@ public final class StringOps
 	};
 	
 	/**
-	 * Representa a função identidade, ou seja, a função que retorna a própria String.
-	 */
-	public static final Arrow1<String, String> identity = new Arrow1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param;
-		}
-	};
-	
-	/**
 	 * Representa a função que converte uma string para properCase. Null-safe.
 	 */
 	public static final Arrow1<String, String> toProperCase = new Arrow1<String, String>()
