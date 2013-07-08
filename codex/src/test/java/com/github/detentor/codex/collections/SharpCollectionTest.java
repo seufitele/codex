@@ -26,6 +26,16 @@ public class SharpCollectionTest
 	@Test
 	public void testListSharp() 
 	{
+		//Os testes devem estar divididos em 3 partes:
+		//1 - Testes de GenericSharpCollection
+		//2 - Testes de sequências (drop, tail, etc)
+		//3 - Testes de funções de ordem superior
+		//4 - Testes de sequências lineares e sequências indexadas
+		//5 - Testes de diversos tipos de mapas e sets.
+		
+		//Como observação, a ordem do iterator de GenericSharpCollection não é bem-definida (ex: Mapas e Sets).
+		
+		
 		ListSharp<Class<?>> listas = 
 				//FastList.class
 				ListSharp.<Class<?>>from(
