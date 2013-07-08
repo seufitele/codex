@@ -3,9 +3,9 @@ package com.github.detentor.codex.function.arrow.impl;
 import com.github.detentor.codex.function.arrow.Arrow0;
 
 /**
- * StateFunction representa uma seta que carrega um estado. Pela atualização
+ * StateArrow representa uma seta que carrega um estado. Pela atualização
  * do estado, é possível à seta retornar valores diferentes para a mesma aplicação. <br/><br/>
- * Funcionalmente, equivalente à State Monad.
+ * É semelhante à State Monad, com a diferença que StateArrow não é funcionalmente pura.
  * 
  * @author Vinicius Seufitele Pinto
  *
