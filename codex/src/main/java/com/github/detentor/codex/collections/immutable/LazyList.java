@@ -19,9 +19,9 @@ import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.RichIterator;
 
 /**
- * Lista encadeada Lazy. <br/>
+ * Lista encadeada Lazy. <br/><br/>
  * 
- *  Benefícios:
+ *  Benefícios: <br/><br/>
  * 
  * 1) Serve de wrapper para qualquer iterator, possibilitando a criação instantânea de uma SharpCollection
  * sem custo adicional de memória (somente o custo do wrapper, que é negligível). <br/><br/>
@@ -39,7 +39,7 @@ import com.github.detentor.codex.util.RichIterator;
  * 4) Possibilidade de criação de listas infinitas com os métodos geradores. <br/><br/><br/>
  * 
  * Pode-se listar diversas maneiras de se criar funções geradoras para possibilitar a criação de estruturas lazy 
- * e listas infinitas. Listamos os mais comuns, com as suas forças e fraquezas:
+ * e listas infinitas. Listamos os mais comuns, com as suas forças e fraquezas: <br/><br/>
  * 
  * 1) Usar uma função parcial que carrega o estado (método escolhido): Tem o benefício de ser matematicamente
  * mais correto (a função para quando ela não estiver definida), mais otimizada (a mesma função é compartilhada
