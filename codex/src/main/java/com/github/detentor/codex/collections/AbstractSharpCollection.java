@@ -43,6 +43,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	@Override
 	public boolean isEmpty()
 	{
+		//Poderia ser substituído por !this.iterator().hasNext() ?
 		return this.size() == 0;
 	}
 
