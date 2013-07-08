@@ -10,15 +10,15 @@ import com.github.detentor.codex.function.arrow.Arrow1;
  * 
  * @author Vinícius Seufitele Pinto
  *
- * @param <A>
- * @param <B>
+ * @param <A> O tipo de dados de entrada (o domínio da seta)
+ * @param <B> O tipo de dados de saída (a imagem da seta)
  */
 public abstract class MemoizedArrow1<A, B> extends Arrow1<A, B>
 {
 	private Map<A, B> memoValues = new HashMap<A, B>();
 
 	@Override
-	public final B apply(A param)
+	public final B apply(final A param)
 	{
 		B theVal = memoValues.get(param);
 		
