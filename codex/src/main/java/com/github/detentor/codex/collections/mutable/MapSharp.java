@@ -1,6 +1,7 @@
 package com.github.detentor.codex.collections.mutable;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
+import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -79,6 +81,19 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 			retorno.add(Tuple2.from(ele.getKey(), ele.getValue()));
 		}
 		return retorno;
+	}
+	
+	/**
+	 * Cria uma instância de MapSharp a partir dos valores passados como parâmetro. <br/>
+	 * 
+	 * @param T O tipo de dados da chave
+	 * @param U O tipo de dados do valor
+	 * @param theMap O mapa a partir do qual este mapa será criado
+	 * @return Um MapSharp que contém os elementos do mapa passado como parâmetro
+	 */
+	public static <T, U> MapSharp<T, U> from(final Tuple2<T, U>... values)
+	{
+		return from(Arrays.asList(values));
 	}
 
 	/**
@@ -204,6 +219,21 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		backingMap.put(element.getVal1(), element.getVal2());
 		return this;
 	}
+	
+	/**
+	 * Adiciona os elementos para este mapa, onde o val1 é a chave, e val2 o valor
+	 * 
+	 * @param elements Os elementos a serem adicionados
+	 * @return A referência a este mapa após a adição
+	 */
+	public MapSharp<K, V> addAll(final Tuple2<K, V>... elements)
+	{
+		for (int i = 0; i < elements.length; i++)
+		{
+			add(elements[i]);
+		}
+		return this;
+	}
 
 	public MapSharp<K, V> clear()
 	{
@@ -217,17 +247,17 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		Builder<B, SharpCollection<B>> builderRetorno = null;
 		
-		if (backingMap instanceof HashMap<?, ?>)
+		if (backingMap instanceof LinkedHashMap<?, ?>)
 		{
-			builderRetorno = new HashMapBuilder();
+			builderRetorno = new GenMapBuilder(MapSharpType.LINKED_HASH_MAP);
 		}
-		else if (backingMap instanceof LinkedHashMap<?, ?>)
+		else if (backingMap instanceof HashMap<?, ?>)
 		{
-			builderRetorno = new LinkedHashMapBuilder();
+			builderRetorno = new GenMapBuilder(MapSharpType.HASH_MAP);
 		}
 		else if (backingMap instanceof TreeMap<?, ?>)
 		{
-			builderRetorno = new TreeMapBuilder();
+			builderRetorno = new GenMapBuilder(MapSharpType.TREE_MAP);
 		}
 		else
 		{
@@ -296,6 +326,15 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	public V get(final K key)
 	{
 		return backingMap.get(key);
+	}
+	
+	/**
+	 * Uma Option que conterá o valor para o qual a chave especificada está mapeada, se ele existir. <br/>
+	 * ATENÇÃO: Se o valor da chave estiver mapeado para null, a Option retornada estará vazia.
+	 */
+	public Option<V> getOption(final K key)
+	{
+		return Option.from(backingMap.get(key));
 	}
 
 	/**
@@ -481,65 +520,41 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 	
 	/**
-	 * Essa classe é um builder para Set baseado em um MapSharp. <br/>
+	 * Essa classe é um builder genérico para mapas. <br/>
 	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
 	 */
-	private class HashMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
+	private class GenMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
 	{
-		private final Map<X, Y> hashMap = new HashMap<X, Y>();
+		private final Map<X, Y> backMap;
+		
+		protected GenMapBuilder(final MapSharpType mapType)
+		{
+			switch (mapType)
+			{
+				case HASH_MAP:
+					backMap = new HashMap<X, Y>();
+					break;
+				case LINKED_HASH_MAP:
+					backMap = new LinkedHashMap<X, Y>();
+					break;
+				case TREE_MAP:
+					backMap = new TreeMap<X, Y>();
+					break;
+				default :
+					throw new IllegalArgumentException("Tipo de mapa não reconhecido");
+			}
+		}
 
 		@Override
 		public void add(final Tuple2<X, Y> element)
 		{
-			hashMap.put(element.getVal1(), element.getVal2());
+			backMap.put(element.getVal1(), element.getVal2());
 		}
 
 		@Override
 		public MapSharp<X, Y> result()
 		{
-			return new MapSharp<X, Y>(hashMap);
-		}
-	}
-	
-	/**
-	 * Essa classe é um builder para MapSharp baseado no LinkedHashMap. <br/>
-	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
-	 */
-	private class LinkedHashMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
-	{
-		private final Map<X, Y> hashMap = new LinkedHashMap<X, Y>();
-
-		@Override
-		public void add(final Tuple2<X, Y> element)
-		{
-			hashMap.put(element.getVal1(), element.getVal2());
-		}
-
-		@Override
-		public MapSharp<X, Y> result()
-		{
-			return new MapSharp<X, Y>(hashMap);
-		}
-	}
-	
-	/**
-	 * Essa classe é um builder para MapSharp baseado no TreeMap. <br/>
-	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
-	 */
-	private class TreeMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
-	{
-		private final Map<X, Y> hashMap = new TreeMap<X, Y>();
-
-		@Override
-		public void add(final Tuple2<X, Y> element)
-		{
-			hashMap.put(element.getVal1(), element.getVal2());
-		}
-
-		@Override
-		public MapSharp<X, Y> result()
-		{
-			return new MapSharp<X, Y>(hashMap);
+			return new MapSharp<X, Y>(backMap);
 		}
 	}
 	
