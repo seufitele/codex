@@ -16,8 +16,8 @@ import com.github.detentor.codex.product.Tuple2;
  *  
  *  <b>Vantagens</b>: <br/><br/>
  *  
- *  1 - Operações de adição, head, tail são O(1)
- *  2 - A estrutura naturalmente recursiva da lista facilita a codificação dos métodos,
+ *  1 - {@link #add(Object) add}, {@link #head() head} e {@link #tail() tail} são O(1) <br/>
+ *  2 - A estrutura naturalmente recursiva da lista facilita a codificação dos métodos, 
  *  e é especialmente útil para criação de listas cujo tamanho não é conhecido previamente (por exemplo,
  *  listas criadas a partir de um iterator), ou, até mesmo, listas infinitas.
  *  
@@ -26,13 +26,13 @@ import com.github.detentor.codex.product.Tuple2;
  *  <b>Desvantagens</b>: <br/><br/>
  *  
  *  1 - Tem um maior custo de memória do que listas baseadas em Array. <br/>
- *  2 - Calcular o tamanho da lista tem um custo de O(n). <br/>
- *  3 - Acesso a elementos em uma posição aleatória 'n' tem custo O(n)
+ *  2 - Calcular o tamanho da lista ({@link #size() size}) tem um custo de O(n). <br/>
+ *  3 - Acesso a elementos em uma posição aleatória 'n' tem custo O(n) <br/>
  *  4 - A adição de elementos representa uma pilha (FIFO), não uma fila (LILO)
  *  
  * @author Vinicius Seufitele
  *
- * @param <T>
+ * @param <T> O tipo de dados guardado na lista
  */
 public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 {
@@ -65,7 +65,6 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 
 	/**
 	 * Cria uma nova LinkedListSharp, a partir do valor passado como parâmetro. <br/>
-	 * Esse método é uma forma mais compacta de se criar LinkedListSharp.
 	 * 
 	 * @param <A> O tipo de dados da LinkedListSharp a ser retornada.
 	 * @param valor O valor da LinkedListSharp
@@ -78,7 +77,6 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	
 	/**
 	 * Cria uma nova LinkedListSharp, a partir dos valores passados como parâmetro. <br/>
-	 * Esse método é uma forma mais compacta de se criar LinkedListSharp.
 	 * 
 	 * @param <A> O tipo de dados da LinkedListSharp a ser retornada.
 	 * @param valores A LinkedListSharp a ser criada, a partir dos valores
@@ -96,8 +94,8 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	/**
-	 * Cria uma instância de LinkedListSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos
-	 * elementos será a mesma ordem do iterable.
+	 * Cria uma instância de LinkedListSharp a partir dos elementos existentes no iterable passado como parâmetro. 
+	 * A ordem da adição dos elementos será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
@@ -140,13 +138,22 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	/**
-	 * Cria uma LLSharp que representa a adição do elemento passado como parâmetro com esta lista
-	 */
+     * Adiciona o elemento passado como parâmetro nesta coleção. <br/><br/>
+     * 
+     * @param element O elemento a ser adicionado nesta coleção
+     * @return A referência à uma nova coleção, com o elemento adicionado
+     */
 	public LLSharp<T> add(final T element)
 	{
 		return new LLSharp<T>(element, this);
 	}
 
+	/**
+     * Adiciona todos os elementos da coleção especificada nesta coleção.
+     *
+     * @param col Coleção contendo elemento a serem adicionados nesta coleção
+     * @return A referência à uma nova coleção, com o elemento adicionado
+     */
 	public LLSharp<T> addAll(final Iterable<? extends T> col)
 	{
 		for (T ele : col)
@@ -155,59 +162,29 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 		}
 		return this;
 	}
-	
-//	@Override
-//	public LLSharp<T> remove(final T element)
-//	{
-//		if (this.isEmpty())
-//		{
-//			return this;
-//		}
-//
-//		if (Option.from(this.head).equals(Option.from(element)))
-//		{
-//			this.head = this.tail.head;
-//			this.tail = this.tail.tail;
-//		}
-//		else
-//		{
-//			this.tail = this.tail.remove(element);
-//		}
-//		return this;
-//	}
-//
-//	@Override
-//	public LLSharp<T> removeAll(final Iterable<T> col)
-//	{
-//		for (T ele : col)
-//		{
-//			this.remove(ele);
-//		}
-//		return this;
-//	}
 
 	@Override
 	public String toString()
 	{
 		return mkString("[", ", ", "]");
 	}
-	
+
 	//Overrides obrigatórios
 	
 	@Override
-	public <B> LLSharp<B> map(Function1<? super T, B> function)
+	public <B> LLSharp<B> map(final Function1<? super T, B> function)
 	{
 		return (LLSharp<B>) super.map(function);
 	}
 
 	@Override
-	public <B> LLSharp<B> collect(PartialFunction1<? super T, B> pFunction)
+	public <B> LLSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (LLSharp<B>) super.collect(pFunction);
 	}
 
 	@Override
-	public <B> LLSharp<B> flatMap(Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
 	{
 		return (LLSharp<B>) super.flatMap(function);
 	}
@@ -219,7 +196,8 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	/**
-	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp. IMUTÁVEL. 
+	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp. IMUTÁVEL.
+	 * Esse builder assegura que a ordem de inserção será preservada. 
 	 * @param <E> O tipo de dados do ListSharp retornado
 	 */
 	private static final class LinkedListBuilder<E> implements Builder<E, SharpCollection<E>>
@@ -260,6 +238,7 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	@Override
 	public LLSharp<T> sorted(Comparator<? super T> comparator)
 	{
+		//TODO: Reescrever  
 		return from(ListSharp.from(this).sorted(comparator));
 	}
 }
