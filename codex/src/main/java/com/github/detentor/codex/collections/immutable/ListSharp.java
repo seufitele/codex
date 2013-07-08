@@ -258,7 +258,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
 	 * de elementos cujo resultado da função aplicada seja o mesmo.
 	 */
-	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function)
 	{
 		return groupBy(function, MapSharpType.HASH_MAP);
 	}
@@ -275,7 +275,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
 	 * de elementos cujo resultado da função aplicada seja o mesmo.
 	 */
-	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function, final MapSharpType mapType)
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function, final MapSharpType mapType)
 	{
 		//ATENÇÃO: VERIFICAR SE O CÓDIGO NÃO PODE SER REESCRITO PARA SER MAIS OTIMIZADO
 		final MapSharp<A, Builder<T, SharpCollection<T>>> mapaIntermediario = MapSharp.empty(mapType);

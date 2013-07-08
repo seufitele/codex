@@ -177,7 +177,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
 	 * de elementos cujo resultado da função aplicada seja o mesmo.
 	 */
-	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function)
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function)
 	{
 		return groupBy(function, MapSharpType.HASH_MAP);
 	}
@@ -194,7 +194,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
 	 * de elementos cujo resultado da função aplicada seja o mesmo.
 	 */
-	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<T, A> function, final MapSharpType mapType)
+	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function, final MapSharpType mapType)
 	{
 		final MapSharp<A, ListSharp<T>> mapaRetorno = MapSharp.empty(mapType);
 
@@ -215,7 +215,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
 	 * @return Um mapa, onde a chave é o resultado da função, e o valor é o elemento usado para gerar a chave
 	 */
-	public <A> MapSharp<A, T> mapped(final Function1<T, A> function)
+	public <A> MapSharp<A, T> mapped(final Function1<? super T, A> function)
 	{
 		final MapSharp<A, T> mapaRetorno = MapSharp.empty();
 
