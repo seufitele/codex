@@ -62,6 +62,17 @@ public class SharpCollectionTest
 		}
 	}
 	
+	/**
+	 * Executa o teste para as coleções genéricas (métodos gerais, que não consideram ordem). <br/>
+	 * 
+	 */
+	public void testGenericCollection()
+	{
+		
+		
+		
+	}
+	
 	public void testCollection(Class<SharpCollection<?>> theClass) 
 	{
 		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
@@ -168,7 +179,15 @@ public class SharpCollectionTest
 		//IsEmpty() geral
 			assertTrue(emptyCol.notEmpty() == false);
 			assertTrue(emptyCol.isEmpty());
+		
+		//Contains
+			assertTrue(sharpCol.contains(10) == false);
+			assertTrue(sharpCol.contains(1) == true);
+			assertTrue(sharpCol.contains(5) == true);
 
+			
+			
+			
 		//Head - geral
 			assertTrue(sharpCol.head() == 1);
 		
@@ -261,16 +280,11 @@ public class SharpCollectionTest
 			assertTrue(sharpCol.dropRightWhile(IntegerOps.lowerThan(10)).isEmpty());
 		//
 			
-		//Contains
-			assertTrue(sharpCol.contains(10) == false);
-			assertTrue(sharpCol.contains(1) == true);
-			assertTrue(sharpCol.contains(5) == true);
-		
 		//High-order functions
 			
 			//Find
-			assertTrue(sharpCol.find(IntegerOps.equal(5)).notEmpty());
-			assertTrue(sharpCol.find(IntegerOps.equal(0)).isEmpty());
+				assertTrue(sharpCol.find(IntegerOps.equal(5)).notEmpty());
+				assertTrue(sharpCol.find(IntegerOps.equal(0)).isEmpty());
 			
 			//Filter
 				assertTrue(sharpCol.filter(IntegerOps.lowerThan(5)).equals(colDropRight1));
