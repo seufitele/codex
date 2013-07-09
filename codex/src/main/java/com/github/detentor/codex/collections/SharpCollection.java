@@ -47,6 +47,14 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, 
     boolean contains(T element);
     
     /**
+     * Retorna <tt>true</tt> se esta coleção contém todos os elementos do iterator especificado.
+     *
+     * @param  col A coleção a ser verificada
+     * @return <tt>true</tt> Se esta coleção contém todos os elementos do iterator especificado
+     */
+    boolean containsAll(final Iterable<T> col);
+    
+    /**
      * Retorna um iterador sobre os elementos desta coleção. Não há garantias quanto à
      * ordem que os elementos serão retornados (a menos que esta coleção seja uma instância
      * de uma classe que provê essa garantia).
@@ -55,16 +63,6 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, 
      */
     @Override
 	public Iterator<T> iterator();
-    
-    //MÉTODOS BULK, cujas implementações são criadas a partir dos valores anteriores: 
-    
-    /**
-     * Retorna <tt>true</tt> se esta coleção contém todos os elementos do iterator especificado.
-     *
-     * @param  col A coleção a ser verificada
-     * @return <tt>true</tt> Se esta coleção contém todos os elementos do iterator especificado
-     */
-    boolean containsAll(final Iterable<T> col);
     
     //Métodos diversos:
     
