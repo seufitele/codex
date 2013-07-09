@@ -3,6 +3,7 @@ package com.github.detentor.codex.collections;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -23,6 +24,8 @@ import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
 import com.github.detentor.codex.collections.mutable.SetSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.FunctionN;
+import com.github.detentor.codex.function.Functions;
+import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.ArrowN;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
@@ -252,7 +255,7 @@ public class SharpCollectionTest
 	 * Obs: Espera-se um array de tamanho não 0, que tenha pelo menos 1 elemento repetido
 	 * e que os elementos implementem a interface Comparable.
 	 * 
-	 * @param sharpCol Uma coleção com os valores [1, 2, 3, 4, 5]
+	 * @param sharpCol Uma coleção com os valores
 	 * @param oriSharpCol Uma cópia da SharpCol (deep copy)
 	 * @param emptyCol Uma coleção vazia
 	 * @param theComparator Um comparator, para testar as funções de comparação. ATENÇÃO: O comparator
@@ -266,6 +269,8 @@ public class SharpCollectionTest
 							  			final SharpCollection<Object> emptyCol,
 							  			final Comparator<Object> theComparator,
 							  			final Function1<Object, Boolean> filterFunc,
+							  			final Function1<Object, Object> mapFunc,
+							  			final Function1<Object, Iterable<Object>> fmapFunc,
 							  			final Object eleNotInCol,
 							  			final Object... elems) 
 	{
@@ -300,10 +305,17 @@ public class SharpCollectionTest
 		//contains
 		assertTrue(sharpCol.contains(elems[0]));
 		assertTrue(! sharpCol.contains(eleNotInCol));
+		assertTrue(! emptyCol.contains(elems[0]));
 		
 		//containsAll
 		assertTrue(sharpCol.containsAll(elemsList));
 		assertTrue(! sharpCol.containsAll(singleEleList));
+		assertTrue(!emptyCol.containsAll(elemsList));
+
+		//containsAny
+		assertTrue(sharpCol.containsAny(elemsList));
+		assertTrue(! sharpCol.containsAny(singleEleList));
+		assertTrue(! emptyCol.containsAny(elemsList));
 		
 		//intersect
 		assertTrue(sharpCol.intersect(elemsList).equals(oriSharpCol));
@@ -313,6 +325,26 @@ public class SharpCollectionTest
 		//distinct
 		assertTrue(sharpCol.distinct().intersect(distinctSet).size() == distinctSet.size());
 		assertTrue(emptyCol.distinct().intersect(distinctSet).size() == 0);
+		
+		//mkString <- assegura que chamar o método é seguro
+		assertTrue(!sharpCol.mkString().isEmpty());
+		assertTrue(!emptyCol.mkString().isEmpty());
+
+		//min & minOption
+		assertTrue(sharpCol.min().equals(sortedSet.first()));
+		assertTrue(sharpCol.minOption().get().equals(sortedSet.first()));
+		assertTrue(emptyCol.minOption().isEmpty());
+		
+		//minWith
+		assertTrue(sharpCol.minWith(theComparator).equals(sortedSet.first()));
+		
+		//max & maxOption
+		assertTrue(sharpCol.max().equals(sortedSet.last()));
+		assertTrue(sharpCol.maxOption().get().equals(sortedSet.last()));
+		assertTrue(emptyCol.maxOption().isEmpty());
+		
+		//maxWith
+		assertTrue(sharpCol.maxWith(theComparator).equals(sortedSet.last()));
 		
 		//sorted
 		assertTrue(emptyCol.sorted().equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
@@ -335,46 +367,80 @@ public class SharpCollectionTest
 				throw new AssertionFailedError("A ordenação dos objetos não é igual");
 			}
 		}
-
-		//mkString <- assegura que chamar o método é seguro
-		assertTrue(!sharpCol.mkString().isEmpty());
-		assertTrue(!emptyCol.mkString().isEmpty());
-
-		//min & minOption
-		assertTrue(sharpCol.min().equals(sortedSet.first()));
-		assertTrue(sharpCol.minOption().get().equals(sortedSet.first()));
-		assertTrue(emptyCol.minOption().isEmpty());
-		
-		//minWith
-		assertTrue(sharpCol.minWith(theComparator).equals(sortedSet.first()));
-		
-		//max & maxOption
-		assertTrue(sharpCol.max().equals(sortedSet.last()));
-		assertTrue(sharpCol.maxOption().get().equals(sortedSet.last()));
-		assertTrue(emptyCol.maxOption().isEmpty());
-		
-		//maxWith
-		assertTrue(sharpCol.maxWith(theComparator).equals(sortedSet.last()));
 		
 		//filter
-//		assertTrue(sharpCol.filter(filterFunc))
-				
-				//filter
-				
-				//partition
-				
-				//exists
-				
-				//forall
-				
-				//map
-				
-				//collect
-				
-				//flatMap
-				
-				//count
+		List<Object> listaFiltro = new ArrayList<Object>();
+		for (int i = 0; i < elems.length; i++)
+		{
+			if (filterFunc.apply(elems[i]))
+			{
+				listaFiltro.add(elems[i]);
+			}
+		}
+		assertTrue(emptyCol.filter(filterFunc).isEmpty());
+		assertTrue(sharpCol.filter(filterFunc).size() == listaFiltro.size());
+
+		//partition
+		assertTrue(emptyCol.partition(filterFunc).getVal1().isEmpty() && emptyCol.partition(filterFunc).getVal2().isEmpty());
+		final Tuple2<? extends SharpCollection<Object>, ? extends SharpCollection<Object>> partResult = sharpCol.partition(filterFunc);
+		assertTrue((partResult.getVal1().size() + partResult.getVal2().size()) == elems.length); //A partição engloba todos os elementos
+		assertTrue(partResult.getVal1().equals(sharpCol.filter(filterFunc))); //O primeiro retorno da partição é igual ao filtro
+		for (Object obj : partResult.getVal2())
+		{
+			if (filterFunc.apply(obj))
+			{
+				throw new AssertionFailedError("A segunda coleção retornada pelo partition pertence ao filtro");
+			}
+		}
+
+		//exists
+		assertTrue(!emptyCol.exists(filterFunc));
+		assertTrue(sharpCol.exists(filterFunc) == sharpCol.filter(filterFunc).notEmpty());
 		
+		//forall
+		assertTrue(emptyCol.forall(filterFunc));
+		assertTrue(sharpCol.forall(filterFunc) == (sharpCol.filter(filterFunc).size() == elems.length));
+		
+		//map
+		final List<Object> mapList = new ArrayList<Object>();
+		
+		for (int i = 0; i < elems.length; i++)
+		{
+			mapList.add(mapFunc.apply(elems[i]));
+		}
+		assertTrue(emptyCol.map(mapFunc).isEmpty()); //Map de lista vazia é vazio
+		assertTrue(sharpCol.map(mapFunc).size() == elems.length); //O tamanho das listas é igual
+		assertTrue(sharpCol.map(mapFunc).containsAll(mapList)); //Elas contém os mesmos elementos (weak equals)
+
+		//collect <- basta verificar se ele é o mesmo resultado de filter com map
+		final PartialFunction1<Object, Object> partFunc = Functions.createPartial(filterFunc, mapFunc);
+		assertTrue(sharpCol.collect(partFunc).equals(sharpCol.filter(filterFunc).map(mapFunc)));
+		assertTrue(emptyCol.collect(partFunc).isEmpty());
+		
+		//flatMap
+		final List<Object> fmapList = new ArrayList<Object>();
+		for (int i = 0; i < elems.length; i++)
+		{
+			for (Object curEle : fmapFunc.apply(elems[i]))
+			{
+				fmapList.add(curEle);
+			}
+		}
+		assertTrue(emptyCol.flatMap(fmapFunc).isEmpty()); //flatMap de lista vazia é vazio
+		assertTrue(sharpCol.flatMap(fmapFunc).size() == fmapList.size()); //O tamanho das listas é igual
+		assertTrue(sharpCol.flatMap(fmapFunc).containsAll(fmapList)); //Elas contém os mesmos elementos (weak equals)
+		
+		//count
+		int theCount = 0;
+		for (int i = 0; i < elems.length; i++)
+		{
+			if (filterFunc.apply(elems[i]))
+			{
+				theCount++;
+			}
+		}
+		assertTrue(emptyCol.count(filterFunc) == 0);
+		assertTrue(sharpCol.count(filterFunc) == theCount);
 		
 
 //		//Head - geral
