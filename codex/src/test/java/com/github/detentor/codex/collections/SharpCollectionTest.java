@@ -3,6 +3,8 @@ package com.github.detentor.codex.collections;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -68,7 +70,99 @@ public class SharpCollectionTest
 	 */
 	public void testGenericCollection()
 	{
+		//size
 		
+		//isEmpty
+		
+		//notEmpty
+		
+		//contains
+		
+		//containsAll
+		
+		//intersect
+		
+		//distinct
+		
+		//sorted
+		
+		//sorted(comparator)
+		
+		//mkString (só a chamada mesmo, pra assegurar que não há erro)
+		
+		//min
+		
+		//minOption
+		
+		//max
+		
+		//maxOption
+		
+		//maxWith
+		
+		//minWith
+		
+		//filter
+		
+		//partition
+		
+		//exists
+		
+		//forall
+		
+		//map
+		
+		//collect
+		
+		//flatMap
+		
+		//count
+		
+		
+		
+		
+		
+		
+		//Dependem de ordem
+		
+		//head
+		
+		//headOption
+		
+		//last
+		
+		//lastOption
+		
+		//tail
+		
+		//take
+		
+		//takeWhile
+		
+		//takeRight
+		
+		//takeRightWhile
+		
+		//drop
+		
+		//dropWhile
+		
+		//dropRight
+		
+		//dropRightWhile
+		
+		//splitAt
+		
+		//grouped
+		
+		//zipWithIndex
+		
+		//iterator <- depende de ordem
+		
+		//find
+		
+		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
+
 		
 		
 	}
@@ -140,6 +234,245 @@ public class SharpCollectionTest
 							listaTake1, listaTake2, 
 							listaTakeRight1, listaTakeRight2, 
 							listaDropRight1, listaDropRight2, listaVazia, Tuple2.from("f", "6"), new Object[] { ele1, ele2, ele3, ele4, ele5} );
+	}
+	
+	
+	
+	/**
+	 * Faz um teste completo para uma SharpCollection (teste descontando mutabilidade). <br/>
+	 * Para aplicar o teste a uma coleção, basta fazer uma coleção com os valores [1, 2, 3, 4, 5] <br/>
+	 * 
+	 * @param sharpCol Uma coleção com os valores [1, 2, 3, 4, 5]
+	 * @param oriSharpCol Uma cópia da SharpCol (deep copy)
+	 * @param emptyCol Uma coleção vazia
+	 * @param eleNotInCol Elemento que não está contido na coleção
+	 * @param elems Elementos que compõe a coleção. Obs: Espera-se um array de tamanho não 0
+	 */
+	public void testGenSharpCollection( final SharpCollection<Object> sharpCol,
+							  			final SharpCollection<Object> oriSharpCol,
+							  			final SharpCollection<Object> emptyCol,
+							  			final Object eleNotInCol,
+							  			final Object... elems
+						  			) 
+	{
+		final List<Object> elemsList = Arrays.asList(elems);
+		final List<Object> singleEleList = Arrays.asList(eleNotInCol);
+		
+		//equals
+		assertTrue(sharpCol.equals(oriSharpCol));
+		assertTrue(emptyCol.equals(emptyCol));
+		
+		//hashCode
+		assertTrue(sharpCol.hashCode() == oriSharpCol.hashCode());
+		assertTrue(emptyCol.hashCode() == emptyCol.hashCode());
+		
+		//size
+		assertTrue(sharpCol.size() == elems.length);
+		
+		//isEmpty
+		assertTrue(sharpCol.isEmpty() == false && sharpCol.size() > 0);
+		assertTrue(emptyCol.isEmpty() == true && emptyCol.size() == 0);
+		
+		//notEmpty
+		assertTrue(sharpCol.notEmpty() == true && sharpCol.size() > 0);
+		assertTrue(emptyCol.notEmpty() == false && emptyCol.size() == 0);
+		
+		//contains
+		assertTrue(sharpCol.contains(elems[0]));
+		assertTrue(! sharpCol.contains(eleNotInCol));
+		
+		//containsAll
+		assertTrue(sharpCol.containsAll(elemsList));
+		assertTrue(! sharpCol.containsAll(singleEleList));
+		
+		//intersect
+		assertTrue(sharpCol.intersect(elemsList).equals(oriSharpCol));
+		assertTrue(sharpCol.intersect(singleEleList).equals(emptyCol));
+		assertTrue(emptyCol.intersect(elemsList).equals(emptyCol));
+		
+		
+				
+				//distinct
+				
+				//sorted
+				
+				//sorted(comparator)
+				
+				//mkString (só a chamada mesmo, pra assegurar que não há erro)
+				
+				//min
+				
+				//minOption
+				
+				//max
+				
+				//maxOption
+				
+				//maxWith
+				
+				//minWith
+				
+				//filter
+				
+				//partition
+				
+				//exists
+				
+				//forall
+				
+				//map
+				
+				//collect
+				
+				//flatMap
+				
+				//count
+		
+		
+		
+		
+		
+
+		//Head - geral
+			assertTrue(sharpCol.head().equals(elems[0]));
+		
+		//HeadOption
+			assertTrue(sharpCol.headOption().notEmpty());
+			assertTrue(emptyCol.headOption().isEmpty());
+		
+		//Tail - geral
+			assertTrue(sharpCol.tail().equals(colDrop1));
+			assertTrue(sharpCol.tail().head().equals(elems[1]));
+		
+		//Tail + Tail
+			assertTrue(sharpCol.tail().tail().equals(colDrop2));
+
+		//Last - geral
+			assertTrue(sharpCol.last().equals(elems[4]));
+		
+		//LastOption - geral
+			assertTrue(sharpCol.lastOption().notEmpty());
+			assertTrue(emptyCol.lastOption().isEmpty());
+			
+		//Take - geral
+			assertTrue(sharpCol.take(-2).isEmpty());
+			assertTrue(sharpCol.take(0).isEmpty());
+			
+			assertTrue(sharpCol.take(1).equals(colTake1));
+			assertTrue(sharpCol.take(2).equals(colTake2));
+			assertTrue(sharpCol.take(5).equals(oriSharpCol));
+			assertTrue(sharpCol.take(10).equals(oriSharpCol));
+		//
+
+		//TakeRight - geral
+			assertTrue(sharpCol.takeRight(-2).isEmpty());
+			assertTrue(sharpCol.takeRight(0).isEmpty());
+			assertTrue(sharpCol.takeRight(1).equals(colTakeRight1));
+			assertTrue(sharpCol.takeRight(2).equals(colTakeRight2));
+			assertTrue(sharpCol.takeRight(5).equals(oriSharpCol));
+			assertTrue(sharpCol.takeRight(10).equals(oriSharpCol));
+		//
+
+
+		//Drop - geral
+			assertTrue(sharpCol.drop(-2).equals(oriSharpCol));
+			assertTrue(sharpCol.drop(0).equals(oriSharpCol));
+			assertTrue(sharpCol.drop(1).equals(colDrop1));
+			assertTrue(sharpCol.drop(2).equals(colDrop2));
+			assertTrue(sharpCol.drop(5).isEmpty());
+			assertTrue(sharpCol.drop(10).isEmpty());
+		//
+
+		//DropRight - geral
+			assertTrue(sharpCol.dropRight(-2).equals(oriSharpCol));
+			assertTrue(sharpCol.dropRight(0).equals(oriSharpCol));
+			assertTrue(sharpCol.dropRight(1).equals(colDropRight1));
+			assertTrue(sharpCol.dropRight(2).equals(colDropRight2));
+			assertTrue(sharpCol.dropRight(5).isEmpty());
+			assertTrue(sharpCol.dropRight(10).isEmpty());
+			assertTrue(sharpCol.dropRight(sharpCol.size()).isEmpty());
+		//
+			
+		//Contains
+			assertTrue(sharpCol.contains(eleNotInCol) == false);
+			assertTrue(sharpCol.contains(elems[0]) == true);
+			assertTrue(sharpCol.contains(elems[4]) == true);
+		
+		//High-order functions
+			
+			//Find
+				assertTrue(sharpCol.find(ObjectOps.aEquals(elems[4])).notEmpty());
+				assertTrue(sharpCol.find(ObjectOps.aEquals(eleNotInCol)).isEmpty());
+	
+			//Exists
+				assertTrue(sharpCol.exists(ObjectOps.aEquals(elems[2])) == true);
+				assertTrue(sharpCol.exists(ObjectOps.aEquals(eleNotInCol)) == false);
+		
+//			//TakeWhile - geral
+//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(100)).equals(emptyCol));
+//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(1)).equals(emptyCol));
+//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(2)).equals(colTake1));
+//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(3)).equals(colTake2));
+//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
+//			//
+//
+//			//TakeRightWhile - geral
+//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(100)).isEmpty());
+//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(5)).isEmpty());
+//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(4)).equals(colTakeRight1));
+//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(3)).equals(colTakeRight2));
+//				assertTrue(sharpCol.takeRightWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
+//			//
+//
+//			//DropWhile - geral
+//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
+//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(1)).equals(oriSharpCol));
+//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(2)).equals(colDrop1));
+//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(3)).equals(colDrop2));
+//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(10)).isEmpty());
+//			//
+//			
+//			//DropRightWhile - geral
+//				System.out.println(sharpCol);
+//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
+//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(5)).equals(oriSharpCol));
+//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(4)).equals(colDropRight1));
+//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(3)).equals(colDropRight2));
+//				assertTrue(sharpCol.dropRightWhile(IntegerOps.lowerThan(10)).isEmpty());
+//			//
+//			
+//			//Filter
+//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(5)).equals(colDropRight1));
+//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(10)).equals(sharpCol));
+//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(0)).equals(emptyCol));
+//		
+//			//Forall
+//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(5)) == false);
+//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(10)) == true);
+//			
+//			//Count
+//				assertTrue(sharpCol.count(IntegerOps.lowerThan(5)) == 4);
+//				assertTrue(sharpCol.count(IntegerOps.lowerThan(10)) == 5);
+//				assertTrue(sharpCol.count(IntegerOps.lowerThan(0)) == 0);
+//				
+//			//FoldLeft
+//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) == 15);
+//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) != 14);
+//			
+//			//Map
+//				assertTrue(sharpCol.mkString().equals("12345"));
+//
+//			//Collect DEFINIR MÉTODO DE TESTE
+	}
+	
+	public void testIndexedSeq(final IndexedSeq<Integer> sharpCol)
+	{
+		//Is defined at -> funciona somente para indexed seqs
+		assertTrue(sharpCol.isDefinedAt(0));
+		assertTrue(sharpCol.isDefinedAt(2));
+		assertTrue(sharpCol.isDefinedAt(sharpCol.size() - 1));
+		assertTrue(sharpCol.isDefinedAt(-1) == false);
+		assertTrue(sharpCol.isDefinedAt(sharpCol.size()) == false);
 	}
 	
 	/**
@@ -312,188 +645,6 @@ public class SharpCollectionTest
 				assertTrue(sharpCol.mkString().equals("12345"));
 
 			//Collect DEFINIR MÉTODO DE TESTE
-	}
-	
-	/**
-	 * Faz um teste completo para uma SharpCollection (teste descontando mutabilidade). <br/>
-	 * Para aplicar o teste a uma coleção, basta fazer uma coleção com os valores [1, 2, 3, 4, 5] <br/>
-	 * 
-	 * 
-	 * @param sharpCol Uma coleção com os valores [1, 2, 3, 4, 5]
-	 * @param oriSharpCol Uma cópia da SharpCol (deep copy)
-	 * @param colDrop1 A coleção com o primeiro item dropado 
-	 * @param colDrop2 A coleção com os dois primeiro itens dropado 
-	 * @param colTake1 A coleção com o primeiro item pego
-	 * @param colTake2 A coleção com os dois primeiros itens pegos
-	 * @param colTakeRight1 A coleção com o primeiro item à direita pego
-	 * @param colTakeRight2 A coleção com os dois primeiros itens à direita pego
-	 * @param colDropRight1 A coleção com o último elemento dropado
-	 * @param colDropRight2 A coleção com os dois últimos elementos dropados
-	 * @param emptyCol Uma coleção vazia
-	 */
-	public void testGenSharpCollection( final SharpCollection sharpCol,
-							  			final SharpCollection oriSharpCol,
-							  			SharpCollection colDrop1,
-							  			SharpCollection colDrop2,
-							  			SharpCollection colTake1,
-							  			SharpCollection colTake2,
-							  			SharpCollection colTakeRight1,
-							  			SharpCollection colTakeRight2,
-							  			SharpCollection colDropRight1,
-							  			SharpCollection colDropRight2,
-							  			final SharpCollection emptyCol,
-							  			final Object eleNotInCol,
-							  			final Object... elems
-						  			) 
-	{
-		//Igualdade de listas
-			assertTrue(sharpCol.equals(oriSharpCol));
-			assertTrue(emptyCol.equals(emptyCol));
-		
-		//IsEmpty() geral
-			assertTrue(emptyCol.notEmpty() == false);
-			assertTrue(emptyCol.isEmpty());
-
-		//Head - geral
-			assertTrue(sharpCol.head().equals(elems[0]));
-		
-		//HeadOption
-			assertTrue(sharpCol.headOption().notEmpty());
-			assertTrue(emptyCol.headOption().isEmpty());
-		
-		//Tail - geral
-			assertTrue(sharpCol.tail().equals(colDrop1));
-			assertTrue(sharpCol.tail().head().equals(elems[1]));
-		
-		//Tail + Tail
-			assertTrue(sharpCol.tail().tail().equals(colDrop2));
-
-		//Last - geral
-			assertTrue(sharpCol.last().equals(elems[4]));
-		
-		//LastOption - geral
-			assertTrue(sharpCol.lastOption().notEmpty());
-			assertTrue(emptyCol.lastOption().isEmpty());
-			
-		//Take - geral
-			assertTrue(sharpCol.take(-2).isEmpty());
-			assertTrue(sharpCol.take(0).isEmpty());
-			
-			assertTrue(sharpCol.take(1).equals(colTake1));
-			assertTrue(sharpCol.take(2).equals(colTake2));
-			assertTrue(sharpCol.take(5).equals(oriSharpCol));
-			assertTrue(sharpCol.take(10).equals(oriSharpCol));
-		//
-
-		//TakeRight - geral
-			assertTrue(sharpCol.takeRight(-2).isEmpty());
-			assertTrue(sharpCol.takeRight(0).isEmpty());
-			assertTrue(sharpCol.takeRight(1).equals(colTakeRight1));
-			assertTrue(sharpCol.takeRight(2).equals(colTakeRight2));
-			assertTrue(sharpCol.takeRight(5).equals(oriSharpCol));
-			assertTrue(sharpCol.takeRight(10).equals(oriSharpCol));
-		//
-
-
-		//Drop - geral
-			assertTrue(sharpCol.drop(-2).equals(oriSharpCol));
-			assertTrue(sharpCol.drop(0).equals(oriSharpCol));
-			assertTrue(sharpCol.drop(1).equals(colDrop1));
-			assertTrue(sharpCol.drop(2).equals(colDrop2));
-			assertTrue(sharpCol.drop(5).isEmpty());
-			assertTrue(sharpCol.drop(10).isEmpty());
-		//
-
-		//DropRight - geral
-			assertTrue(sharpCol.dropRight(-2).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRight(0).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRight(1).equals(colDropRight1));
-			assertTrue(sharpCol.dropRight(2).equals(colDropRight2));
-			assertTrue(sharpCol.dropRight(5).isEmpty());
-			assertTrue(sharpCol.dropRight(10).isEmpty());
-			assertTrue(sharpCol.dropRight(sharpCol.size()).isEmpty());
-		//
-			
-		//Contains
-			assertTrue(sharpCol.contains(eleNotInCol) == false);
-			assertTrue(sharpCol.contains(elems[0]) == true);
-			assertTrue(sharpCol.contains(elems[4]) == true);
-		
-		//High-order functions
-			
-			//Find
-				assertTrue(sharpCol.find(ObjectOps.aEquals(elems[4])).notEmpty());
-				assertTrue(sharpCol.find(ObjectOps.aEquals(eleNotInCol)).isEmpty());
-	
-			//Exists
-				assertTrue(sharpCol.exists(ObjectOps.aEquals(elems[2])) == true);
-				assertTrue(sharpCol.exists(ObjectOps.aEquals(eleNotInCol)) == false);
-		
-//			//TakeWhile - geral
-//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(100)).equals(emptyCol));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(1)).equals(emptyCol));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(2)).equals(colTake1));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(3)).equals(colTake2));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-//			//
-//
-//			//TakeRightWhile - geral
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(100)).isEmpty());
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(5)).isEmpty());
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(4)).equals(colTakeRight1));
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(3)).equals(colTakeRight2));
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-//			//
-//
-//			//DropWhile - geral
-//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(1)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(2)).equals(colDrop1));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(3)).equals(colDrop2));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(10)).isEmpty());
-//			//
-//			
-//			//DropRightWhile - geral
-//				System.out.println(sharpCol);
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(5)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(4)).equals(colDropRight1));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(3)).equals(colDropRight2));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.lowerThan(10)).isEmpty());
-//			//
-//			
-//			//Filter
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(5)).equals(colDropRight1));
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(10)).equals(sharpCol));
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(0)).equals(emptyCol));
-//		
-//			//Forall
-//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(5)) == false);
-//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(10)) == true);
-//			
-//			//Count
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(5)) == 4);
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(10)) == 5);
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(0)) == 0);
-//				
-//			//FoldLeft
-//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) == 15);
-//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) != 14);
-//			
-//			//Map
-//				assertTrue(sharpCol.mkString().equals("12345"));
-//
-//			//Collect DEFINIR MÉTODO DE TESTE
-	}
-	
-	public void testIndexedSeq(final IndexedSeq<Integer> sharpCol)
-	{
-		//Is defined at -> funciona somente para indexed seqs
-		assertTrue(sharpCol.isDefinedAt(0));
-		assertTrue(sharpCol.isDefinedAt(2));
-		assertTrue(sharpCol.isDefinedAt(sharpCol.size() - 1));
-		assertTrue(sharpCol.isDefinedAt(-1) == false);
-		assertTrue(sharpCol.isDefinedAt(sharpCol.size()) == false);
 	}
 	
 }
