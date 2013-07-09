@@ -35,8 +35,7 @@ import com.github.detentor.codex.product.Tuple2;
  * @author Vinícius Seufitele Pinto
  * 
  */
-public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> implements SharpCollection<T>, Convertable<T>,
-		ComparisonFunctions<T>
+public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> implements SharpCollection<T>, Convertable<T>
 {
 	private static final String UNCHECKED = "unchecked";
 
