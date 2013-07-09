@@ -152,7 +152,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	@Override
-	public <B> Option<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> Option<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return (Option<B>) super.flatMap(function);
 	}

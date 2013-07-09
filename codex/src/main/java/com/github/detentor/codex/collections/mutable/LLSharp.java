@@ -215,19 +215,19 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	//Overrides obrigatórios
 	
 	@Override
-	public <B> LLSharp<B> map(Function1<? super T, B> function)
+	public <B> LLSharp<B> map(final Function1<? super T, B> function)
 	{
 		return (LLSharp<B>) super.map(function);
 	}
 
 	@Override
-	public <B> LLSharp<B> collect(PartialFunction1<? super T, B> pFunction)
+	public <B> LLSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
 		return (LLSharp<B>) super.collect(pFunction);
 	}
 
 	@Override
-	public <B> LLSharp<B> flatMap(Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return (LLSharp<B>) super.flatMap(function);
 	}
@@ -246,7 +246,7 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	}
 
 	@Override
-	public LLSharp<T> sorted(Comparator<? super T> comparator)
+	public LLSharp<T> sorted(final Comparator<? super T> comparator)
 	{
 		return from(ListSharp.from(this).sorted(comparator));
 	}

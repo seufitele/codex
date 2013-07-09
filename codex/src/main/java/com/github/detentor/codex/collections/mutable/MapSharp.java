@@ -443,13 +443,13 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * das coleção.
 	 */
 	@SuppressWarnings("unchecked")
-	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends SharpCollection<Tuple2<W, Y>>> function)
+	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends Iterable<Tuple2<W, Y>>> function)
 	{
 		return (MapSharp<W, Y>) super.flatMap(function);
 	}
 
 	@Override
-	public <B> SharpCollection<B> flatMap(final Function1<? super Tuple2<K, V>, ? extends SharpCollection<B>> function)
+	public <B> SharpCollection<B> flatMap(final Function1<? super Tuple2<K, V>, ? extends Iterable<B>> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = new ArrayBuilder<B>();
 

@@ -483,7 +483,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 	
 	@Override
-	public <B> LazyList<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> LazyList<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return unfold(new StatePartialArrow0<Iterator<T>, B>(this.iterator())
 		{
@@ -507,14 +507,14 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			{
 				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
 				{
-					SharpCollection<B> curEle = null;
+					Iterator<B> curEle = null;
 
 					while (state.hasNext())
 					{ 
-						curEle = function.apply(state.next());
-						if (curEle.notEmpty())
+						curEle = function.apply(state.next()).iterator();
+						if (curEle.hasNext())
 						{
-							nextElement = curEle.iterator();
+							nextElement = curEle;
 							break;
 						}
 					}

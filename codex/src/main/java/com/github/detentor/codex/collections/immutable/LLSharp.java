@@ -184,7 +184,7 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	@Override
-	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return (LLSharp<B>) super.flatMap(function);
 	}

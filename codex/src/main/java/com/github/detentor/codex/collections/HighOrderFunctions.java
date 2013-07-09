@@ -132,12 +132,12 @@ public interface HighOrderFunctions<T>
 	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
 	 * única coleção. <br/>
 	 * @param <B> O tipo da nova coleção
-	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma 
-	 * coleção de elementos de (potencialmente) outro tipo.
+	 * @param function Uma função que recebe um elemento desta coleção, e retorna um 
+	 * iterator de elementos de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
-	 * das coleção.
+	 * das coleções.
 	 */
-	<B> SharpCollection<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function);
+	<B> SharpCollection<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function);
 	
 	/**
 	 * Conta o número de elementos desta coleção que satisfazem o predicado passado como parâmetro.

@@ -77,6 +77,19 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 		}
 		return true;
 	}
+	
+	@Override
+	public boolean containsAny(final Iterable<T> col)
+	{
+		for (final T ele : col)
+		{
+			if (this.contains(ele))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public T head()
@@ -549,7 +562,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public <B> SharpCollection<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> SharpCollection<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		final Builder<B, SharpCollection<B>> colecaoRetorno = builder();
 

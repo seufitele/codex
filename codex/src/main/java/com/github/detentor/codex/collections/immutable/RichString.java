@@ -97,7 +97,7 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 	}
 
 	@Override
-	public <B> IndexedSeq<B> flatMap(final Function1<? super Character, ? extends SharpCollection<B>> function)
+	public <B> IndexedSeq<B> flatMap(final Function1<? super Character, ? extends Iterable<B>> function)
 	{
 		return ListSharp.from(CharOps.lift(value.toCharArray())).flatMap(function);
 	}

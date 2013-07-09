@@ -196,7 +196,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	}
 
 	@Override
-	public <B> SetSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> SetSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return (SetSharp<B>) super.flatMap(function);
 	}

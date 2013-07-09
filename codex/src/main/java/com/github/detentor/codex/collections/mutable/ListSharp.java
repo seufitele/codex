@@ -154,7 +154,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	@Override
-	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends SharpCollection<B>> function)
+	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
 		return (ListSharp<B>) super.flatMap(function);
 	}
