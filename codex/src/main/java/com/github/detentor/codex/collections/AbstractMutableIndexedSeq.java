@@ -125,7 +125,7 @@ public abstract class AbstractMutableIndexedSeq<T, U extends IndexedSeq<T>> exte
 	}
 
 	@Override
-	public U intersect(final SharpCollection<T> withCollection)
+	public U intersect(final Iterable<T> withCollection)
 	{
 		return (U) super.intersect(withCollection);
 	}

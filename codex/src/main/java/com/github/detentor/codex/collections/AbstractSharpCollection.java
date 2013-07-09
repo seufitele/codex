@@ -67,7 +67,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public boolean containsAll(final SharpCollection<T> col)
+	public boolean containsAll(final Iterable<T> col)
 	{
 		for (final T ele : col)
 		{
@@ -289,26 +289,26 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 		return sBuilder.toString();
 	}
 	
-	@Override
-	public String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction)
-	{
-		final StringBuilder sBuilder = new StringBuilder();
-		final Iterator<T> ite = this.iterator();
-
-		sBuilder.append(start);
-
-		while (ite.hasNext())
-		{
-			sBuilder.append(mapFunction.apply(ite.next()));
-			if (ite.hasNext())
-			{
-				sBuilder.append(separator);
-			}
-		}
-
-		sBuilder.append(end);
-		return sBuilder.toString();
-	}
+//	@Override
+//	public String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction)
+//	{
+//		final StringBuilder sBuilder = new StringBuilder();
+//		final Iterator<T> ite = this.iterator();
+//
+//		sBuilder.append(start);
+//
+//		while (ite.hasNext())
+//		{
+//			sBuilder.append(mapFunction.apply(ite.next()));
+//			if (ite.hasNext())
+//			{
+//				sBuilder.append(separator);
+//			}
+//		}
+//
+//		sBuilder.append(end);
+//		return sBuilder.toString();
+//	}
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
@@ -630,13 +630,13 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
-	public U intersect(final SharpCollection<T> withCollection)
+	public U intersect(final Iterable<T> withCollection)
 	{
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 
-		for (final T ele : this)
+		for (final T ele : withCollection)
 		{
-			if (withCollection.contains(ele))
+			if (this.contains(ele))
 			{
 				colecaoRetorno.add(ele);
 			}
@@ -785,4 +785,5 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 			return list;
 		}
 	}
+	
 }

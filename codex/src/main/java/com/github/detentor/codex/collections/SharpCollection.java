@@ -59,13 +59,12 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
     //MÉTODOS BULK, cujas implementações são criadas a partir dos valores anteriores: 
     
     /**
-     * Retorna <tt>true</tt> se esta coleção contém todos os elementos da coleção
-     * especificada.
+     * Retorna <tt>true</tt> se esta coleção contém todos os elementos do iterator especificado.
      *
      * @param  col A coleção a ser verificada
-     * @return <tt>true</tt> Se esta coleção contém todos os elementos da coleção especificada
+     * @return <tt>true</tt> Se esta coleção contém todos os elementos do iterator especificado
      */
-    boolean containsAll(SharpCollection<T> col);
+    boolean containsAll(final Iterable<T> col);
     
     //Métodos diversos:
     
@@ -204,17 +203,15 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
 	SharpCollection<Tuple2<T, Integer>> zipWithIndex();
 	
 	/**
-	 * Calcula a interseção desta coleção com a coleção passada como parâmetro. <br/>
-	 * Um elemento pertence à coleção retornada se, e somente se, ele está contido
-	 * nesta coleção e na coleção passada como parâmetro. <br/><br/>
+	 * Calcula a interseção desta coleção com o iterator passado como parâmetro. <br/>
+	 * Serão coletados todos os elementos retornados pelo iterator que também pertençam a esta coleção.
 	 * @see java.util.Collection#retainAll
 	 * @param <E> O tipo de dados desta coleção
-	 * @param withCollection A coleção a ser verificada a interseção
-	 * @return Uma nova coleção com todos os elementos desta coleção que também existem na coleção
-	 * passada como parâmetro.
+	 * @param withCollection O iterator a ser verificado a interseção
+	 * @return Uma nova coleção com todos os elementos do iterator que também existem nesta coleção
 	 */
-	SharpCollection<T> intersect(final SharpCollection<T> withCollection);
-	
+	SharpCollection<T> intersect(final Iterable<T> withCollection);
+
 	/**
 	 * Retorna uma coleção que possui somente elementos distintos entre si (de acordo com o equals). <br/>
 	 * A ordem é preservada, se ela estiver bem-definida.

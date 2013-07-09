@@ -124,7 +124,7 @@ public abstract class AbstractMutableGenericCollection<T, U extends SharpCollect
 	}
 
 	@Override
-	public U intersect(final SharpCollection<T> withCollection)
+	public U intersect(final Iterable<T> withCollection)
 	{
 		return (U) super.intersect(withCollection);
 	}

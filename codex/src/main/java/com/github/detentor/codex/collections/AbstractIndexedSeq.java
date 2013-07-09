@@ -228,7 +228,7 @@ public abstract class AbstractIndexedSeq<T, U extends IndexedSeq<T>> extends Abs
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public U intersect(final SharpCollection<T> withCollection)
+	public U intersect(final Iterable<T> withCollection)
 	{
 		return (U) super.intersect(withCollection);
 	}

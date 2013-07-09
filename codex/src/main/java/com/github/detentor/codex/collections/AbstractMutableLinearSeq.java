@@ -128,7 +128,7 @@ public abstract class AbstractMutableLinearSeq<T, U extends LinearSeq<T>> extend
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public U intersect(final SharpCollection<T> withCollection)
+	public U intersect(final Iterable<T> withCollection)
 	{
 		return (U) super.intersect(withCollection);
 	}

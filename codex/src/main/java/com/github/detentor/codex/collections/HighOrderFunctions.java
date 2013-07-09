@@ -146,19 +146,19 @@ public interface HighOrderFunctions<T>
 	 */
 	Integer count(final Function1<? super T, Boolean> pred);
 	
-	/**
-	 * Mostra todos os elementos desta coleção numa string, extraída a partir de mapFunction utilizando, 
-	 * entre eles, o separador passado como parâmetro, iniciando por start e terminando com end. <br/>
-	 * Este método permite criar uma String a partir de uma função arbitrária sobre os elementos, ao contrário
-	 * do {@link SharpCollection#mkString(String, String, String) mkString}, onde é sempre chamado
-	 * o {@link #toString() toString} do objeto.
-	 * @param start A string a ser colocada no início
-	 * @param separator O separador a ser utilizado entre cada chamada ao método toString
-	 * @param end A string a ser colocada no fim
-	 * @param mapFunction Uma função que transforma os elementos desta coleção em String
-	 * @return Uma string representada pela chamada de mapFunction a cada elemento desta coleção, separados
-	 * pelo separador passado como parâmetro, começando por start e terminando com end.
-	 */
-	String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction);
+//	/**
+//	 * Mostra todos os elementos desta coleção numa string, extraída a partir de mapFunction utilizando, 
+//	 * entre eles, o separador passado como parâmetro, iniciando por start e terminando com end. <br/>
+//	 * Este método permite criar uma String a partir de uma função arbitrária sobre os elementos, ao contrário
+//	 * do {@link SharpCollection#mkString(String, String, String) mkString}, onde é sempre chamado
+//	 * o {@link #toString() toString} do objeto.
+//	 * @param start A string a ser colocada no início
+//	 * @param separator O separador a ser utilizado entre cada chamada ao método toString
+//	 * @param end A string a ser colocada no fim
+//	 * @param mapFunction Uma função que transforma os elementos desta coleção em String
+//	 * @return Uma string representada pela chamada de mapFunction a cada elemento desta coleção, separados
+//	 * pelo separador passado como parâmetro, começando por start e terminando com end.
+//	 */
+//	String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction);
 	
 }
