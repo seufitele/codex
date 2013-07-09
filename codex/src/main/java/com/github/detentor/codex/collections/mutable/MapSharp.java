@@ -281,7 +281,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * contém todos os elementos de uma outra coleção de tuplas.
 	 */
 	@Override
-	public boolean containsAll(final SharpCollection<Tuple2<K, V>> col)
+	public boolean containsAll(final Iterable<Tuple2<K, V>> col)
 	{
 		return super.containsAll(col);
 	}

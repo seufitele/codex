@@ -370,46 +370,47 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 * ATENÇÃO: Se a coleção passada como parâmetro for infinita, este método pode não retornar.
 	 */
 	@Override
-	public LazyList<T> intersect(final SharpCollection<T> withCollection)
+	public LazyList<T> intersect(final Iterable<T> withCollection)
 	{
-		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
-		{
-			private final Object UNINITIALIZED = new Uninitialized(null);
-			private Object nextElement = UNINITIALIZED;
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public T apply()
-			{
-				final T toReturn = (T) nextElement;
-				nextElement = UNINITIALIZED;
-				return toReturn;
-			}
-
-			private Object consumeIterator()
-			{
-				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
-				{
-					T curEle = null;
-
-					while (state.hasNext())
-					{ 
-						if (withCollection.contains(curEle = state.next()))
-						{
-							nextElement = curEle;
-							break;
-						}
-					}
-				}
-				return nextElement; //Devolve o valor original do nextElement
-			}
-
-			@Override
-			public boolean isDefined()
-			{
-				return ! (consumeIterator() instanceof Uninitialized);
-			}
-		});
+		throw new UnsupportedOperationException("Método ainda não implementado");
+//		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
+//		{
+//			private final Object UNINITIALIZED = new Uninitialized(null);
+//			private Object nextElement = UNINITIALIZED;
+//			
+//			@SuppressWarnings("unchecked")
+//			@Override
+//			public T apply()
+//			{
+//				final T toReturn = (T) nextElement;
+//				nextElement = UNINITIALIZED;
+//				return toReturn;
+//			}
+//
+//			private Object consumeIterator()
+//			{
+//				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
+//				{
+//					T curEle = null;
+//
+//					while (state.hasNext())
+//					{ 
+//						if (withCollection.contains(curEle = state.next()))
+//						{
+//							nextElement = curEle;
+//							break;
+//						}
+//					}
+//				}
+//				return nextElement; //Devolve o valor original do nextElement
+//			}
+//
+//			@Override
+//			public boolean isDefined()
+//			{
+//				return ! (consumeIterator() instanceof Uninitialized);
+//			}
+//		});
 	}
 	
 	@Override
@@ -730,16 +731,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	public String mkString(final String start, final String separator, final String end)
 	{
 		return super.mkString(start, separator, end);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public String mkString(final String start, final String separator, final String end, final Function1<? super T, String> mapFunction)
-	{
-		return super.mkString(start, separator, end, mapFunction);
 	}
 
 	/**
