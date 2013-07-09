@@ -442,129 +442,59 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.count(filterFunc) == 0);
 		assertTrue(sharpCol.count(filterFunc) == theCount);
 		
-
-//		//Head - geral
-//			assertTrue(sharpCol.head().equals(elems[0]));
-//		
-//		//HeadOption
-//			assertTrue(sharpCol.headOption().notEmpty());
-//			assertTrue(emptyCol.headOption().isEmpty());
-//		
-//		//Tail - geral
-//			assertTrue(sharpCol.tail().equals(colDrop1));
-//			assertTrue(sharpCol.tail().head().equals(elems[1]));
-//		
-//		//Tail + Tail
-//			assertTrue(sharpCol.tail().tail().equals(colDrop2));
-//
-//		//Last - geral
-//			assertTrue(sharpCol.last().equals(elems[4]));
-//		
-//		//LastOption - geral
-//			assertTrue(sharpCol.lastOption().notEmpty());
-//			assertTrue(emptyCol.lastOption().isEmpty());
-//			
-//		//Take - geral
-//			assertTrue(sharpCol.take(-2).isEmpty());
-//			assertTrue(sharpCol.take(0).isEmpty());
-//			
-//			assertTrue(sharpCol.take(1).equals(colTake1));
-//			assertTrue(sharpCol.take(2).equals(colTake2));
-//			assertTrue(sharpCol.take(5).equals(oriSharpCol));
-//			assertTrue(sharpCol.take(10).equals(oriSharpCol));
-//		//
-//
-//		//TakeRight - geral
-//			assertTrue(sharpCol.takeRight(-2).isEmpty());
-//			assertTrue(sharpCol.takeRight(0).isEmpty());
-//			assertTrue(sharpCol.takeRight(1).equals(colTakeRight1));
-//			assertTrue(sharpCol.takeRight(2).equals(colTakeRight2));
-//			assertTrue(sharpCol.takeRight(5).equals(oriSharpCol));
-//			assertTrue(sharpCol.takeRight(10).equals(oriSharpCol));
-//		//
-//
-//
-//		//Drop - geral
-//			assertTrue(sharpCol.drop(-2).equals(oriSharpCol));
-//			assertTrue(sharpCol.drop(0).equals(oriSharpCol));
-//			assertTrue(sharpCol.drop(1).equals(colDrop1));
-//			assertTrue(sharpCol.drop(2).equals(colDrop2));
-//			assertTrue(sharpCol.drop(5).isEmpty());
-//			assertTrue(sharpCol.drop(10).isEmpty());
-//		//
-//
-//		//DropRight - geral
-//			assertTrue(sharpCol.dropRight(-2).equals(oriSharpCol));
-//			assertTrue(sharpCol.dropRight(0).equals(oriSharpCol));
-//			assertTrue(sharpCol.dropRight(1).equals(colDropRight1));
-//			assertTrue(sharpCol.dropRight(2).equals(colDropRight2));
-//			assertTrue(sharpCol.dropRight(5).isEmpty());
-//			assertTrue(sharpCol.dropRight(10).isEmpty());
-//			assertTrue(sharpCol.dropRight(sharpCol.size()).isEmpty());
-//		//
-//			
-//		//High-order functions
-//			
-//			//Find
-//				assertTrue(sharpCol.find(ObjectOps.aEquals(elems[4])).notEmpty());
-//				assertTrue(sharpCol.find(ObjectOps.aEquals(eleNotInCol)).isEmpty());
-	
+		//Testes de chamadas de método - não verificam a validade da informação
 		
-//			//TakeWhile - geral
-//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(100)).equals(emptyCol));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(1)).equals(emptyCol));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(2)).equals(colTake1));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(3)).equals(colTake2));
-//				assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-//			//
-//
-//			//TakeRightWhile - geral
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(100)).isEmpty());
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(5)).isEmpty());
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(4)).equals(colTakeRight1));
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(3)).equals(colTakeRight2));
-//				assertTrue(sharpCol.takeRightWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-//			//
-//
-//			//DropWhile - geral
-//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(1)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(2)).equals(colDrop1));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(3)).equals(colDrop2));
-//				assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(10)).isEmpty());
-//			//
-//			
-//			//DropRightWhile - geral
-//				System.out.println(sharpCol);
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(5)).equals(oriSharpCol));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(4)).equals(colDropRight1));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(3)).equals(colDropRight2));
-//				assertTrue(sharpCol.dropRightWhile(IntegerOps.lowerThan(10)).isEmpty());
-//			//
-//			
-//			//Filter
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(5)).equals(colDropRight1));
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(10)).equals(sharpCol));
-//				assertTrue(sharpCol.filter(IntegerOps.lowerThan(0)).equals(emptyCol));
-//		
-//			//Forall
-//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(5)) == false);
-//				assertTrue(sharpCol.forall(IntegerOps.lowerThan(10)) == true);
-//			
-//			//Count
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(5)) == 4);
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(10)) == 5);
-//				assertTrue(sharpCol.count(IntegerOps.lowerThan(0)) == 0);
-//				
-//			//FoldLeft
-//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) == 15);
-//				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) != 14);
-//			
-//			//Map
-//				assertTrue(sharpCol.mkString().equals("12345"));
-//
-//			//Collect DEFINIR MÉTODO DE TESTE
+		//head & headOption
+		sharpCol.head();
+		assertTrue(emptyCol.headOption().isEmpty());
+		assertTrue(sharpCol.headOption().notEmpty());
+		
+		//last & lastOption
+		sharpCol.last();
+		assertTrue(emptyCol.lastOption().isEmpty());
+		assertTrue(sharpCol.lastOption().notEmpty());
+		
+		//tail
+		sharpCol.tail();
+		assertTrue(emptyCol.tail().isEmpty());
+		assertTrue(sharpCol.tail().size() == Math.max(elems.length - 1, 0));
+		assertTrue(sharpCol.tail().tail().size() == Math.max(elems.length - 2, 0));
+		
+		//take
+		assertTrue(emptyCol.take(-1).isEmpty());
+		assertTrue(emptyCol.take(0).isEmpty());
+		assertTrue(emptyCol.take(10).isEmpty());
+		assertTrue(sharpCol.take(-1).size() == 0);
+		assertTrue(sharpCol.take(0).size() == 0);
+		assertTrue(sharpCol.take(2).size() == Math.min(sharpCol.size(), 2));
+		assertTrue(sharpCol.take(500).size() == Math.min(sharpCol.size(), 5));
+		
+		//takeRight
+		assertTrue(emptyCol.takeRight(-1).isEmpty());
+		assertTrue(emptyCol.takeRight(0).isEmpty());
+		assertTrue(emptyCol.takeRight(10).isEmpty());
+		assertTrue(sharpCol.takeRight(-1).size() == 0);
+		assertTrue(sharpCol.takeRight(0).size() == 0);
+		assertTrue(sharpCol.takeRight(2).size() == Math.min(sharpCol.size(), 2));
+		assertTrue(sharpCol.takeRight(500).size() == Math.min(sharpCol.size(), 5));
+		
+		//drop
+		assertTrue(emptyCol.drop(-1).isEmpty());
+		assertTrue(emptyCol.drop(0).isEmpty());
+		assertTrue(emptyCol.drop(10).isEmpty());
+		assertTrue(sharpCol.drop(-1).size() == sharpCol.size());
+		assertTrue(sharpCol.drop(0).size() == sharpCol.size());
+		assertTrue(sharpCol.drop(2).size() == Math.max(sharpCol.size() - 2, 0));
+		assertTrue(sharpCol.drop(500).size() == Math.max(sharpCol.size() - 500, 0));
+		
+		//dropRight
+		assertTrue(emptyCol.dropRight(-1).isEmpty());
+		assertTrue(emptyCol.dropRight(0).isEmpty());
+		assertTrue(emptyCol.dropRight(10).isEmpty());
+		assertTrue(sharpCol.dropRight(-1).size() == sharpCol.size());
+		assertTrue(sharpCol.dropRight(0).size() == sharpCol.size());
+		assertTrue(sharpCol.dropRight(2).size() == Math.max(sharpCol.size() - 2, 0));
+		assertTrue(sharpCol.dropRight(500).size() == Math.max(sharpCol.size() - 500, 0));
 	}
 	
 	public void testIndexedSeq(final IndexedSeq<Integer> sharpCol)
