@@ -14,7 +14,7 @@ import com.github.detentor.codex.product.Tuple2;
  *
  * @param <T> O tipo de elementos da coleção
  */
-public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>
+public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, ComparisonFunctions<T>
 {
 	 /**
 	 * Retorna o número de elementos desta coleção.
