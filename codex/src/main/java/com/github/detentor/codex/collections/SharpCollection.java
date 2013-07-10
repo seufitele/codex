@@ -210,7 +210,7 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, 
 	
 	/**
 	 * Calcula a interseção desta coleção com o iterator passado como parâmetro. <br/>
-	 * Serão coletados todos os elementos retornados pelo iterator que também pertençam a esta coleção.
+	 * Serão coletados todos os elementos retornados pelo iterator que também pertençam a esta coleção. <br/>
 	 * @see java.util.Collection#retainAll
 	 * @param <E> O tipo de dados desta coleção
 	 * @param withCollection O iterator a ser verificado a interseção

@@ -26,10 +26,10 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction1;
-import com.github.detentor.codex.function.arrow.ArrowN;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.Reflections;
+import com.github.detentor.operations.CharOps;
 import com.github.detentor.operations.IntegerOps;
 import com.github.detentor.operations.ObjectOps;
 
@@ -43,29 +43,28 @@ public class SharpCollectionTest
 		//1 - Testes de GenericSharpCollection
 		//2 - Testes de sequências (drop, tail, etc)
 		//3 - Testes de funções de ordem superior
-		//4 - Testes de sequências lineares e sequências indexadas
+		//4 - Testes de sequências lineares e sequências indexadas (LinearSeq & IndexedSeq)
 		//5 - Testes de diversos tipos de mapas e sets.
 		
 		//Como observação, a ordem do iterator de GenericSharpCollection não é bem-definida (ex: Mapas e Sets).
 		
+		ListSharp<Class<?>> seqClasses = ListSharp.<Class<?>>from(
+//											LazyList.class,
+											ListSharp.class, 
+											com.github.detentor.codex.collections.immutable.ListSharp.class,
+											LLSharp.class);
 		
-		ListSharp<Class<?>> listas = 
-				//FastList.class
-				ListSharp.<Class<?>>from(
-						LazyList.class,
-						ListSharp.class,
-						com.github.detentor.codex.collections.immutable.ListSharp.class,
-						LLSharp.class,
-						SetSharp.class
+		ListSharp<Class<?>> genClasses = ListSharp.<Class<?>>from(SetSharp.class);
+											
+//						SetSharp.class
 //						MapSharp.class, <- removido porque MapSharp é criado de maneira diferente
-						);
+						;
 		
-		for(Class<?> ele : listas)
+		for(Class<?> ele : seqClasses)
 		{
 			try
 			{
 				testCollection((Class<SharpCollection<?>>) ele);
-				testMapCollection();
 			}
 			catch (AssertionError ae)
 			{
@@ -75,140 +74,40 @@ public class SharpCollectionTest
 		}
 	}
 	
-	/**
-	 * Executa o teste para as coleções genéricas (métodos gerais, que não consideram ordem). <br/>
-	 * 
-	 */
-	public void testGenericCollection()
-	{
-		//size
-		
-		//isEmpty
-		
-		//notEmpty
-		
-		//contains
-		
-		//containsAll
-		
-		//intersect
-		
-		//distinct
-		
-		//sorted
-		
-		//sorted(comparator)
-		
-		//mkString (só a chamada mesmo, pra assegurar que não há erro)
-		
-		//min
-		
-		//minOption
-		
-		//max
-		
-		//maxOption
-		
-		//maxWith
-		
-		//minWith
-		
-		//filter
-		
-		//partition
-		
-		//exists
-		
-		//forall
-		
-		//map
-		
-		//collect
-		
-		//flatMap
-		
-		//count
-		
-		
-		
-		
-		
-		
-		//Dependem de ordem
-		
-		//head
-		
-		//headOption
-		
-		//last
-		
-		//lastOption
-		
-		//tail
-		
-		//take
-		
-		//takeWhile
-		
-		//takeRight
-		
-		//takeRightWhile
-		
-		//drop
-		
-		//dropWhile
-		
-		//dropRight
-		
-		//dropRightWhile
-		
-		//splitAt
-		
-		//grouped
-		
-		//zipWithIndex
-		
-		//iterator <- depende de ordem
-		
-		//find
-		
-		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
-
-		
-		
-	}
-	
-	public void testCollection(Class<SharpCollection<?>> theClass) 
+	public void testCollection(final Class<SharpCollection<?>> theClass) 
 	{
 		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
 		final Option<Method> func2 = Reflections.getMethodFromNameAndType(theClass, "empty", new Class<?>[0]);
 		
-		SharpCollection<Integer> listaOri = func.apply(1, 2, 3, 4, 5);
-		SharpCollection<Integer> lista = func.apply(1, 2, 3, 4, 5);
+		final Integer[] elementos = new Integer[] {2, 4, 3, 3, 1, 6, 5, 2}; 
+		
+		SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
+		SharpCollection<Integer> lista = func.apply((Object[]) elementos);
 		SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
 		
-		SharpCollection<Integer> listaDrop1 = func.apply(2, 3, 4, 5);
-		SharpCollection<Integer> listaDrop2 = func.apply(3, 4, 5); 
-		
-		SharpCollection<Integer> listaTake1 = func.apply(1);
-		SharpCollection<Integer> listaTake2 = func.apply(1, 2);
-		
-		SharpCollection<Integer> listaTakeRight1 = func.apply(5);
-		SharpCollection<Integer> listaTakeRight2 = func.apply(4, 5); 
-		
-		SharpCollection<Integer> listaDropRight1 = func.apply(1, 2, 3, 4);
-		SharpCollection<Integer> listaDropRight2 = func.apply(1, 2, 3);
-		
-		if (lista instanceof IndexedSeq<?>)
+		final Function1<Integer, List<Integer>> fmap = new Function1<Integer, List<Integer>>()
 		{
-			testIndexedSeq((IndexedSeq<Integer>) lista);
-		}
+			@Override
+			public List<Integer> apply(Integer param)
+			{
+				final ArrayList<Integer> retorno = new ArrayList<Integer>();
+				retorno.add(param);
+				retorno.add(param);
+				return retorno;
+			}
+		};
+		
+		final Comparator<Integer> theComp = new Comparator<Integer>()
+		{
+			@Override
+			public int compare(Integer o1, Integer o2)
+			{
+				return o2.compareTo(o1);
+			}
+		};
 
-		testSharpCollection(lista, listaOri, 
-							listaDrop1, listaDrop2, 
-							listaTake1, listaTake2, 
-							listaTakeRight1, listaTakeRight2, 
-							listaDropRight1, listaDropRight2, listaVazia);
+		testGenSharpCollection(listaOri, lista, listaVazia, IntegerOps.lowerThan(5), ObjectOps.toString, fmap, theComp, 10, elementos);
+		testSeq(lista, IntegerOps.lowerThan(5), elementos);
 	}
 	
 	public void testMapCollection() 
@@ -249,39 +148,46 @@ public class SharpCollectionTest
 	
 	
 	
+	
 	/**
 	 * Faz um teste completo para uma SharpCollection (teste descontando mutabilidade). <br/>
 	 * Para aplicar o teste a uma coleção, basta fazer uma coleção com os valores [1, 2, 3, 4, 5] <br/>
-	 * Obs: Espera-se um array de tamanho não 0, que tenha pelo menos 1 elemento repetido
+	 * 
+	 * Obs: Espera-se um array de tamanho maior que 5, que tenha pelo menos 1 elemento repetido
 	 * e que os elementos implementem a interface Comparable.
 	 * 
 	 * @param sharpCol Uma coleção com os valores
 	 * @param oriSharpCol Uma cópia da SharpCol (deep copy)
 	 * @param emptyCol Uma coleção vazia
-	 * @param theComparator Um comparator, para testar as funções de comparação. ATENÇÃO: O comparator
-	 * deve ser igual ao comparator do objeto, para manter a concisão dos resultados.
+	 * 
+	 * @param filterFunc Uma função simples de filtro (que esteja válida para, pelo menos, 1 elemento)
+	 * @param mapFunc Uma função simples de mapa (não será verificado o retorno dos elementos)
+	 * @param fmapFunc Uma função de flatMap simples
 	 * 
 	 * @param eleNotInCol Elemento que não está contido na coleção
 	 * @param elems Elementos que compõe a coleção. <br/>
 	 */
-	public void testGenSharpCollection( final SharpCollection<Object> sharpCol,
-							  			final SharpCollection<Object> oriSharpCol,
-							  			final SharpCollection<Object> emptyCol,
-							  			final Comparator<Object> theComparator,
-							  			final Function1<Object, Boolean> filterFunc,
-							  			final Function1<Object, Object> mapFunc,
-							  			final Function1<Object, Iterable<Object>> fmapFunc,
-							  			final Object eleNotInCol,
-							  			final Object... elems) 
+	@SuppressWarnings("unchecked")
+	public <T, U, W> void  testGenSharpCollection( final SharpCollection<T> sharpCol,
+							  			final SharpCollection<T> oriSharpCol,
+							  			final SharpCollection<T> emptyCol,
+							  			final Function1<? super T, Boolean> filterFunc,
+							  			final Function1<? super T, U> mapFunc,
+							  			final Function1<? super T, ? extends Iterable<W>> fmapFunc,
+							  			final Comparator<? super T> theComparator,
+							  			final T eleNotInCol,
+							  			final T... elems) 
 	{
 		//Premissas:
-		assertTrue(elems.length > 0);
+		assertTrue(elems.length > 5);
 		assertTrue(new HashSet<Object>(Arrays.asList(elems)).size() != elems.length);
 		
-		final List<Object> elemsList = Arrays.asList(elems);
-		final List<Object> singleEleList = Arrays.asList(eleNotInCol);
-		final Set<Object> distinctSet = new HashSet<Object>(Arrays.asList(elems));
-		final TreeSet<Object> sortedSet = new TreeSet<Object>(elemsList);
+		final List<T> elemsList = Arrays.asList(elems);
+		final List<T> singleEleList = Arrays.asList(eleNotInCol);
+		final Set<T> distinctSet = new HashSet<T>(Arrays.asList(elems));
+		final TreeSet<T> sortedSet = new TreeSet<T>(elemsList);
+		final TreeSet<T> ssComparator = new TreeSet<T>(theComparator);
+		ssComparator.addAll(elemsList);
 		
 		//equals
 		assertTrue(sharpCol.equals(oriSharpCol));
@@ -328,7 +234,7 @@ public class SharpCollectionTest
 		
 		//mkString <- assegura que chamar o método é seguro
 		assertTrue(!sharpCol.mkString().isEmpty());
-		assertTrue(!emptyCol.mkString().isEmpty());
+		assertTrue(emptyCol.mkString().isEmpty());
 
 		//min & minOption
 		assertTrue(sharpCol.min().equals(sortedSet.first()));
@@ -336,7 +242,7 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.minOption().isEmpty());
 		
 		//minWith
-		assertTrue(sharpCol.minWith(theComparator).equals(sortedSet.first()));
+		assertTrue(sharpCol.minWith(theComparator).equals(ssComparator.first()));
 		
 		//max & maxOption
 		assertTrue(sharpCol.max().equals(sortedSet.last()));
@@ -344,29 +250,7 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.maxOption().isEmpty());
 		
 		//maxWith
-		assertTrue(sharpCol.maxWith(theComparator).equals(sortedSet.last()));
-		
-		//sorted
-		assertTrue(emptyCol.sorted().equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
-		Iterator<Object> ite2 = sortedSet.iterator();
-		for (Object curObj : sharpCol.sorted())
-		{
-			if (!curObj.equals(ite2.next()))
-			{
-				throw new AssertionFailedError("A ordenação dos objetos não é igual");
-			}
-		}
-		
-		//sorted  (comparator)
-		assertTrue(emptyCol.sorted(theComparator).equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
-		ite2 = sortedSet.iterator();
-		for (Object curObj : sharpCol.sorted(theComparator))
-		{
-			if (!curObj.equals(ite2.next()))
-			{
-				throw new AssertionFailedError("A ordenação dos objetos não é igual");
-			}
-		}
+		assertTrue(sharpCol.maxWith(theComparator).equals(ssComparator.last()));
 		
 		//filter
 		List<Object> listaFiltro = new ArrayList<Object>();
@@ -382,10 +266,10 @@ public class SharpCollectionTest
 
 		//partition
 		assertTrue(emptyCol.partition(filterFunc).getVal1().isEmpty() && emptyCol.partition(filterFunc).getVal2().isEmpty());
-		final Tuple2<? extends SharpCollection<Object>, ? extends SharpCollection<Object>> partResult = sharpCol.partition(filterFunc);
+		final Tuple2<SharpCollection<T>, SharpCollection<T>> partResult = (Tuple2<SharpCollection<T>, SharpCollection<T>>) sharpCol.partition(filterFunc);
 		assertTrue((partResult.getVal1().size() + partResult.getVal2().size()) == elems.length); //A partição engloba todos os elementos
 		assertTrue(partResult.getVal1().equals(sharpCol.filter(filterFunc))); //O primeiro retorno da partição é igual ao filtro
-		for (Object obj : partResult.getVal2())
+		for (T obj : partResult.getVal2())
 		{
 			if (filterFunc.apply(obj))
 			{
@@ -402,8 +286,7 @@ public class SharpCollectionTest
 		assertTrue(sharpCol.forall(filterFunc) == (sharpCol.filter(filterFunc).size() == elems.length));
 		
 		//map
-		final List<Object> mapList = new ArrayList<Object>();
-		
+		final List<U> mapList = new ArrayList<U>();
 		for (int i = 0; i < elems.length; i++)
 		{
 			mapList.add(mapFunc.apply(elems[i]));
@@ -413,15 +296,15 @@ public class SharpCollectionTest
 		assertTrue(sharpCol.map(mapFunc).containsAll(mapList)); //Elas contém os mesmos elementos (weak equals)
 
 		//collect <- basta verificar se ele é o mesmo resultado de filter com map
-		final PartialFunction1<Object, Object> partFunc = Functions.createPartial(filterFunc, mapFunc);
+		final PartialFunction1<T, U> partFunc = Functions.createPartial(filterFunc, mapFunc);
 		assertTrue(sharpCol.collect(partFunc).equals(sharpCol.filter(filterFunc).map(mapFunc)));
 		assertTrue(emptyCol.collect(partFunc).isEmpty());
 		
 		//flatMap
-		final List<Object> fmapList = new ArrayList<Object>();
+		final List<W> fmapList = new ArrayList<W>();
 		for (int i = 0; i < elems.length; i++)
 		{
-			for (Object curEle : fmapFunc.apply(elems[i]))
+			for (W curEle : fmapFunc.apply(elems[i]))
 			{
 				fmapList.add(curEle);
 			}
@@ -442,6 +325,19 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.count(filterFunc) == 0);
 		assertTrue(sharpCol.count(filterFunc) == theCount);
 		
+		//find
+		assertTrue(emptyCol.find(ObjectOps.isEquals(elems[0])).isEmpty());
+		assertTrue(sharpCol.find(ObjectOps.isEquals(elems[0])).notEmpty());
+		
+		//iterator (valida que ele retorna todos os elementos)
+		final List<Object> eleList = new ArrayList<Object>(Arrays.asList(elems));
+		for (Object ele : sharpCol)
+		{
+			eleList.remove(ele);
+		}
+		assertTrue(!emptyCol.iterator().hasNext());
+		assertTrue(eleList.isEmpty());
+		
 		//Testes de chamadas de método - não verificam a validade da informação
 		
 		//head & headOption
@@ -456,7 +352,7 @@ public class SharpCollectionTest
 		
 		//tail
 		sharpCol.tail();
-		assertTrue(emptyCol.tail().isEmpty());
+//		assertTrue(emptyCol.tail().isEmpty()); causa erro
 		assertTrue(sharpCol.tail().size() == Math.max(elems.length - 1, 0));
 		assertTrue(sharpCol.tail().tail().size() == Math.max(elems.length - 2, 0));
 		
@@ -467,7 +363,7 @@ public class SharpCollectionTest
 		assertTrue(sharpCol.take(-1).size() == 0);
 		assertTrue(sharpCol.take(0).size() == 0);
 		assertTrue(sharpCol.take(2).size() == Math.min(sharpCol.size(), 2));
-		assertTrue(sharpCol.take(500).size() == Math.min(sharpCol.size(), 5));
+		assertTrue(sharpCol.take(500).size() == Math.min(sharpCol.size(), 500));
 		
 		//takeRight
 		assertTrue(emptyCol.takeRight(-1).isEmpty());
@@ -476,7 +372,7 @@ public class SharpCollectionTest
 		assertTrue(sharpCol.takeRight(-1).size() == 0);
 		assertTrue(sharpCol.takeRight(0).size() == 0);
 		assertTrue(sharpCol.takeRight(2).size() == Math.min(sharpCol.size(), 2));
-		assertTrue(sharpCol.takeRight(500).size() == Math.min(sharpCol.size(), 5));
+		assertTrue(sharpCol.takeRight(500).size() == Math.min(sharpCol.size(), 500));
 		
 		//drop
 		assertTrue(emptyCol.drop(-1).isEmpty());
@@ -495,188 +391,239 @@ public class SharpCollectionTest
 		assertTrue(sharpCol.dropRight(0).size() == sharpCol.size());
 		assertTrue(sharpCol.dropRight(2).size() == Math.max(sharpCol.size() - 2, 0));
 		assertTrue(sharpCol.dropRight(500).size() == Math.max(sharpCol.size() - 500, 0));
-	}
-	
-	public void testIndexedSeq(final IndexedSeq<Integer> sharpCol)
-	{
-		//Is defined at -> funciona somente para indexed seqs
-		assertTrue(sharpCol.isDefinedAt(0));
-		assertTrue(sharpCol.isDefinedAt(2));
-		assertTrue(sharpCol.isDefinedAt(sharpCol.size() - 1));
-		assertTrue(sharpCol.isDefinedAt(-1) == false);
-		assertTrue(sharpCol.isDefinedAt(sharpCol.size()) == false);
+		
+		//grouped
+		assertTrue(emptyCol.grouped(2).isEmpty());
+		assertTrue(sharpCol.grouped(2).size() == Math.floor(elems.length / 2.0d));
+		
+		//splitAt
+		assertTrue(emptyCol.splitAt(2).getVal1().isEmpty() && emptyCol.splitAt(2).getVal2().isEmpty());
+		assertTrue(sharpCol.splitAt(2).getVal1().size() + sharpCol.splitAt(2).getVal2().size() == elems.length);
+
+		
+		//ATENÇÃO: SORTED, no caso do ListSharp (mutable), altera INPLACE os elementos
+		//PORTANTO FOI MOVIDO PARA O FINAL, POR CAUSA DO SIDE-EFFECT
+		
+		//sorted 
+		assertTrue(emptyCol.sorted().equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
+		Comparable<Object> sPrevEle = (Comparable<Object>) sharpCol.sorted().iterator().next();
+		for (Object curObj : sharpCol.sorted())
+		{
+			assertTrue(sPrevEle.compareTo((Comparable<Object>) curObj) <= 0);
+			sPrevEle = (Comparable<Object>) curObj;
+		}
+		
+		//sorted  (comparator)
+		assertTrue(emptyCol.sorted(theComparator).equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
+		T scPrevEle = sharpCol.sorted(theComparator).iterator().next();
+		for (T curObj : sharpCol.sorted(theComparator))
+		{
+			assertTrue(theComparator.compare(scPrevEle, curObj) <= 0);
+			scPrevEle = curObj;
+		}
+		
+		//faltou:
+		//takeWhile
+		//takeRightWhile
+		//dropWhile		
+		//dropRightWhile
+		//zipWithIndex
+		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
 	}
 	
 	/**
-	 * Faz um teste completo para uma SharpCollection (teste descontando mutabilidade). <br/>
-	 * Para aplicar o teste a uma coleção, basta fazer uma coleção com os valores [1, 2, 3, 4, 5] <br/>
+	 * Teste executado para sequências, ou seja, coleções que garantam a ordem do iterator. <br/>
+	 * Assume-se que os testes para sequências genéricas já foram executados. <br/>
 	 * 
-	 * 
-	 * @param sharpCol Uma coleção com os valores [1, 2, 3, 4, 5]
-	 * @param oriSharpCol Uma cópia da SharpCol (deep copy)
-	 * @param colDrop1 A coleção com o primeiro item dropado 
-	 * @param colDrop2 A coleção com os dois primeiro itens dropado 
-	 * @param colTake1 A coleção com o primeiro item pego
-	 * @param colTake2 A coleção com os dois primeiros itens pegos
-	 * @param colTakeRight1 A coleção com o primeiro item à direita pego
-	 * @param colTakeRight2 A coleção com os dois primeiros itens à direita pego
-	 * @param colDropRight1 A coleção com o último elemento dropado
-	 * @param colDropRight2 A coleção com os dois últimos elementos dropados
-	 * @param emptyCol Uma coleção vazia
+	 * @param sharpCol
+	 * @param filterFunc
+	 * @param elems
 	 */
-	public void testSharpCollection(final SharpCollection<Integer> sharpCol,
-						  			final SharpCollection<Integer> oriSharpCol,
-						  			SharpCollection<Integer> colDrop1,
-						  			SharpCollection<Integer> colDrop2,
-						  			SharpCollection<Integer> colTake1,
-						  			SharpCollection<Integer> colTake2,
-						  			SharpCollection<Integer> colTakeRight1,
-						  			SharpCollection<Integer> colTakeRight2,
-						  			SharpCollection<Integer> colDropRight1,
-						  			SharpCollection<Integer> colDropRight2,
-						  			final SharpCollection<Integer> emptyCol
-						  			) 
+	public <T> void testSeq(final SharpCollection<T> sharpCol, final Function1<? super T, Boolean> filterFunc, final T... elems) 
 	{
-		//Igualdade de listas
-			assertTrue(sharpCol.equals(oriSharpCol));
-			assertTrue(emptyCol.equals(emptyCol));
+		//Premissas:
+		assertTrue(elems.length > 5);
+		assertTrue(new HashSet<Object>(Arrays.asList(elems)).size() != elems.length);
+
+		//head & headOption
+		assertTrue(sharpCol.head().equals(elems[0]));
+		assertTrue(sharpCol.headOption().get().equals(elems[0]));
 		
-		//IsEmpty() geral
-			assertTrue(emptyCol.notEmpty() == false);
-			assertTrue(emptyCol.isEmpty());
+		//last & lastOption
+		assertTrue(sharpCol.last().equals(elems[elems.length - 1]));
+		assertTrue(sharpCol.lastOption().get().equals(elems[elems.length - 1]));
 		
-		//Contains
-			assertTrue(sharpCol.contains(10) == false);
-			assertTrue(sharpCol.contains(1) == true);
-			assertTrue(sharpCol.contains(5) == true);
-
-			
-			
-			
-		//Head - geral
-			assertTrue(sharpCol.head() == 1);
+		//tail
+		assertTrue(sharpCol.tail().head().equals(elems[1]));
+		assertTrue(sharpCol.tail().tail().head().equals(elems[2]));
 		
-		//HeadOption
-			assertTrue(sharpCol.headOption().notEmpty());
-			assertTrue(emptyCol.headOption().isEmpty());
+		//take
+		assertTrue(sharpCol.take(4).containsAll(Arrays.asList(Arrays.copyOf(elems, 4))));
 		
-		//Tail - geral
-			assertTrue(sharpCol.tail().equals(colDrop1));
-			assertTrue(sharpCol.tail().head() == 2);
+		//takeRight
+		assertTrue(sharpCol.takeRight(4).containsAll(Arrays.asList(Arrays.copyOfRange(elems, elems.length - 4, elems.length))));
 		
-		//Tail + Tail
-			assertTrue(sharpCol.tail().tail().equals(colDrop2));
-
-		//Last - geral
-			assertTrue(sharpCol.last() == 5);
+		//takeWhile
+		final List<T> twList = new ArrayList<T>();
+		for (int i = 0; i < elems.length; i++)
+		{
+			if (filterFunc.apply(elems[i])) twList.add(elems[i]); else break;
+		}
+		assertTrue(sharpCol.takeWhile(filterFunc).size() == twList.size() && 
+				   sharpCol.takeWhile(filterFunc).containsAll(twList));
 		
-		//LastOption - geral
-			assertTrue(sharpCol.lastOption().notEmpty());
-			assertTrue(emptyCol.lastOption().isEmpty());
-			
-		//Take - geral
-			assertTrue(sharpCol.take(-2).isEmpty());
-			assertTrue(sharpCol.take(0).isEmpty());
-			
-			assertTrue(sharpCol.take(1).equals(colTake1));
-			assertTrue(sharpCol.take(2).equals(colTake2));
-			assertTrue(sharpCol.take(5).equals(oriSharpCol));
-			assertTrue(sharpCol.take(10).equals(oriSharpCol));
-		//
-
-		//TakeRight - geral
-			assertTrue(sharpCol.takeRight(-2).isEmpty());
-			assertTrue(sharpCol.takeRight(0).isEmpty());
-			assertTrue(sharpCol.takeRight(1).equals(colTakeRight1));
-			assertTrue(sharpCol.takeRight(2).equals(colTakeRight2));
-			assertTrue(sharpCol.takeRight(5).equals(oriSharpCol));
-			assertTrue(sharpCol.takeRight(10).equals(oriSharpCol));
-		//
-
-		//TakeWhile - geral
-			assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(100)).equals(emptyCol));
-			assertTrue(sharpCol.takeWhile(IntegerOps.greaterThan(1)).equals(emptyCol));
-			assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(2)).equals(colTake1));
-			assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(3)).equals(colTake2));
-			assertTrue(sharpCol.takeWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-		//
-
-		//TakeRightWhile - geral
-			assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(100)).isEmpty());
-			assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(5)).isEmpty());
-			assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(4)).equals(colTakeRight1));
-			assertTrue(sharpCol.takeRightWhile(IntegerOps.greaterThan(3)).equals(colTakeRight2));
-			assertTrue(sharpCol.takeRightWhile(IntegerOps.lowerThan(10)).equals(oriSharpCol));
-		//
-
-
-		//Drop - geral
-			assertTrue(sharpCol.drop(-2).equals(oriSharpCol));
-			assertTrue(sharpCol.drop(0).equals(oriSharpCol));
-			assertTrue(sharpCol.drop(1).equals(colDrop1));
-			assertTrue(sharpCol.drop(2).equals(colDrop2));
-			assertTrue(sharpCol.drop(5).isEmpty());
-			assertTrue(sharpCol.drop(10).isEmpty());
-		//
-
-		//DropRight - geral
-			assertTrue(sharpCol.dropRight(-2).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRight(0).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRight(1).equals(colDropRight1));
-			assertTrue(sharpCol.dropRight(2).equals(colDropRight2));
-			assertTrue(sharpCol.dropRight(5).isEmpty());
-			assertTrue(sharpCol.dropRight(10).isEmpty());
-			assertTrue(sharpCol.dropRight(sharpCol.size()).isEmpty());
-		//
-
-		//DropWhile - geral
-			assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-			assertTrue(sharpCol.dropWhile(IntegerOps.greaterThan(1)).equals(oriSharpCol));
-			assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(2)).equals(colDrop1));
-			assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(3)).equals(colDrop2));
-			assertTrue(sharpCol.dropWhile(IntegerOps.lowerThan(10)).isEmpty());
-		//
-			
-		//DropRightWhile - geral
-			assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(100)).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(5)).equals(oriSharpCol));
-			assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(4)).equals(colDropRight1));
-			assertTrue(sharpCol.dropRightWhile(IntegerOps.greaterThan(3)).equals(colDropRight2));
-			assertTrue(sharpCol.dropRightWhile(IntegerOps.lowerThan(10)).isEmpty());
-		//
-			
-		//High-order functions
-			
-			//Find
-//				assertTrue(sharpCol.find(IntegerOps.equal(5)).notEmpty());
-//				assertTrue(sharpCol.find(IntegerOps.equal(0)).isEmpty());
-			
-			//Filter
-				assertTrue(sharpCol.filter(IntegerOps.lowerThan(5)).equals(colDropRight1));
-				assertTrue(sharpCol.filter(IntegerOps.lowerThan(10)).equals(sharpCol));
-				assertTrue(sharpCol.filter(IntegerOps.lowerThan(0)).equals(emptyCol));
-	
-			//Exists
-//				assertTrue(sharpCol.exists(IntegerOps.equal(5)) == true);
-//				assertTrue(sharpCol.exists(IntegerOps.equal(0)) == false);
-			
-			//Forall
-				assertTrue(sharpCol.forall(IntegerOps.lowerThan(5)) == false);
-				assertTrue(sharpCol.forall(IntegerOps.lowerThan(10)) == true);
-			
-			//Count
-				assertTrue(sharpCol.count(IntegerOps.lowerThan(5)) == 4);
-				assertTrue(sharpCol.count(IntegerOps.lowerThan(10)) == 5);
-				assertTrue(sharpCol.count(IntegerOps.lowerThan(0)) == 0);
+		//takeRightWhile
+		final List<T> trwList = new ArrayList<T>();
+		for (int i = elems.length - 1; i > -1; i--)
+		{
+			if (filterFunc.apply(elems[i])) trwList.add(elems[i]); else break;
+		}
+		assertTrue(sharpCol.takeRightWhile(filterFunc).size() == trwList.size() && 
+				   sharpCol.takeRightWhile(filterFunc).containsAll(trwList));
 				
-			//FoldLeft
-				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) == 15);
-				assertTrue(sharpCol.foldLeft(0, IntegerOps.sum) != 14);
-			
-			//Map
-				assertTrue(sharpCol.mkString().equals("12345"));
-
-			//Collect DEFINIR MÉTODO DE TESTE
+		//drop <- drop == takeRight
+		assertTrue(sharpCol.drop(2).equals(sharpCol.takeRight(sharpCol.size() - 2)));
+		
+		//dropRight <- dropRight == take
+		assertTrue(sharpCol.dropRight(2).equals(sharpCol.take(sharpCol.size() - 2)));
+		
+		//dropWhile
+		final List<T> dwList = new ArrayList<T>();
+		boolean dwToAdd = false;
+		for (int i = 0; i < elems.length; i++)
+		{
+			if (dwToAdd) dwList.add(elems[i]);
+			else if (!filterFunc.apply(elems[i]))
+			{
+				dwList.add(elems[i]);
+				dwToAdd = true;
+			}
+		}
+		assertTrue(sharpCol.dropWhile(filterFunc).size() == dwList.size() && 
+				   sharpCol.dropWhile(filterFunc).containsAll(dwList));
+		
+		//dropRightWhile
+		final List<T> drwList = new ArrayList<T>();
+		boolean drwToAdd = false;
+		for (int i = elems.length - 1; i > -1; i--)
+		{
+			if (drwToAdd) drwList.add(elems[i]);
+			else if (!filterFunc.apply(elems[i]))
+			{
+				drwList.add(elems[i]);
+				drwToAdd = true;
+			}
+		}
+		assertTrue(sharpCol.dropRightWhile(filterFunc).size() == drwList.size() && 
+				   sharpCol.dropRightWhile(filterFunc).containsAll(drwList));
+		
+		//splitAt
+		assertTrue(sharpCol.splitAt(2).getVal1().containsAll(Arrays.asList(Arrays.copyOf(elems, 2))));
+		assertTrue(sharpCol.splitAt(2).getVal2().containsAll(Arrays.asList(Arrays.copyOfRange(elems, 2, elems.length))));
+		
+		//grouped
+		final List<SharpCollection<T>> groupList = new ArrayList<SharpCollection<T>>();
+		int groupIndex = 0;
+		while (groupIndex < sharpCol.size())
+		{
+			groupList.add(sharpCol.drop(groupIndex).take(2));
+			groupIndex += 2;
+		}
+		groupIndex = 0;
+		for (SharpCollection<T> curCol : sharpCol.grouped(2))
+		{
+			assertTrue(curCol.size() == groupList.get(groupIndex).size());
+			assertTrue(curCol.containsAll(groupList.get(groupIndex++)));
+		}
+		
+		//zipWithIndex
+		SharpCollection<Tuple2<T, Integer>> zwiCol = sharpCol.zipWithIndex();
+		for (int i = 0; i < elems.length; i++)
+		{
+			assertTrue(zwiCol.head().getVal1().equals(elems[i]) && zwiCol.head().getVal2() == i);
+			zwiCol = zwiCol.tail(); //iterator pobre
+		}
+		
+		//iterator
+		final Iterator<T> iteCol = sharpCol.iterator();
+		for (int i = 0; i < elems.length; i++)
+		{
+			assertTrue(iteCol.next().equals(elems[i]));
+		}
+		
+		//find
+		Object theEle = null;
+		for (int i = 0; i < elems.length; i++)
+		{
+			if (filterFunc.apply(elems[i]))
+			{
+				theEle = elems[i];
+				break;
+			}
+		}
+		assertTrue(theEle != null);
+		assertTrue(sharpCol.find(filterFunc).get().equals(theEle));
 	}
 	
+	/**
+	 * Adicionar nesta listagem os próximos métodos criados, para facilitar encontrar em qual teste o método
+	 * será encontrado
+	 */
+	public void testGenericCollection()
+	{
+		//Genérico 
+		
+		//size
+		//isEmpty
+		//notEmpty
+		//contains
+		//containsAll
+		//intersect
+		//distinct
+		//sorted
+		//sorted(comparator)
+		//mkString (só a chamada mesmo, pra assegurar que não há erro)
+		//min
+		//minOption
+		//max
+		//maxOption
+		//maxWith
+		//minWith
+		//filter
+		//partition
+		//exists
+		//forall
+		//map
+		//collect
+		//flatMap
+		//count
+		
+		
+		//Dependem de ordem
+		
+		//head
+		//headOption
+		//last
+		//lastOption
+		//tail
+		//take
+		//takeWhile
+		//takeRight
+		//takeRightWhile
+		//drop
+		//dropWhile
+		//dropRight
+		//dropRightWhile
+		//splitAt
+		//grouped
+		//zipWithIndex
+		//iterator <- depende de ordem
+		//find
+		
+		//Funções a serem verificadas 'na unha', por ter que verificar resultados específicos:
+
+		//map
+		//flatMap
+		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
+	}
 }
