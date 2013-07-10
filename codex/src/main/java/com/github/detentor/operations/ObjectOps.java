@@ -27,10 +27,7 @@ public final class ObjectOps
 			@Override
 			public Boolean apply(final Object param)
 			{
-				//Seria uma igual à outra?
-				//(theObject == null && param == null) || (theObject != null && param != null && theObject.equals(param))
-				return (theObject == null && param == null) || 
-						(theObject != null && theObject.equals(param));
+				return theObject == null ? param == null : theObject.equals(param);
 			}
 		};
 	}
