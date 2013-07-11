@@ -107,23 +107,23 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	 */
 	public static <T> SetSharp<T> empty(final SetSharpType setType)
 	{
-		Set<T> hashInstance = null;
+		Set<T> setInstance = null;
 		
 		switch(setType)
 		{
-			case HASH_SET:
-				hashInstance = new HashSet<T>();
-				break;
 			case LINKED_HASH_SET:
-				hashInstance = new LinkedHashSet<T>();
+				setInstance = new LinkedHashSet<T>();
+				break;
+			case HASH_SET:
+				setInstance = new HashSet<T>();
 				break;
 			case TREE_SET:
-				hashInstance = new TreeSet<T>();
+				setInstance = new TreeSet<T>();
 				break;
 			default:
 				throw new IllegalArgumentException("Tipo de SetSharp não reconhecido");
 		}
-		return new SetSharp<T>(hashInstance);
+		return new SetSharp<T>(setInstance);
 	}
 
 	@Override
@@ -170,13 +170,13 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	{
 		Builder<B, SharpCollection<B>> builderRetorno = null;
 		
-		if (backingSet instanceof HashSet<?>)
-		{
-			builderRetorno = new HashSetBuilder<B>();
-		}
-		else if (backingSet instanceof LinkedHashSet<?>)
+		if (backingSet instanceof LinkedHashSet<?>)
 		{
 			builderRetorno = new LinkedHashBuilder<B>();
+		}
+		else if (backingSet instanceof HashSet<?>)
+		{
+			builderRetorno = new HashSetBuilder<B>();
 		}
 		else if (backingSet instanceof TreeSet<?>)
 		{
@@ -358,6 +358,6 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	@Override
 	public SetSharp<T> sorted(final Comparator<? super T> comparator)
 	{
-		return from(new TreeSet<T>(comparator)).addAll(this);
+		return new SetSharp<T>(new TreeSet<T>(comparator)).addAll(this);
 	}
 }
