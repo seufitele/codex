@@ -1,5 +1,7 @@
 package com.github.detentor.codex.product;
 
+import com.github.detentor.codex.function.arrow.Arrow1;
+
 
 /**
  * Na teoria dos conjuntos, uma n-tuple (enupla) é uma sequência de n elementos, onde n é um inteiro positivo.<br/>
@@ -137,6 +139,38 @@ public class Tuple2<A, B> implements Product
 	public String toString()
 	{
 		return "Tuple(" + val1 + ", " + val2 + ")";
+	}
+	
+	/**
+	 * Retorna uma seta que descarta o valo12 da tupla.
+	 * @return Uma seta que descarta o valor1 da tupla.
+	 */
+	public <C, D> Arrow1<Tuple2<C, D>, D> discardVal1()
+	{
+		return new Arrow1<Tuple2<C, D>, D>()
+		{
+			@Override
+			public D apply(final Tuple2<C, D> param)
+			{
+				return param.getVal2();
+			}
+		};
+	}
+	
+	/**
+	 * Retorna uma seta que descarta o valor2 da tupla.
+	 * @return Uma seta que descarta o valor2 da tupla.
+	 */
+	public <C, D> Arrow1<Tuple2<C, D>, C> discardVal2()
+	{
+		return new Arrow1<Tuple2<C, D>, C>()
+		{
+			@Override
+			public C apply(final Tuple2<C, D> param)
+			{
+				return param.getVal1();
+			}
+		};
 	}
 
 }
