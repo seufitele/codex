@@ -207,23 +207,23 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	}
 
 	/**
-	 * Transforma esta coleção em um mapa de acordo com uma função discriminadora. </br> Em outras palavras, aplica a função passada como
-	 * parâmetro a cada elemento desta coleção, criando um mapa onde a chave é o resultado da função aplicada, e o valor é o elemento. <br/>
-	 * Se esta coleção possuir elementos repetidos, então o elemento do mapa será o último a ser retornado pelo iterador desta coleção.
+	 * Transforma esta coleção em uma lista de tuplas de acordo com uma função de transformação. </br> 
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
+	 * criando uma lista de tuplas onde o primeiro elemento é o próprio item, e o segundo é o resultado
+	 * da aplicação da função naquele elemento. <br/>
 	 * 
-	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
-	 * @return Um mapa, onde a chave é o resultado da função, e o valor é o elemento usado para gerar a chave
+	 * @return Uma lista de tuplas, onde o primeiro item é o elemento original, e o segundo o valor após a aplicação da função
 	 */
-	public <A> MapSharp<A, T> mapped(final Function1<? super T, A> function)
+	public <A> ListSharp<Tuple2<T, A>> mapped(final Function1<? super T, A> function)
 	{
-		final MapSharp<A, T> mapaRetorno = MapSharp.empty();
+		final Builder<Tuple2<T, A>, SharpCollection<Tuple2<T, A>>> lsBuilder = builder();
 
 		for (final T curEle : this)
 		{
-			mapaRetorno.add(Tuple2.from(function.apply(curEle), curEle));
+			lsBuilder.add(Tuple2.from(curEle, function.apply(curEle)));
 		}
-		return mapaRetorno;
+		return (ListSharp<Tuple2<T, A>>) lsBuilder.result();
 	}
 
 	/**
@@ -281,6 +281,26 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	{
 		return backingList;
 	}
+	
+//	/**
+//	 * Transforma esta lista de tuplas em um mapa onde a chave é o primeiro elemento da tupla, e o valor
+//	 * o segundo. Equivale a {@link MapSharp#from(Iterable) MapSharp.from(this)}.
+//	 * @return Um mapa criado a partir desta lista de tuplas.
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public <A, B> MapSharp<A, B> toMapSharp()
+//	{
+//		if (this.isEmpty())
+//		{
+//			return MapSharp.empty();
+//		}
+//		
+//		if (this.head() instanceof Tuple2<?, ?>)
+//		{
+//			return MapSharp.from((ListSharp<Tuple2<A, B>>) this);
+//		}
+//		throw new IllegalArgumentException("O método toMapSharp só está definido para listas de tuplas");
+//	}
 
 	/**
 	 * Classe com a implementação default do comparator
