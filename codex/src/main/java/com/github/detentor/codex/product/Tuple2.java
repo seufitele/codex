@@ -141,27 +141,12 @@ public class Tuple2<A, B> implements Product
 		return "Tuple(" + val1 + ", " + val2 + ")";
 	}
 	
-	/**
-	 * Retorna uma seta que descarta o valo12 da tupla.
-	 * @return Uma seta que descarta o valor1 da tupla.
-	 */
-	public <C, D> Arrow1<Tuple2<C, D>, D> discardVal1()
-	{
-		return new Arrow1<Tuple2<C, D>, D>()
-		{
-			@Override
-			public D apply(final Tuple2<C, D> param)
-			{
-				return param.getVal2();
-			}
-		};
-	}
 	
 	/**
-	 * Retorna uma seta que descarta o valor2 da tupla.
-	 * @return Uma seta que descarta o valor2 da tupla.
+	 * Retorna uma seta que transforma uma tupla em seu primeiro valor.
+	 * @return Uma seta que transforma uma tupla em seu primeiro valor.
 	 */
-	public <C, D> Arrow1<Tuple2<C, D>, C> discardVal2()
+	public static <C, D> Arrow1<Tuple2<C, D>, C> toVal1()
 	{
 		return new Arrow1<Tuple2<C, D>, C>()
 		{
@@ -173,4 +158,19 @@ public class Tuple2<A, B> implements Product
 		};
 	}
 
+	/**
+	 * Retorna uma seta que transforma uma tupla em seu segundo valor.
+	 * @return Uma seta que transforma uma tupla em seu segundo valor.
+	 */
+	public static <C, D> Arrow1<Tuple2<C, D>, D> toVal2()
+	{
+		return new Arrow1<Tuple2<C, D>, D>()
+		{
+			@Override
+			public D apply(final Tuple2<C, D> param)
+			{
+				return param.getVal2();
+			}
+		};
+	}
 }
