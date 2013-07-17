@@ -304,6 +304,29 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	}
 	
 	/**
+	 * Transforma esta coleção em uma lista de tuplas de acordo com uma função de transformação. </br> 
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
+	 * criando uma lista de tuplas onde o primeiro elemento é o próprio item, e o segundo é o resultado
+	 * da aplicação da função naquele elemento. <br/>
+	 * 
+	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
+	 * @return Uma lista de tuplas, onde o primeiro item é o elemento original, e o segundo o valor após a aplicação da função
+	 */
+	public <A> ListSharp<Tuple2<T, A>> mapped(final Function1<? super T, A> function)
+	{
+		//no futuro, trocar para builder, para ficar uniforme. No entanto, o builder, hoje, é menos performático
+		//(por não ter o método hintSize)
+		final Object[] data = new Object[this.size()];
+
+		for (int i = 0; i < this.size(); i++)
+		{
+			final T curEle = this.apply(i);
+			data[i] = Tuple2.from(curEle, function.apply(curEle));
+		}
+		return new ListSharp<Tuple2<T,A>>(data);
+	}
+
+	/**
 	 * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
 	 */
 	private class ImArrayBuilder<E> implements Builder<E, SharpCollection<E>>
