@@ -1,7 +1,7 @@
 package com.github.detentor.codex.function;
 
 /**
- * Interface que define uma função que não recebe uma quantidade arbitrária de argumentos
+ * Interface que define uma função que recebe uma quantidade arbitrária de argumentos
  * do tipo A, e retorna um valor do tipo B
  * 
  * @author f9540702 Vinícius Seufitele Pinto
