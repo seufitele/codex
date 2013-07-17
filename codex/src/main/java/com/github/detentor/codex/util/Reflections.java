@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import com.github.detentor.codex.function.arrow.Arrow0;
 import com.github.detentor.codex.function.arrow.Arrow1;
 import com.github.detentor.codex.function.arrow.ArrowN;
 import com.github.detentor.codex.monads.Option;
@@ -40,6 +41,37 @@ public final class Reflections
 			public B apply(final A param)
 			{
 				return invokeSafe(param, theMethod, (Object[]) null);
+			}
+		};
+	}
+	
+	/**
+	 * Transforma um método de uma classe em uma {@link Arrow0}, amarrando os valores
+	 * passados como parâmetro na chamada do método, de forma que aplicar a seta 
+	 * seja equivalente a chamar o método com os parâmetros passados.
+	 * 
+	 * @param fromInstance A instância a partir da qual o método será promovido
+	 * @param methodName O nome do método a ser transformado
+	 * @param params Os parâmetros a serem "amarrados" ao método. Para métodos que não recebem parâmetro pode-se passar
+	 * um array de tamanho 0.
+	 * @return Uma {@link Arrow0} que, ao ser aplicada, seja equivalente à chamada do método com os parâmetros passados
+	 */
+	public static <B> Arrow0<B> liftBind(final Object fromInstance, final String methodName, final Object... params)
+	{
+		final Class<?>[] types = new Class[params.length]; 
+
+		for (int i = 0; i < params.length; i++)
+		{
+			types[i] = params[i].getClass();
+		}
+		final Method theMethod = ensureNotEmpty(getMethodFromNameAndType(fromInstance.getClass(), methodName, types));
+
+		return new Arrow0<B>()
+		{
+			@Override
+			public B apply()
+			{
+				return invokeSafe(fromInstance, theMethod, params);
 			}
 		};
 	}
