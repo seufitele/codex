@@ -33,6 +33,20 @@ public abstract class RichIterator<E> implements Iterator<E>
 	}
 
 	/**
+	 * Cria um RichIterator a partir do iterable passado como parâmetro. <br/>
+	 * Note-se que os elementos do iterable passado só serão consumidos quando os elementos
+	 * de RichIterator forem consumidos
+	 * 
+	 * @param iterable O iterable a ser transformado em RichIterator
+	 * @return Um RichIterator, que encaspsula o iterable passado como parâmetro, para adicionar
+	 * novas funcionalidades.
+	 */
+	public static <E> RichIterator<E> from(final Iterable<E> iterable)
+	{
+		return from(iterable.iterator());
+	}
+
+	/**
 	 * Cria um RichIterator a partir do iterator passado como parâmetro. <br/>
 	 * Note-se que os elementos do iterator passado só serão consumidos quando os elementos
 	 * de RichIterator forem consumidos
@@ -86,24 +100,4 @@ public abstract class RichIterator<E> implements Iterator<E>
 		}
 		return sBuilder.toString() + "]";
 	}
-
-	/**
-	 * Cria um RichIterator a partir do iterable passado como parâmetro. <br/>
-	 * Note-se que os elementos do iterable passado só serão consumidos quando os elementos
-	 * de RichIterator forem consumidos
-	 * 
-	 * @param iterable O iterable a ser transformado em RichIterator
-	 * @return Um RichIterator, que encaspsula o iterable passado como parâmetro, para adicionar
-	 * novas funcionalidades.
-	 */
-	public static <E> RichIterator<E> from(final Iterable<E> iterable)
-	{
-		return from(iterable.iterator());
-	}
-	
-	public static void main(String[] args)
-	{
-		System.out.println(RichIterator.from(ListSharp.from(1, 2, 3, 4)) );
-	}
-	
 }
