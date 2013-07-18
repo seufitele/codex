@@ -2,7 +2,6 @@ package com.github.detentor.codex.util;
 
 import java.util.Iterator;
 
-import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.monads.Option;
 
 /**
