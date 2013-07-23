@@ -67,5 +67,17 @@ public final class ObjectOps
 			return param;
 		}
 	};
+	
+	/**
+	 * Transforma um enum em sua propriedade name
+	 */
+	public static final Arrow1<Enum<?>, String> enumToName = new Arrow1<Enum<?>, String>()
+	{
+		@Override
+		public String apply(final Enum<?> param)
+		{
+			return param.name();
+		}
+	};
 
 }
