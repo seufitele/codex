@@ -107,7 +107,8 @@ public class SharpCollectionTest
 //											LazyList.class,
 											ListSharp.class, 
 											com.github.detentor.codex.collections.immutable.ListSharp.class,
-											LLSharp.class);
+											LLSharp.class,
+											com.github.detentor.codex.collections.immutable.LLSharp.class);
 		
 		ListSharp<Class<?>> genClasses = ListSharp.<Class<?>>from(SetSharp.class);
 											
