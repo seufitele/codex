@@ -16,7 +16,6 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
-import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.MapSharp;
@@ -29,9 +28,65 @@ import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.Reflections;
-import com.github.detentor.operations.CharOps;
 import com.github.detentor.operations.IntegerOps;
 import com.github.detentor.operations.ObjectOps;
+
+
+//Genérico 
+
+	//size
+	//isEmpty
+	//notEmpty
+	//contains
+	//containsAll
+	//intersect
+	//distinct
+	//sorted
+	//sorted(comparator)
+	//mkString (só a chamada mesmo, pra assegurar que não há erro)
+	//min
+	//minOption
+	//max
+	//maxOption
+	//maxWith
+	//minWith
+	//filter
+	//partition
+	//exists
+	//forall
+	//map
+	//collect
+	//flatMap
+	//count
+	
+	//Dependem de ordem
+	
+	//head
+	//headOption
+	//last
+	//lastOption
+	//tail
+	//take
+	//takeWhile
+	//takeRight
+	//takeRightWhile
+	//drop
+	//dropWhile
+	//dropRight
+	//dropRightWhile
+	//splitAt
+	//grouped
+	//zipWithIndex
+	//iterator <- depende de ordem
+	//find
+	
+	//Funções a serem verificadas 'na unha', por ter que verificar resultados específicos:
+
+	//map
+	//flatMap
+	//foldLeft <- usualmente não é dependente de ordem, mas pode ser
+//
+
 
 public class SharpCollectionTest
 {
@@ -40,7 +95,7 @@ public class SharpCollectionTest
 	public void testListSharp() 
 	{
 		//Os testes devem estar divididos em 3 partes:
-		//1 - Testes de GenericSharpCollection
+		//1 - Testes de GenericSharpCollection (imutável / mutável)
 		//2 - Testes de sequências (drop, tail, etc)
 		//3 - Testes de funções de ordem superior
 		//4 - Testes de sequências lineares e sequências indexadas (LinearSeq & IndexedSeq)
@@ -81,16 +136,16 @@ public class SharpCollectionTest
 		
 		final Integer[] elementos = new Integer[] {2, 4, 3, 3, 1, 6, 5, 2}; 
 		
-		SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
-		SharpCollection<Integer> lista = func.apply((Object[]) elementos);
-		SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
-		
+		final SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
+		final SharpCollection<Integer> lista = func.apply((Object[]) elementos);
+		final SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
+
 		final Function1<Integer, List<Integer>> fmap = new Function1<Integer, List<Integer>>()
 		{
 			@Override
-			public List<Integer> apply(Integer param)
+			public List<Integer> apply(final Integer param)
 			{
-				final ArrayList<Integer> retorno = new ArrayList<Integer>();
+				final List<Integer> retorno = new ArrayList<Integer>();
 				retorno.add(param);
 				retorno.add(param);
 				return retorno;
@@ -100,14 +155,18 @@ public class SharpCollectionTest
 		final Comparator<Integer> theComp = new Comparator<Integer>()
 		{
 			@Override
-			public int compare(Integer o1, Integer o2)
+			public int compare(final Integer ob1, final Integer ob2)
 			{
-				return o2.compareTo(o1);
+				return ob2.compareTo(ob1);
 			}
 		};
 
 		testGenSharpCollection(listaOri, lista, listaVazia, IntegerOps.lowerThan(5), ObjectOps.toString, fmap, theComp, 10, elementos);
-		testSeq(lista, IntegerOps.lowerThan(5), elementos);
+
+		if (lista instanceof Seq<?>)
+		{
+			testSeq(lista, IntegerOps.lowerThan(5), elementos);
+		}
 	}
 	
 	public void testMapCollection() 
@@ -422,7 +481,7 @@ public class SharpCollectionTest
 			scPrevEle = curObj;
 		}
 		
-		//faltou:
+		//faltou (por depender da ordem do iterator):
 		//takeWhile
 		//takeRightWhile
 		//dropWhile		
@@ -435,7 +494,7 @@ public class SharpCollectionTest
 	 * Teste executado para sequências, ou seja, coleções que garantam a ordem do iterator. <br/>
 	 * Assume-se que os testes para sequências genéricas já foram executados. <br/>
 	 * 
-	 * @param sharpCol
+	 * @param sharpCol A coleção a ser testada
 	 * @param filterFunc
 	 * @param elems
 	 */
@@ -444,25 +503,26 @@ public class SharpCollectionTest
 		//Premissas:
 		assertTrue(elems.length > 5);
 		assertTrue(new HashSet<Object>(Arrays.asList(elems)).size() != elems.length);
+		assertTrue(sharpCol instanceof Seq<?>);
 
 		//head & headOption
 		assertTrue(sharpCol.head().equals(elems[0]));
 		assertTrue(sharpCol.headOption().get().equals(elems[0]));
-		
+
 		//last & lastOption
 		assertTrue(sharpCol.last().equals(elems[elems.length - 1]));
 		assertTrue(sharpCol.lastOption().get().equals(elems[elems.length - 1]));
-		
+
 		//tail
 		assertTrue(sharpCol.tail().head().equals(elems[1]));
 		assertTrue(sharpCol.tail().tail().head().equals(elems[2]));
-		
+
 		//take
 		assertTrue(sharpCol.take(4).containsAll(Arrays.asList(Arrays.copyOf(elems, 4))));
-		
+
 		//takeRight
 		assertTrue(sharpCol.takeRight(4).containsAll(Arrays.asList(Arrays.copyOfRange(elems, elems.length - 4, elems.length))));
-		
+
 		//takeWhile
 		final List<T> twList = new ArrayList<T>();
 		for (int i = 0; i < elems.length; i++)
@@ -480,7 +540,7 @@ public class SharpCollectionTest
 		}
 		assertTrue(sharpCol.takeRightWhile(filterFunc).size() == trwList.size() && 
 				   sharpCol.takeRightWhile(filterFunc).containsAll(trwList));
-				
+
 		//drop <- drop == takeRight
 		assertTrue(sharpCol.drop(2).equals(sharpCol.takeRight(sharpCol.size() - 2)));
 		
@@ -550,7 +610,7 @@ public class SharpCollectionTest
 		{
 			assertTrue(iteCol.next().equals(elems[i]));
 		}
-		
+
 		//find
 		Object theEle = null;
 		for (int i = 0; i < elems.length; i++)
@@ -563,67 +623,5 @@ public class SharpCollectionTest
 		}
 		assertTrue(theEle != null);
 		assertTrue(sharpCol.find(filterFunc).get().equals(theEle));
-	}
-	
-	/**
-	 * Adicionar nesta listagem os próximos métodos criados, para facilitar encontrar em qual teste o método
-	 * será encontrado
-	 */
-	public void testGenericCollection()
-	{
-		//Genérico 
-		
-		//size
-		//isEmpty
-		//notEmpty
-		//contains
-		//containsAll
-		//intersect
-		//distinct
-		//sorted
-		//sorted(comparator)
-		//mkString (só a chamada mesmo, pra assegurar que não há erro)
-		//min
-		//minOption
-		//max
-		//maxOption
-		//maxWith
-		//minWith
-		//filter
-		//partition
-		//exists
-		//forall
-		//map
-		//collect
-		//flatMap
-		//count
-		
-		
-		//Dependem de ordem
-		
-		//head
-		//headOption
-		//last
-		//lastOption
-		//tail
-		//take
-		//takeWhile
-		//takeRight
-		//takeRightWhile
-		//drop
-		//dropWhile
-		//dropRight
-		//dropRightWhile
-		//splitAt
-		//grouped
-		//zipWithIndex
-		//iterator <- depende de ordem
-		//find
-		
-		//Funções a serem verificadas 'na unha', por ter que verificar resultados específicos:
-
-		//map
-		//flatMap
-		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
 	}
 }
