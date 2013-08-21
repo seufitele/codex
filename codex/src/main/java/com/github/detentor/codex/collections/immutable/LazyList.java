@@ -1,6 +1,7 @@
 package com.github.detentor.codex.collections.immutable;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -19,21 +20,22 @@ import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.RichIterator;
 
 /**
- * Lista encadeada Lazy. <br/><br/>
+ * Lista encadeada Lazy. Deve-se sempre optar por utilizar esta lista Lazy, por possibilitar a criação
+ * de SharpCollections sem custo adicional de memória. <br/><br/>
  * 
- *  Benefícios: <br/><br/>
+ * Benefícios: <br/><br/>
  * 
  * 1) Serve de wrapper para qualquer iterator, possibilitando a criação instantânea de uma SharpCollection
  * sem custo adicional de memória (somente o custo do wrapper, que é negligível). <br/><br/>
  * 
  * 2) As funções de ordem superior que retornam coleções são lazy e permitem o encadeamento arbitrário de
  * operações. Além disso, a LazyList final será criada somente uma vez, ou seja, qualquer que seja o número
- * de funções encadeadas, o custo será sempre O(n), onde n é o número de elementos do iterator usado na hora
+ * de funções encadeadas, o custo (de memória) será sempre O(n), onde n é o número de elementos do iterator usado na hora
  * de criar a LazyList.<br/><br/>
  * 
  * 3) As funções de ordem superior foram criadas de forma que não guardem uma referência ao 'head' da lista.
- * Isso significa que, no momento que algum elemento da lista não puder mais ser acessado, ele será coletado,
- * evitando gasto de memória desnecessário e potencial StackOverflow (comuns principalmente ao trabalhar com listas
+ * Isso significa que, no momento que algum elemento da lista não puder mais ser acessado, ele poderá ser coletado,
+ * evitando gasto de memória desnecessário e potencial StackOverflow (comuns ao trabalhar com listas
  * infinitas. <br/><br/>
  * 
  * 4) Possibilidade de criação de listas infinitas com os métodos geradores. <br/><br/><br/>
@@ -56,9 +58,7 @@ import com.github.detentor.codex.util.RichIterator;
  * 2) Criar os métodos baseados no foldLeft: Tem o benefício de ter a implementação mais curta e simples: o código fica menor,
  * e é mais fácil intuir o comportamento da função a partir do código; é possível inspecionar sempre o estado anterior da lista,
  * visto que ele é sempre 'carregado' para a próxima execução. O lado ruim é que isso impossibilita a coleta da lista na maior parte
- * dos métodos (que não precisam ficar carregando o estado), 
- * 
- * 
+ * dos métodos.
  * 
  * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
  * 
@@ -202,7 +202,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			curTail = curTail.tail;
 		}
 
-		if (! curTail.isEmpty())
+		if (curTail.head instanceof Uninitialized || curTail.notEmpty())
 		{
 			sBuilder.append(", ?");
 		}
@@ -372,45 +372,61 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> intersect(final Iterable<T> withCollection)
 	{
-		throw new UnsupportedOperationException("Método ainda não implementado");
-//		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
-//		{
-//			private final Object UNINITIALIZED = new Uninitialized(null);
-//			private Object nextElement = UNINITIALIZED;
-//			
-//			@SuppressWarnings("unchecked")
-//			@Override
-//			public T apply()
-//			{
-//				final T toReturn = (T) nextElement;
-//				nextElement = UNINITIALIZED;
-//				return toReturn;
-//			}
-//
-//			private Object consumeIterator()
-//			{
-//				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
-//				{
-//					T curEle = null;
-//
-//					while (state.hasNext())
-//					{ 
-//						if (withCollection.contains(curEle = state.next()))
-//						{
-//							nextElement = curEle;
-//							break;
-//						}
-//					}
-//				}
-//				return nextElement; //Devolve o valor original do nextElement
-//			}
-//
-//			@Override
-//			public boolean isDefined()
-//			{
-//				return ! (consumeIterator() instanceof Uninitialized);
-//			}
-//		});
+		//throw new UnsupportedOperationException("Método ainda não implementado");
+		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
+		{
+			private final Object UNINITIALIZED = new Uninitialized(null);
+			private Object nextElement = UNINITIALIZED;
+			private Set<T> eleSet = null;
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public T apply()
+			{
+				final T toReturn = (T) nextElement;
+				nextElement = UNINITIALIZED;
+				return toReturn;
+			}
+
+			private Object consumeIterator()
+			{
+				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
+				{
+					T curEle = null;
+
+					while (state.hasNext())
+					{ 
+						if (getEleSet().contains(curEle = state.next()))
+						{
+							nextElement = curEle;
+							break;
+						}
+					}
+				}
+				return nextElement; //Devolve o valor original do nextElement
+			}
+
+			@Override
+			public boolean isDefined()
+			{
+				return ! (consumeIterator() instanceof Uninitialized);
+			}
+			
+			private Set<T> getEleSet()
+			{
+				if (eleSet == null)
+				{
+					eleSet = new HashSet<T>();
+
+					for (T ele : withCollection)
+					{
+						eleSet.add(ele);
+					}
+				}
+				return eleSet;
+			}
+			
+		});
 	}
 	
 	@Override
@@ -536,7 +552,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		//Como filter é lazy, simplesmente cria um filter pra cada lista.
 		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition
 		//strict, ele teria complexidade N apenas.
-		return Tuple2.from(drop(num), take(num));
+		return Tuple2.from(take(num), drop(num));
 	}
 
 	@Override
@@ -992,8 +1008,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Classe responsável por definir o comportamento de operações monádicas que
-	 * incluem somente Map
+	 * Classe responsável por definir o comportamento de operações monádicas que incluem somente Map
 	 */
 	private static final class MapMonadic<T, B> extends LazyMonadic<B>
 	{
@@ -1023,8 +1038,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Classe responsável por definir o comportamento de operações monádicas que
-	 * incluem somente Filter
+	 * Classe responsável por definir o comportamento de operações monádicas que incluem somente Filter
 	 */
 	private static final class FilterMonadic<T> extends LazyMonadic<T>
 	{
