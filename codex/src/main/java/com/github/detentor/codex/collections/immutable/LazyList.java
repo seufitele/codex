@@ -98,27 +98,25 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	}
 
 	/**
-	 * Cria uma nova LazyList, a partir do valor passado como parâmetro. <br/>
-	 * Esse método é uma forma mais compacta de se criar LazyList.
+	 * Cria uma LazyList a partir do valor passado como parâmetro. <br/>
 	 * 
 	 * @param <A> O tipo de dados da LazyList a ser retornada.
 	 * @param valor O valor da LazyList
-	 * @return Uma nova LazyList, cujo elemento será o valor passado como parâmetro
+	 * @return Uma LazyList cujo elemento será o valor passado como parâmetro
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> LazyList<T> from(final T valor)
 	{
 		return new LazyList<T>(valor, (LazyList<T>) Nil);
 	}
-	
+
 	/**
-	 * Cria uma nova LazyList, a partir dos valores passados como parâmetro. <br/>
+	 * Cria uma LazyList a partir dos valores passados como parâmetro. <br/>
 	 * Como os valores passados pertencem a um Array, então os elementos são "realizados" imediatamente.
-	 * Esse método é uma forma mais compacta de se criar LazyList.
 	 * 
 	 * @param <A> O tipo de dados da LazyList a ser retornada.
 	 * @param valores A LazyList a ser criada, a partir dos valores
-	 * @return Uma nova LazyList, cujos elementos são os elementos passados como parâmetro
+	 * @return Uma LazyList cujos elementos são os elementos passados como parâmetro
 	 */
 	public static <T> LazyList<T> from(final T... valores)
 	{
@@ -137,7 +135,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 * 
 	 * @param <T> O tipo de dados da lista
 	 * @param theIterable O iterator que contém os elementos
-	 * @return Uma lista criada a partir da adição de todos os elementos do iterador
+	 * @return Uma Lazy List criada a partir da adição de todos os elementos do iterador
 	 */
 	public static <T> LazyList<T> from(final Iterable<T> theIterable)
 	{
@@ -156,7 +154,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	{
 		return new UnfoldedList<T>(genFunction);
 	}
-	
+
 	@Override
 	public boolean isEmpty()
 	{
@@ -206,9 +204,8 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			sBuilder.append(", ?");
 		}
-		
+
 		sBuilder.append(']');
-		
 		return sBuilder.toString();
 	}
 	
@@ -280,7 +277,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-	
+
 	@Override
 	public LazyList<T> take(final Integer num)
 	{
@@ -300,7 +297,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-	
+
 	@Override
 	public LazyList<T> dropWhile(final Function1<? super T, Boolean> pred)
 	{
@@ -331,7 +328,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-	
+
 	@Override
 	public LazyList<T> takeWhile(final Function1<? super T, Boolean> pred)
 	{
@@ -355,16 +352,15 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-	
+
 	@Override
 	public Tuple2<LazyList<T>, LazyList<T>> partition(final Function1<? super T, Boolean> pred)
 	{
 		//Como filter é lazy, simplesmente cria um filter pra cada lista.
-		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition
-		//strict, ele teria complexidade N apenas.
+		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition strict, ele teria complexidade N apenas.
 		return Tuple2.from(this.filter(pred), this.filter(Functions.not(pred)));
 	}
-	
+
 	/**
 	 * {@inheritDoc} 
 	 * ATENÇÃO: Se a coleção passada como parâmetro for infinita, este método pode não retornar.
@@ -372,13 +368,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> intersect(final Iterable<T> withCollection)
 	{
-		//throw new UnsupportedOperationException("Método ainda não implementado");
+		//CÓDIGO usa um HashSet, o que acaba impactando a complexidade de memória
 		return unfold(new StatePartialArrow0<Iterator<T>, T>(this.iterator())
 		{
 			private final Object UNINITIALIZED = new Uninitialized(null);
 			private Object nextElement = UNINITIALIZED;
 			private Set<T> eleSet = null;
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public T apply()
@@ -425,7 +421,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 				}
 				return eleSet;
 			}
-			
 		});
 	}
 	
@@ -441,7 +436,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			private final Object UNINITIALIZED = new Uninitialized(null);
 			private Object nextElement = UNINITIALIZED;
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public T apply()
@@ -451,7 +446,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 				
 				return toReturn;
 			}
-			
+
 			private Object consumeIterator()
 			{
 				if (nextElement instanceof Uninitialized) //Tenta pegar o próximo elemento
@@ -497,7 +492,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		uList.head = new Uninitialized(function);
 		return uList;
 	}
-	
+
 	@Override
 	public <B> LazyList<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
@@ -505,13 +500,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			private final Object UNINITIALIZED = new Uninitialized(null);
 			private Object nextElement = UNINITIALIZED;
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public B apply()
 			{
 				final B toReturn = ((Iterator<B>) nextElement).next(); //Extrai o elemento
-				
+
 				if (!((Iterator<B>) nextElement).hasNext()) //Reinicializa
 				{
 					nextElement = UNINITIALIZED; 
@@ -550,8 +545,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	public Tuple2<LazyList<T>, LazyList<T>> splitAt(final Integer num)
 	{
 		//Como filter é lazy, simplesmente cria um filter pra cada lista.
-		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition
-		//strict, ele teria complexidade N apenas.
+		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition strict, ele teria complexidade N apenas.
 		return Tuple2.from(take(num), drop(num));
 	}
 
@@ -567,7 +561,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 				final LazyList<T> first = curEle;
 				
 				int count = 0;
-				
+
 				while (count++ < size && state.hasNext())
 				{
 					curEle.head = state.next();
@@ -634,7 +628,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			}
 		});
 	}
-	
+
 	/**
 	 * Força a realização de todos os elementos desta lista lazy
 	 * 
@@ -646,7 +640,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			return this;
 		}
-		
+
 		LazyList<T> curTail = this.tail();
 		
 		while (curTail.notEmpty())
@@ -655,7 +649,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		}
 		return this;
 	}
-	
+
 	//MÉTODOS REESCRITOS APENAS PELA DOCUMENTAÇÃO - PARA AVISAR QUE OS MÉTODOS LAZY NÃO 
 	//IRÃO RETORNAR, CASO A LISTA SEJA INFINITA
 	
@@ -858,8 +852,21 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	{
 		return super.toSet(builder);
 	}
-	
 
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public LazyList<T> sorted()
+	{
+		return sorted(new DefaultComparator());
+	}
+
+	@Override
+	public LazyList<T> sorted(final Comparator<? super T> comparator)
+	{
+		return from(ListSharp.from(this).sorted(comparator));
+	}
+	
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um LinkedListSharp. IMUTÁVEL. 
 	 * @param <E> O tipo de dados do ListSharp retornado
@@ -890,19 +897,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		{
 			return list;
 		}
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public LazyList<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
-
-	@Override
-	public LazyList<T> sorted(final Comparator<? super T> comparator)
-	{
-		return from(ListSharp.from(this).sorted(comparator));
 	}
 	
 	/**
