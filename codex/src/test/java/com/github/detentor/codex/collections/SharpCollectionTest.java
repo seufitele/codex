@@ -1,5 +1,6 @@
 package com.github.detentor.codex.collections;
 
+import static com.github.detentor.operations.IntegerOps.lowerThan;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -16,10 +17,10 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.collections.mutable.MapSharp;
-import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
 import com.github.detentor.codex.collections.mutable.SetSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.FunctionN;
@@ -92,7 +93,7 @@ public class SharpCollectionTest
 {
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListSharp() 
+	public void testSharpCollection() 
 	{
 		//Os testes devem estar divididos em 3 partes:
 		//1 - Testes de GenericSharpCollection (imutável / mutável)
@@ -102,21 +103,17 @@ public class SharpCollectionTest
 		//5 - Testes de diversos tipos de mapas e sets.
 		
 		//Como observação, a ordem do iterator de GenericSharpCollection não é bem-definida (ex: Mapas e Sets).
-		
-		ListSharp<Class<?>> seqClasses = ListSharp.<Class<?>>from(
-//											LazyList.class,
+
+		ListSharp<Class<?>> collections = ListSharp.<Class<?>>from(
+//											MapSharp.class,
+											SetSharp.class,
+											LazyList.class,
 											ListSharp.class, 
 											com.github.detentor.codex.collections.immutable.ListSharp.class,
 											LLSharp.class,
 											com.github.detentor.codex.collections.immutable.LLSharp.class);
-		
-		ListSharp<Class<?>> genClasses = ListSharp.<Class<?>>from(SetSharp.class);
-											
-//						SetSharp.class
-//						MapSharp.class, <- removido porque MapSharp é criado de maneira diferente
-						;
-		
-		for(Class<?> ele : seqClasses)
+
+		for(Class<?> ele : collections)
 		{
 			try
 			{
@@ -132,15 +129,62 @@ public class SharpCollectionTest
 	
 	public void testCollection(final Class<SharpCollection<?>> theClass) 
 	{
-		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
-		final Option<Method> func2 = Reflections.getMethodFromNameAndType(theClass, "empty", new Class<?>[0]);
+		if (theClass.equals(MapSharp.class))
+		{
+//			final Tuple2<String, Integer> ele1 = Tuple2.from("a", 1);
+//			final Tuple2<String, Integer> ele2 = Tuple2.from("b", 2);
+//			final Tuple2<String, Integer> ele3 = Tuple2.from("c", 3);
+//			final Tuple2<String, Integer> ele4 = Tuple2.from("d", 4);
+//			final Tuple2<String, Integer> ele5 = Tuple2.from("e", 5);
+//
+//			final List<Tuple2<String, Integer>> listaTupla = new ArrayList<Tuple2<String,Integer>>();
+//			listaTupla.add(ele1);
+//			listaTupla.add(ele2);
+//			listaTupla.add(ele3);
+//			listaTupla.add(ele4);
+//			listaTupla.add(ele5);
+//			
+//			final SharpCollection<Tuple2<String, Integer>> listaOri = MapSharp.from(listaTupla);
+//			final SharpCollection<Tuple2<String, Integer>> lista = MapSharp.from(listaTupla);
+//			final SharpCollection<Tuple2<String, Integer>> listaVazia = MapSharp.empty();
+//			
+//			final Function1<Tuple2<String, Integer>, List<Tuple2<String, Integer>>> fmap = 
+//			new Function1<Tuple2<String, Integer>, List<Tuple2<String, Integer>>>()
+//			{
+//				@Override
+//				public List<Tuple2<String, Integer>> apply(final Tuple2<String, Integer> param)
+//				{
+//					final List<Tuple2<String, Integer>> retorno = new ArrayList<Tuple2<String, Integer>>();
+//					retorno.add(param);
+//					retorno.add(param);
+//					return retorno;
+//				}
+//			};
+//			
+//			final Comparator<Tuple2<String, Integer>> theComp = new Comparator<Tuple2<String, Integer>>()
+//			{
+//				@Override
+//				public int compare(final Tuple2<String, Integer> ob1, final Tuple2<String, Integer> ob2)
+//				{
+//					return ob1.getVal1().compareTo(ob2.getVal1());
+//				}
+//			};
+//			
+//			final Function1<Tuple2<String, Integer>, Boolean> fFilter = 
+//			new Function1<Tuple2<String, Integer>, Boolean>()
+//			{
+//				@Override
+//				public Boolean apply(final Tuple2<String, Integer> param)
+//				{
+//					return param.getVal2() < 3;
+//				}
+//			};
+//			
+//			testGenSetCollection(listaOri, lista, listaVazia, fFilter, ObjectOps.toString, fmap, theComp, Tuple2.from("f", 10), 
+//					ele1, ele2, ele3, ele4, ele5, ele4);
+			return;
+		}
 		
-		final Integer[] elementos = new Integer[] {2, 4, 3, 3, 1, 6, 5, 2}; 
-		
-		final SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
-		final SharpCollection<Integer> lista = func.apply((Object[]) elementos);
-		final SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
-
 		final Function1<Integer, List<Integer>> fmap = new Function1<Integer, List<Integer>>()
 		{
 			@Override
@@ -152,7 +196,7 @@ public class SharpCollectionTest
 				return retorno;
 			}
 		};
-		
+
 		final Comparator<Integer> theComp = new Comparator<Integer>()
 		{
 			@Override
@@ -161,8 +205,24 @@ public class SharpCollectionTest
 				return ob2.compareTo(ob1);
 			}
 		};
+		
+		final Option<Method> func2 = Reflections.getMethodFromNameAndType(theClass, "empty", new Class<?>[0]);
+		final FunctionN<Object, SharpCollection<Integer>> func = Reflections.liftStaticVarArgs(theClass, "from");
+		
+		final Integer[] elementos = new Integer[] {2, 4, 3, 3, 1, 6, 5, 2}; 
+		
+		final SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
+		final SharpCollection<Integer> lista = func.apply((Object[]) elementos);
+		final SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
 
-		testGenSharpCollection(listaOri, lista, listaVazia, IntegerOps.lowerThan(5), ObjectOps.toString, fmap, theComp, 10, elementos);
+		if (theClass.equals(SetSharp.class))
+		{
+			testGenSetCollection(listaOri, lista, listaVazia, lowerThan(5), ObjectOps.toString, fmap, theComp, 10, elementos);
+		}
+		else
+		{
+			testGenSharpCollection(listaOri, lista, listaVazia, lowerThan(5), ObjectOps.toString, fmap, theComp, 10, elementos);
+		}
 
 		if (lista instanceof Seq<?>)
 		{
@@ -170,41 +230,41 @@ public class SharpCollectionTest
 		}
 	}
 	
-	public void testMapCollection() 
-	{
-		final Option<Method> func2 = Reflections.getMethodFromNameAndType(MapSharp.class, "empty", new Class<?>[0]);
-		
-		final Tuple2<String, Integer> ele1 = Tuple2.from("a", 1);
-		final Tuple2<String, Integer> ele2 = Tuple2.from("b", 2);
-		final Tuple2<String, Integer> ele3 = Tuple2.from("c", 3);
-		final Tuple2<String, Integer> ele4 = Tuple2.from("d", 4);
-		final Tuple2<String, Integer> ele5 = Tuple2.from("e", 5);
-		
-		final Tuple2<String, Integer>[] elements = new Tuple2[] {ele1, ele2, ele3, ele4, ele5}; 
-		
-		SharpCollection<Tuple2<String, Integer>> listaOri = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
-	
-		SharpCollection<Tuple2<String, Integer>> lista = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
-		SharpCollection<Integer> listaVazia = Reflections.invokeSafe(MapSharp.class, func2.get());
-		
-		SharpCollection<Tuple2<String, Integer>> listaDrop1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele2, ele3, ele4, ele5);
-		SharpCollection<Tuple2<String, Integer>> listaDrop2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele3, ele4, ele5); 
-		
-		SharpCollection<Tuple2<String, Integer>> listaTake1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1);
-		SharpCollection<Tuple2<String, Integer>> listaTake2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2);
-		
-		SharpCollection<Tuple2<String, Integer>> listaTakeRight1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele5);
-		SharpCollection<Tuple2<String, Integer>> listaTakeRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele4, ele5); 
-		
-		SharpCollection<Tuple2<String, Integer>> listaDropRight1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2, ele3, ele4);
-		SharpCollection<Tuple2<String, Integer>> listaDropRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2, ele3);
-		
-//		testGenSharpCollection(lista, listaOri, 
-//							listaDrop1, listaDrop2, 
-//							listaTake1, listaTake2, 
-//							listaTakeRight1, listaTakeRight2, 
-//							listaDropRight1, listaDropRight2, listaVazia, Tuple2.from("f", "6"), new Object[] { ele1, ele2, ele3, ele4, ele5} );
-	}
+//	public void testMapCollection() 
+//	{
+//		final Option<Method> func2 = Reflections.getMethodFromNameAndType(MapSharp.class, "empty", new Class<?>[0]);
+//		
+//		final Tuple2<String, Integer> ele1 = Tuple2.from("a", 1);
+//		final Tuple2<String, Integer> ele2 = Tuple2.from("b", 2);
+//		final Tuple2<String, Integer> ele3 = Tuple2.from("c", 3);
+//		final Tuple2<String, Integer> ele4 = Tuple2.from("d", 4);
+//		final Tuple2<String, Integer> ele5 = Tuple2.from("e", 5);
+//		
+//		final Tuple2<String, Integer>[] elements = new Tuple2[] {ele1, ele2, ele3, ele4, ele5}; 
+//		
+//		SharpCollection<Tuple2<String, Integer>> listaOri = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
+//	
+//		SharpCollection<Tuple2<String, Integer>> lista = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
+//		SharpCollection<Integer> listaVazia = Reflections.invokeSafe(MapSharp.class, func2.get());
+//		
+//		SharpCollection<Tuple2<String, Integer>> listaDrop1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele2, ele3, ele4, ele5);
+//		SharpCollection<Tuple2<String, Integer>> listaDrop2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele3, ele4, ele5); 
+//		
+//		SharpCollection<Tuple2<String, Integer>> listaTake1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1);
+//		SharpCollection<Tuple2<String, Integer>> listaTake2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2);
+//		
+//		SharpCollection<Tuple2<String, Integer>> listaTakeRight1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele5);
+//		SharpCollection<Tuple2<String, Integer>> listaTakeRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele4, ele5); 
+//		
+//		SharpCollection<Tuple2<String, Integer>> listaDropRight1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2, ele3, ele4);
+//		SharpCollection<Tuple2<String, Integer>> listaDropRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1, ele2, ele3);
+//		
+////		testGenSharpCollection(lista, listaOri, 
+////							listaDrop1, listaDrop2, 
+////							listaTake1, listaTake2, 
+////							listaTakeRight1, listaTakeRight2, 
+////							listaDropRight1, listaDropRight2, listaVazia, Tuple2.from("f", "6"), new Object[] { ele1, ele2, ele3, ele4, ele5} );
+//	}
 	
 	
 	
@@ -624,5 +684,283 @@ public class SharpCollectionTest
 		}
 		assertTrue(theEle != null);
 		assertTrue(sharpCol.find(filterFunc).get().equals(theEle));
+	}
+	
+	
+	//TODO: ARRUMAR O TESTE
+	//ATENÇÃO: ESSES TESTES SÃO FEITOS À MÃO, MAS DEVERIAM SER GENERALIZADOS
+	@SuppressWarnings("unchecked")
+	public <T, U, W> void  testGenSetCollection( final SharpCollection<T> sharpCol,
+							  			final SharpCollection<T> oriSharpCol,
+							  			final SharpCollection<T> emptyCol,
+							  			final Function1<? super T, Boolean> filterFunc,
+							  			final Function1<? super T, U> mapFunc,
+							  			final Function1<? super T, ? extends Iterable<W>> fmapFunc,
+							  			final Comparator<? super T> theComparator,
+							  			final T eleNotInCol,
+							  			final T... elems) 
+	{
+		final List<T> elemsList = Arrays.asList(elems);
+		final List<T> singleEleList = Arrays.asList(eleNotInCol);
+		final Set<T> distinctSet = new HashSet<T>(Arrays.asList(elems));
+		final TreeSet<T> sortedSet = (elems[0] instanceof Comparable<?>) ? new TreeSet<T>(elemsList) : new TreeSet<T>(theComparator);
+		if (sortedSet.isEmpty()) sortedSet.addAll(elemsList);
+		final TreeSet<T> ssComparator = new TreeSet<T>(theComparator);
+		ssComparator.addAll(elemsList);
+		
+		//Premissas:
+		assertTrue(elems.length > 5);
+		assertTrue(new HashSet<Object>(Arrays.asList(elems)).size() == oriSharpCol.size());
+		
+		//equals
+		assertTrue(sharpCol.equals(oriSharpCol));
+		assertTrue(emptyCol.equals(emptyCol));
+		
+		//hashCode
+		assertTrue(sharpCol.hashCode() == oriSharpCol.hashCode());
+		assertTrue(emptyCol.hashCode() == emptyCol.hashCode());
+		
+		//size
+		assertTrue(sharpCol.size() == distinctSet.size());
+		
+		//isEmpty
+		assertTrue(sharpCol.isEmpty() == false && sharpCol.size() > 0);
+		assertTrue(emptyCol.isEmpty() == true && emptyCol.size() == 0);
+		
+		//notEmpty
+		assertTrue(sharpCol.notEmpty() == true && sharpCol.size() > 0);
+		assertTrue(emptyCol.notEmpty() == false && emptyCol.size() == 0);
+		
+		//contains
+		assertTrue(sharpCol.contains(elems[0]));
+		assertTrue(! sharpCol.contains(eleNotInCol));
+		assertTrue(! emptyCol.contains(elems[0]));
+		
+		//containsAll
+		assertTrue(sharpCol.containsAll(elemsList));
+		assertTrue(! sharpCol.containsAll(singleEleList));
+		assertTrue(!emptyCol.containsAll(elemsList));
+
+		//containsAny
+		assertTrue(sharpCol.containsAny(elemsList));
+		assertTrue(! sharpCol.containsAny(singleEleList));
+		assertTrue(! emptyCol.containsAny(elemsList));
+		
+		//intersect
+		assertTrue(sharpCol.intersect(elemsList).equals(oriSharpCol));
+		assertTrue(sharpCol.intersect(singleEleList).equals(emptyCol));
+		assertTrue(emptyCol.intersect(elemsList).equals(emptyCol));
+		
+		//distinct
+		assertTrue(sharpCol.distinct().intersect(distinctSet).size() == distinctSet.size());
+		assertTrue(emptyCol.distinct().intersect(distinctSet).size() == 0);
+		
+		//mkString <- assegura que chamar o método é seguro
+		assertTrue(!sharpCol.mkString().isEmpty());
+		assertTrue(emptyCol.mkString().isEmpty());
+
+		//Comparison
+		if ((oriSharpCol.head() instanceof Comparable<?>))
+		{
+			//min & minOption
+			assertTrue(sharpCol.min().equals(sortedSet.first()));
+			assertTrue(sharpCol.minOption().get().equals(sortedSet.first()));
+			assertTrue(emptyCol.minOption().isEmpty());
+	
+			//minWith
+			assertTrue(sharpCol.minWith(theComparator).equals(ssComparator.first()));
+			
+			//max & maxOption
+			assertTrue(sharpCol.max().equals(sortedSet.last()));
+			assertTrue(sharpCol.maxOption().get().equals(sortedSet.last()));
+			assertTrue(emptyCol.maxOption().isEmpty());
+			
+			//maxWith
+			assertTrue(sharpCol.maxWith(theComparator).equals(ssComparator.last()));
+		}
+		else
+		{
+			System.out.println("WARNING: elementos da lista não são instância de comparable. Alguns testes foram pulados");
+		}
+		
+		//filter
+		List<Object> listaFiltro = new ArrayList<Object>();
+		for (T ele : distinctSet)
+		{
+			if (filterFunc.apply(ele))
+			{
+				listaFiltro.add(ele);
+			}
+		}
+		assertTrue(emptyCol.filter(filterFunc).isEmpty());
+		assertTrue(sharpCol.filter(filterFunc).size() == listaFiltro.size());
+
+		//partition
+		assertTrue(emptyCol.partition(filterFunc).getVal1().isEmpty() && emptyCol.partition(filterFunc).getVal2().isEmpty());
+		final Tuple2<SharpCollection<T>, SharpCollection<T>> partResult = (Tuple2<SharpCollection<T>, SharpCollection<T>>) sharpCol.partition(filterFunc);
+		assertTrue((partResult.getVal1().size() + partResult.getVal2().size()) == oriSharpCol.size()); //A partição engloba todos os elementos
+		assertTrue(partResult.getVal1().equals(sharpCol.filter(filterFunc))); //O primeiro retorno da partição é igual ao filtro
+		
+		for (T obj : partResult.getVal2())
+		{
+			if (filterFunc.apply(obj))
+			{
+				throw new AssertionFailedError("A segunda coleção retornada pelo partition pertence ao filtro");
+			}
+		}
+
+		//exists
+		assertTrue(!emptyCol.exists(filterFunc));
+		assertTrue(sharpCol.exists(filterFunc) == sharpCol.filter(filterFunc).notEmpty());
+		
+		//forall
+		assertTrue(emptyCol.forall(filterFunc));
+		assertTrue(sharpCol.forall(filterFunc) == (sharpCol.filter(filterFunc).size() == oriSharpCol.size()));
+		
+		//map
+		final List<U> mapList = new ArrayList<U>();
+		for (T ele : distinctSet)
+		{
+			mapList.add(mapFunc.apply(ele));
+		}
+		assertTrue(emptyCol.map(mapFunc).isEmpty()); //Map de lista vazia é vazio
+		assertTrue(sharpCol.map(mapFunc).size() == oriSharpCol.size()); //O tamanho das listas é igual
+		assertTrue(sharpCol.map(mapFunc).containsAll(mapList)); //Elas contém os mesmos elementos (weak equals)
+
+		//collect <- basta verificar se ele é o mesmo resultado de filter com map
+		final PartialFunction1<T, U> partFunc = Functions.createPartial(filterFunc, mapFunc);
+		assertTrue(sharpCol.collect(partFunc).equals(sharpCol.filter(filterFunc).map(mapFunc)));
+		assertTrue(emptyCol.collect(partFunc).isEmpty());
+		
+		//flatMap
+		final Set<W> fmapList = new HashSet<W>();
+		for (T ele : distinctSet)
+		{
+			for (W curEle : fmapFunc.apply(ele))
+			{
+				fmapList.add(curEle);
+			}
+		}
+		assertTrue(emptyCol.flatMap(fmapFunc).isEmpty()); //flatMap de lista vazia é vazio
+		final SharpCollection<W> flatMap = sharpCol.flatMap(fmapFunc);
+		assertTrue(flatMap.size() == fmapList.size()); //O tamanho das listas é igual
+		assertTrue(sharpCol.flatMap(fmapFunc).containsAll(fmapList)); //Elas contém os mesmos elementos (weak equals)
+		
+		//count
+		int theCount = 0;
+		for (T ele : distinctSet)
+		{
+			if (filterFunc.apply(ele))
+			{
+				theCount++;
+			}
+		}
+		assertTrue(emptyCol.count(filterFunc) == 0);
+		assertTrue(sharpCol.count(filterFunc) == theCount);
+		
+		//find
+		assertTrue(emptyCol.find(ObjectOps.isEquals(elems[0])).isEmpty());
+		assertTrue(sharpCol.find(ObjectOps.isEquals(elems[0])).notEmpty());
+		
+		//iterator (valida que ele retorna todos os elementos)
+		final List<Object> eleList = new ArrayList<Object>(distinctSet);
+		for (Object ele : sharpCol)
+		{
+			eleList.remove(ele);
+		}
+		assertTrue(!emptyCol.iterator().hasNext());
+		assertTrue(eleList.isEmpty());
+		
+		//Testes de chamadas de método - não verificam a validade da informação
+		
+		//head & headOption
+		sharpCol.head();
+		assertTrue(emptyCol.headOption().isEmpty());
+		assertTrue(sharpCol.headOption().notEmpty());
+		
+		//last & lastOption
+		sharpCol.last();
+		assertTrue(emptyCol.lastOption().isEmpty());
+		assertTrue(sharpCol.lastOption().notEmpty());
+		
+		//tail
+		sharpCol.tail();
+//		assertTrue(emptyCol.tail().isEmpty()); causa erro
+		assertTrue(sharpCol.tail().size() == Math.max(oriSharpCol.size() - 1, 0));
+		assertTrue(sharpCol.tail().tail().size() == Math.max(oriSharpCol.size() - 2, 0));
+		
+		//take
+		assertTrue(emptyCol.take(-1).isEmpty());
+		assertTrue(emptyCol.take(0).isEmpty());
+		assertTrue(emptyCol.take(10).isEmpty());
+		assertTrue(sharpCol.take(-1).size() == 0);
+		assertTrue(sharpCol.take(0).size() == 0);
+		assertTrue(sharpCol.take(2).size() == Math.min(sharpCol.size(), 2));
+		assertTrue(sharpCol.take(500).size() == Math.min(sharpCol.size(), 500));
+		
+		//takeRight
+		assertTrue(emptyCol.takeRight(-1).isEmpty());
+		assertTrue(emptyCol.takeRight(0).isEmpty());
+		assertTrue(emptyCol.takeRight(10).isEmpty());
+		assertTrue(sharpCol.takeRight(-1).size() == 0);
+		assertTrue(sharpCol.takeRight(0).size() == 0);
+		assertTrue(sharpCol.takeRight(2).size() == Math.min(sharpCol.size(), 2));
+		assertTrue(sharpCol.takeRight(500).size() == Math.min(sharpCol.size(), 500));
+		
+		//drop
+		assertTrue(emptyCol.drop(-1).isEmpty());
+		assertTrue(emptyCol.drop(0).isEmpty());
+		assertTrue(emptyCol.drop(10).isEmpty());
+		assertTrue(sharpCol.drop(-1).size() == sharpCol.size());
+		assertTrue(sharpCol.drop(0).size() == sharpCol.size());
+		assertTrue(sharpCol.drop(2).size() == Math.max(sharpCol.size() - 2, 0));
+		assertTrue(sharpCol.drop(500).size() == Math.max(sharpCol.size() - 500, 0));
+		
+		//dropRight
+		assertTrue(emptyCol.dropRight(-1).isEmpty());
+		assertTrue(emptyCol.dropRight(0).isEmpty());
+		assertTrue(emptyCol.dropRight(10).isEmpty());
+		assertTrue(sharpCol.dropRight(-1).size() == sharpCol.size());
+		assertTrue(sharpCol.dropRight(0).size() == sharpCol.size());
+		assertTrue(sharpCol.dropRight(2).size() == Math.max(sharpCol.size() - 2, 0));
+		assertTrue(sharpCol.dropRight(500).size() == Math.max(sharpCol.size() - 500, 0));
+		
+		//grouped
+		assertTrue(emptyCol.grouped(2).isEmpty());
+		assertTrue(sharpCol.grouped(2).size() == Math.floor(oriSharpCol.size() / 2.0d));
+		
+		//splitAt
+		assertTrue(emptyCol.splitAt(2).getVal1().isEmpty() && emptyCol.splitAt(2).getVal2().isEmpty());
+		assertTrue(sharpCol.splitAt(2).getVal1().size() + sharpCol.splitAt(2).getVal2().size() == oriSharpCol.size());
+
+		
+		//ATENÇÃO: SORTED, no caso do ListSharp (mutable), altera INPLACE os elementos
+		//PORTANTO FOI MOVIDO PARA O FINAL, POR CAUSA DO SIDE-EFFECT
+		
+		//sorted 
+		assertTrue(emptyCol.sorted().equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
+		Comparable<Object> sPrevEle = (Comparable<Object>) sharpCol.sorted().iterator().next();
+		for (Object curObj : sharpCol.sorted())
+		{
+			assertTrue(sPrevEle.compareTo((Comparable<Object>) curObj) <= 0);
+			sPrevEle = (Comparable<Object>) curObj;
+		}
+		
+		//sorted  (comparator)
+		assertTrue(emptyCol.sorted(theComparator).equals(emptyCol)); //Chamar o sorted sem elementos não dá erro
+		T scPrevEle = sharpCol.sorted(theComparator).iterator().next();
+		for (T curObj : sharpCol.sorted(theComparator))
+		{
+			assertTrue(theComparator.compare(scPrevEle, curObj) <= 0);
+			scPrevEle = curObj;
+		}
+		
+		//faltou (por depender da ordem do iterator):
+		//takeWhile
+		//takeRightWhile
+		//dropWhile		
+		//dropRightWhile
+		//zipWithIndex
+		//foldLeft <- usualmente não é dependente de ordem, mas pode ser
 	}
 }
