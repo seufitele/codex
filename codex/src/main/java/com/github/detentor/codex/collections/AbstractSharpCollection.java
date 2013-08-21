@@ -644,13 +644,20 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	@Override
 	public U intersect(final Iterable<T> withCollection)
 	{
+		final Set<T> hashEle = new HashSet<T>();
+		
+		for (T ele : withCollection)
+		{
+			hashEle.add(ele);
+		}
+
 		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
 
-		for (final T ele : withCollection)
+		for (final T curEle : this)
 		{
-			if (this.contains(ele))
+			if (hashEle.contains(curEle))
 			{
-				colecaoRetorno.add(ele);
+				colecaoRetorno.add(curEle);
 			}
 		}
 		return (U) colecaoRetorno.result();
