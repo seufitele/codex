@@ -2,7 +2,6 @@ package com.github.detentor.codex.collections;
 
 import java.util.Iterator;
 
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 
@@ -77,7 +76,10 @@ public abstract class AbstractSeq<T, U extends Seq<T>> extends AbstractSharpColl
 		
 		while (thisIte.hasNext() && otherIte.hasNext())
 		{
-			if (! Option.from(thisIte.next()).equals(Option.from(otherIte.next())))
+			final T thisEle = thisIte.next();
+			final Object otherEle = otherIte.next();
+			
+			if (! (thisEle == null ? otherEle == null : thisEle.equals(otherEle)))
 			{
 				return false;
 			}
@@ -102,7 +104,7 @@ public abstract class AbstractSeq<T, U extends Seq<T>> extends AbstractSharpColl
 		// Verifica se os elementos são iguais
 		for (int i = 0; i < iSeq1.size(); i++)
 		{
-			if (!Option.from(iSeq1.apply(i)).equals(Option.from(iSeq2.apply(i))))
+			if (! (iSeq1.apply(i) == null ? iSeq2.apply(i) == null : iSeq1.apply(i).equals(iSeq2.apply(i))))
 			{
 				return false;
 			}
