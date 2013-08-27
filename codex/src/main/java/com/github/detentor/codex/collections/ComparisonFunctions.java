@@ -2,6 +2,7 @@ package com.github.detentor.codex.collections;
 
 import java.util.Comparator;
 
+import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 
 /**
@@ -54,7 +55,17 @@ public interface ComparisonFunctions<T>
 	 * @return O elemento com o maior valor na comparação
 	 * @throws IllegalArgumentException Caso a coleção esteja vazia
 	 */
-	T maxWith(final Comparator<? super T> comparator);
+	T max(final Comparator<? super T> comparator);
+	
+	/**
+	 * Retorna o valor máximo, a partir da função de mapeamento que seja comparável. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde a U.compareTo(T) > 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param mapFunction A função de mapeamento que retorna o tipo a ser utilizado para prover a comparação.
+	 * @return O elemento com o maior valor na comparação
+	 * @throws IllegalArgumentException Caso a coleção esteja vazia
+	 */
+	<K extends Comparable<? super K>> T maxWith(final Function1<? super T, K> mapFunction);
 	
 	/**
 	 * Retorna o valor mínimo, a partir da função de comparação passada como parâmetro. <br/>
@@ -64,6 +75,16 @@ public interface ComparisonFunctions<T>
 	 * @return O elemento com o menor valor na comparação
 	 * @throws IllegalArgumentException Caso a coleção esteja vazia
 	 */
-	T minWith(final Comparator<? super T> comparator);
+	T min(final Comparator<? super T> comparator);
+	
+	/**
+	 * Retorna o valor mínimo, a partir da função de mapeamento que seja comparável. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde a U.compareTo(T) < 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param mapFunction A função de mapeamento que retorna o tipo a ser utilizado para prover a comparação.
+	 * @return O elemento com o menor valor na comparação
+	 * @throws IllegalArgumentException Caso a coleção esteja vazia
+	 */
+	<K extends Comparable<? super K>> T minWith(final Function1<? super T, K> mapFunction);
 
 }
