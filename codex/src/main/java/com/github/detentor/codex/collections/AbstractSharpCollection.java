@@ -577,7 +577,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public T maxWith(final Comparator<? super T> comparator)
+	public T max(final Comparator<? super T> comparator)
 	{
 		ensureNotEmpty();
 
@@ -596,7 +596,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	}
 
 	@Override
-	public T minWith(final Comparator<? super T> comparator)
+	public T min(final Comparator<? super T> comparator)
 	{
 		ensureNotEmpty();
 
@@ -618,14 +618,14 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	@Override
 	public T min()
 	{
-		return minWith(new DefaultComparator());
+		return min(new DefaultComparator());
 	}
 
 	@SuppressWarnings({ UNCHECKED, "rawtypes" })
 	@Override
 	public T max()
 	{
-		return maxWith(new DefaultComparator());
+		return max(new DefaultComparator());
 	}
 
 	@Override
