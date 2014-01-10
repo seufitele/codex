@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -243,13 +242,13 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, 
 	 */
 	SharpCollection<T> sorted(final Comparator<? super T> comparator);
 	
-	/**
-	 * Ordena esta coleção, de acordo com a função mapeamento passada como parâmetro. <br/>
-	 * Como exemplo, se você tiver uma lista de Strings e quiser ordená-las pelo tamanho, basta passar uma função
-	 * que transforma uma String em seu tamanho.
-	 * 
-	 * @param mapFunction A função de mapeamento para um tipo comparável
-	 * @return Uma nova coleção, com os elementos ordenados de acordo com a função de mapeamento
-	 */
-	<K extends Comparable<? super K>> SharpCollection<T> sortWith(final Function1<? super T, K> mapFunction);
+//	/**
+//	 * Ordena esta coleção, de acordo com a função mapeamento passada como parâmetro. <br/>
+//	 * Como exemplo, se você tiver uma lista de Strings e quiser ordená-las pelo tamanho, basta passar uma função
+//	 * que transforma uma String em seu tamanho.
+//	 * 
+//	 * @param mapFunction A função de mapeamento para um tipo comparável
+//	 * @return Uma nova coleção, com os elementos ordenados de acordo com a função de mapeamento
+//	 */
+//	<K extends Comparable<? super K>> SharpCollection<T> sortWith(final Function1<? super T, K> mapFunction);
 }

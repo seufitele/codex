@@ -156,6 +156,12 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	{
 		return (Option<B>) super.flatMap(function);
 	}
+	
+	@Override
+	public Option<T> filter(final Function1<? super T, Boolean> pred)
+	{
+		return (Option<T>) super.filter(pred);
+	}
 
 	@Override
 	public Option<Tuple2<T, Integer>> zipWithIndex()
