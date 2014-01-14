@@ -743,25 +743,25 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return super.mkString(start, separator, end);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public T maxWith(final Comparator<? super T> comparator)
-	{
-		return super.maxWith(comparator);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public T minWith(final Comparator<? super T> comparator)
-	{
-		return super.minWith(comparator);
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public T maxWith(final Comparator<? super T> comparator)
+//	{
+//		return super.maxWith(comparator);
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public T minWith(final Comparator<? super T> comparator)
+//	{
+//		return super.minWith(comparator);
+//	}
 
 	/**
 	 * {@inheritDoc}
