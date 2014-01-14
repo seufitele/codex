@@ -10,9 +10,9 @@ import com.github.detentor.codex.monads.Option;
  * o bloco de construção de estruturas potencialmente infinitas, 
  * e que permitam funções de ordem superior. <br/> <br/>
  * 
- * O método 'remove' é, por default, configurado como 'unsupportedOperationException'.
+ * O método 'remove' é, por default, configurado como {@link UnsupportedOperationException}.
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  *
  */
 public abstract class RichIterator<E> implements Iterator<E>
@@ -34,7 +34,7 @@ public abstract class RichIterator<E> implements Iterator<E>
 	/**
 	 * Cria um RichIterator a partir do iterable passado como parâmetro. <br/>
 	 * Note-se que os elementos do iterable passado só serão consumidos quando os elementos
-	 * de RichIterator forem consumidos
+	 * de RichIterator forem consumidos.
 	 * 
 	 * @param iterable O iterable a ser transformado em RichIterator
 	 * @return Um RichIterator, que encaspsula o iterable passado como parâmetro, para adicionar
@@ -48,7 +48,7 @@ public abstract class RichIterator<E> implements Iterator<E>
 	/**
 	 * Cria um RichIterator a partir do iterator passado como parâmetro. <br/>
 	 * Note-se que os elementos do iterator passado só serão consumidos quando os elementos
-	 * de RichIterator forem consumidos
+	 * de RichIterator forem consumidos.
 	 * 
 	 * @param iterator O iterator a ser transformado em RichIterator
 	 * @return Um RichIterator, que encaspsula o iterator passado como parâmetro, para adicionar
