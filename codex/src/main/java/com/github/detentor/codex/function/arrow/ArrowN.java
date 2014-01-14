@@ -1,6 +1,7 @@
 package com.github.detentor.codex.function.arrow;
 
-import com.github.detentor.codex.collections.mutable.LLSharp;
+import java.lang.reflect.Array;
+
 import com.github.detentor.codex.function.FunctionN;
 
 /**
@@ -27,7 +28,10 @@ public abstract class ArrowN<A, B> implements FunctionN<A, B>, Arrow
 			@Override
 			public B apply(final A... params)
 			{
-				return ArrowN.this.apply((A[]) LLSharp.from(params).add(param1).toList().toArray());
+				final A[] todosEle = (A[]) Array.newInstance(param1.getClass(), params.length + 1);
+				todosEle[0] = param1;
+				System.arraycopy(params, 0, todosEle, 1, params.length);
+				return ArrowN.this.apply(todosEle);
 			}
 		};
 	}
