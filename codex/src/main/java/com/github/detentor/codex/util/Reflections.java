@@ -20,16 +20,16 @@ public final class Reflections
 {
 	private Reflections()
 	{
-		//Previne instanciaçãp
+		//Previne instanciação
 	}
 	
 	/**
-	 * Transforma um método de uma classe em uma função. <br/>
+	 * Transforma um método de uma classe em uma seta. <br/>
 	 * 
 	 * @param fromClass A classe a partir da qual o método será 'promovido'
-	 * @param methodName O nome do método a ser transformado em função. É necessário que o método não receba
+	 * @param methodName O nome do método a ser transformado em seta. É necessário que o método não receba
 	 * parâmetros, tenha visibilidade public e um retorno diferente de void.
-	 * @return Uma função que representa o método definido pela classe.
+	 * @return Uma seta que representa o método definido pela classe.
 	 */
 	public static <A, B> Arrow1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
@@ -77,10 +77,10 @@ public final class Reflections
 	}
 
 	/**
-	 * Transforma um método estático de uma classe numa função.
+	 * Transforma um método estático de uma classe numa seta.
 	 * @param fromClass A classe onde o método estático existe.
-	 * @param methodName O nome do método a ser transformado em função
-	 * @return Uma função que representa o método definido pela classe
+	 * @param methodName O nome do método a ser transformado em seta
+	 * @return Uma seta que representa o método definido pela classe
 	 */
 	public static <A, B, C> Arrow1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
 	{
@@ -97,10 +97,10 @@ public final class Reflections
 	}
 	
 	/**
-	 * Transforma um método estático de uma classe numa função.
+	 * Transforma um método estático de uma classe numa seta.
 	 * @param fromClass A classe onde o método estático existe
-	 * @param methodName O nome do método a ser transformado em função
-	 * @return Uma função que representa o método definido pela classe
+	 * @param methodName O nome do método a ser transformado em seta
+	 * @return Uma seta que representa o método definido pela classe
 	 */
 	public static <A, B, C> ArrowN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
 	{
