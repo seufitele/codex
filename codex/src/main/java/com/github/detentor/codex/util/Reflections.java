@@ -3,11 +3,12 @@ package com.github.detentor.codex.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-import com.github.detentor.codex.function.arrow.Arrow0;
-import com.github.detentor.codex.function.arrow.Arrow1;
-import com.github.detentor.codex.function.arrow.ArrowN;
+import com.github.detentor.codex.function.Function0;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.monads.Option;
 
 /**
@@ -22,29 +23,31 @@ public final class Reflections
 	{
 		//Previne instanciação
 	}
-	
+
 	/**
 	 * Transforma um método de uma classe em uma seta. <br/>
+	 * Funciona tanto para métodos estáticos como métodos de instância. <br/>
+	 * O método retornado será o primeiro método que tenha o nome passado como parâmetro.
 	 * 
 	 * @param fromClass A classe a partir da qual o método será 'promovido'
-	 * @param methodName O nome do método a ser transformado em seta. É necessário que o método não receba
+	 * @param methodName O nome do método a ser transformado em função. É necessário que o método não receba
 	 * parâmetros, tenha visibilidade public e um retorno diferente de void.
-	 * @return Uma seta que representa o método definido pela classe.
+	 * @return Uma função que representa o método definido pela classe.
 	 */
-	public static <A, B> Arrow1<A, B> lift(final Class<A> fromClass, final String methodName)
+	public static <A, B> Function1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
 
-		return new Arrow1<A, B>()
+		if (Modifier.isStatic(theMethod.getModifiers()))
 		{
-			@Override
-			public B apply(final A param)
-			{
-				return invokeSafe(param, theMethod, (Object[]) null);
-			}
-		};
+			return param -> invokeSafe(param, theMethod, (Object[]) null);
+		}
+		else
+		{
+			return param -> invokeSafe(fromClass, theMethod, param);
+		}
 	}
-	
+
 	/**
 	 * Transforma um método de uma classe em uma {@link Arrow0}, amarrando os valores
 	 * passados como parâmetro na chamada do método, de forma que aplicar a seta 
@@ -56,7 +59,7 @@ public final class Reflections
 	 * um array de tamanho 0.
 	 * @return Uma {@link Arrow0} que, ao ser aplicada, seja equivalente à chamada do método com os parâmetros passados
 	 */
-	public static <B> Arrow0<B> liftBind(final Object fromInstance, final String methodName, final Object... params)
+	public static <B> Function0<B> liftBind(final Object fromInstance, final String methodName, final Object... params)
 	{
 		final Class<?>[] types = new Class[params.length]; 
 
@@ -65,56 +68,20 @@ public final class Reflections
 			types[i] = params[i].getClass();
 		}
 		final Method theMethod = ensureNotEmpty(getMethodFromNameAndType(fromInstance.getClass(), methodName, types));
-
-		return new Arrow0<B>()
-		{
-			@Override
-			public B apply()
-			{
-				return invokeSafe(fromInstance, theMethod, params);
-			}
-		};
+		return () -> invokeSafe(fromInstance, theMethod, params);
 	}
 
-	/**
-	 * Transforma um método estático de uma classe numa seta.
-	 * @param fromClass A classe onde o método estático existe.
-	 * @param methodName O nome do método a ser transformado em seta
-	 * @return Uma seta que representa o método definido pela classe
-	 */
-	public static <A, B, C> Arrow1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
-	{
-		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
-
-		return new Arrow1<B, C>()
-		{
-			@Override
-			public C apply(final B param)
-			{
-				return invokeSafe(fromClass, theMethod, param);
-			}
-		};
-	}
-	
 	/**
 	 * Transforma um método estático de uma classe numa seta.
 	 * @param fromClass A classe onde o método estático existe
 	 * @param methodName O nome do método a ser transformado em seta
 	 * @return Uma seta que representa o método definido pela classe
 	 */
-	public static <A, B, C> ArrowN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
+	public static <A, B, C> FunctionN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(
 									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
-
-		return new ArrowN<B, C>()
-		{
-			@Override
-			public C apply(final B... params)
-			{
-				return invokeSafe(fromClass, theMethod, new Object[] { params });
-			}
-		};
+		return params -> invokeSafe(fromClass, theMethod, new Object[] { params });
 	}
 
 	/**
