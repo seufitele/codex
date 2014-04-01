@@ -67,8 +67,60 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * @return Uma nova coleção com os elementos ordenados
 	 */
 	SharpCollection<T> sorted(final Comparator<? super T> comparator);
+	
+	/**
+     * Retorna uma <b>nova</b> coleção, com a adição do elemento passado como parâmetro. <br/><br/>
+     * 
+     * @param element o elemento a ser adicionado na coleção
+     * @return Uma nova coleção, com o elemento passado como parâmetro adicionado
+     */
+    SharpCollection<T> add(final T element);
     
+    /**
+     * Retorna uma <b>nova</b> coleção, com a remoção do elemento passado como parâmetro. <br/><br/>
+     * Formalmente, remove um elemento <tt>e</tt> tal que
+     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>, se esta coleção
+     * contém um ou mais tais elementos.
+     *
+     * @param element O elemento a ser removido desta coleção, se presente
+     * @return Uma nova coleção, com o elemento passado como parâmetro removido
+     */
+    SharpCollection<T> remove(final T element);
     
+    /**
+     * Retorna uma <b>nova</b> coleção, após a adição dos elementos do iterable passado como parâmetro. <br/><br/>
+     *
+     * @param col Coleção contendo elemento a serem adicionados nesta coleção
+     * @return Uma nova coleção, após os elementos passados como parâmetro serem adicionados
+     */
+    default SharpCollection<T> addAll(final Iterable<? extends T> col)
+    {
+    	SharpCollection<T> colRetorno = this;
+    	
+    	for (T ele : col)
+    	{
+    		colRetorno = colRetorno.add(ele);
+    	}
+    	return colRetorno;
+    }
+    
+    /**
+     * Retorna uma <b>nova</b> coleção, após a remoção dos elementos do iterable passado como parâmetro. <br/><br/>
+     * A coleção retornada não conterá elementos em comum com o iterable.
+     *
+     * @param col A coleção contendo elementos a serem removidos desta coleção
+     * @return  Uma nova coleção, após os elementos passados como parâmetro serem removidos
+     */
+    default SharpCollection<T> removeAll(final Iterable<T> col)
+    {
+    	SharpCollection<T> colRetorno = this;
+    	for (T ele : col)
+    	{
+    		colRetorno = colRetorno.remove(ele);
+    	}
+    	return colRetorno;
+    }
+
     /**
      * retorna <tt>true</tt> se esta coleção não contém elementos
      * @return <tt>true</tt> se esta coleção não contém elementos

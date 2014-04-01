@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.LinearSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
@@ -25,7 +25,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo do dado a ser guardado na Option
  */
-public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
+public class Option<T> implements Serializable, LinearSeq<T>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -138,45 +138,46 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 			}
 		};
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder() 
 	{
-		return new OptionBuilder<B>();
+		return (Builder<B, U>) new OptionBuilder<B>();
 	}
 
 	@Override
 	public <B> Option<B> map(final Function1<? super T, B> function)
 	{
-		return (Option<B>) super.map(function);
+		return (Option<B>) LinearSeq.super.map(function);
 	}
 
 	@Override
 	public <B> Option<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (Option<B>) super.flatMap(function);
+		return (Option<B>) LinearSeq.super.flatMap(function);
 	}
 	
 	@Override
 	public Option<T> filter(final Function1<? super T, Boolean> pred)
 	{
-		return (Option<T>) super.filter(pred);
+		return (Option<T>) LinearSeq.super.filter(pred);
 	}
 
 	@Override
 	public Option<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (Option<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (Option<Tuple2<T, Integer>>) LinearSeq.super.zipWithIndex();
 	}
 	
-	@Override
-	public Option<T> sorted()
-	{
-		return this;
-	}
+//	@Override
+//	public Option<T> sorted()
+//	{
+//		return this;
+//	}
 
 	@Override
-	public Option<T> sorted(Comparator<? super T> comparator)
+	public Option<T> sorted(final Comparator<? super T> comparator)
 	{
 		return this;
 	}
@@ -198,15 +199,52 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 		{
 			return true;
 		}
-		if (obj == null)
-		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
+		if (obj == null || getClass() != obj.getClass())
 		{
 			return false;
 		}
 		return value.equals(((Option) obj).value);
+	}
+	
+	/**
+	 * {@inheritDoc} <br/>
+	 * Se esta Option estiver vazia, retorna uma Option que contém o elemento passado como parâmetro. <br/>
+	 * @param element O elemento a ser adicionado
+	 * @return Uma Option que conterá o elemento, se esta Option estiver vazia
+	 */
+	@Override
+	public Option<T> add(final T element) 
+	{
+		return this.isEmpty() ? Option.from(element) : this;
+	}
+
+	/**
+	 * {@inheritDoc} <br/>
+	 * Retorna uma Option que não contém o elemento passado como parâmetro. <br/>
+	 * Em particular, se o único elemento contido nesta Option for o elemento, será retornado uma Option vazia. <br/>
+	 * @param element O elemento a ser removido
+	 * @return Uma Option que não contém o elemento
+	 */
+	@Override
+	public SharpCollection<T> remove(final T element) 
+	{
+		return this.isEmpty() || ! this.get().equals(element) ? this : Option.empty();
+	}
+
+	@Override
+	public boolean isDefinedAt(final Integer forValue) 
+	{
+		return this.isEmpty() ? false : forValue == 0;
+	}
+	
+	@Override
+	public Option<T> tail()
+	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
+		}
+		return Option.empty();
 	}
 	
 	/**

@@ -20,17 +20,10 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	 */
 	Seq<T> tail();
 	
-	
-	
-	
-	
 	default boolean isDefinedAt(final Integer forValue)
 	{
 		return forValue >= 0 && forValue < this.size();
 	}
-	
-	
-	
 	
 	//ATENÇÃO: Esse método está aqui apenas para permitir ao tipo 'U' ser acessado pelas classes
 	//inferiores. Se esse método for removido, então a classe mais abaixo não vai conseguir saber

@@ -1,7 +1,9 @@
 package com.github.detentor.codex.collections;
 
 /**
- * Essa interface deve ser assinada pelas coleções que permitem mutabilidade.
+ * Essa interface deve ser assinada pelas coleções que permitem mutabilidade. <br/>
+ * O contrato desta interface exige que os métodos retornem a mesma instância da coleção após 
+ * os métodos.
  * 
  * @author Vinícius Seufitele Pinto
  *

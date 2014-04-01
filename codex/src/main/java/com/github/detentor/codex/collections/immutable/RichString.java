@@ -4,11 +4,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.SharpCollection;
-import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
@@ -24,7 +22,7 @@ import com.github.detentor.operations.StringOps;
  * @author Vinicius Seufitele Pinto
  *
  */
-public class RichString extends AbstractIndexedSeq<Character, RichString> implements Serializable
+public class RichString implements Serializable, IndexedSeq<Character>
 {
 	private static final long serialVersionUID = 1L;
 	private static final RichString EMPTY = new RichString("");
@@ -91,10 +89,10 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 		return ListSharp.from(CharOps.lift(value.toCharArray())).map(function);
 	}
 
-	public RichString map(final Function1<? super Character, Character> function)
-	{
-		return (RichString) super.map(function);
-	}
+//	public RichString map(final Function1<? super Character, Character> function)
+//	{
+//		return (RichString) super.map(function);
+//	}
 
 	@Override
 	public <B> IndexedSeq<B> flatMap(final Function1<? super Character, ? extends Iterable<B>> function)
@@ -102,10 +100,10 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 		return ListSharp.from(CharOps.lift(value.toCharArray())).flatMap(function);
 	}
 
-	public RichString flatMap(final Function1<? super Character, ? extends RichString> function)
-	{
-		return (RichString) super.flatMap(function);
-	}
+//	public RichString flatMap(final Function1<? super Character, ? extends RichString> function)
+//	{
+//		return (RichString) super.flatMap(function);
+//	}
 
 	@Override
 	public <B> IndexedSeq<B> collect(final PartialFunction1<? super Character, B> pFunction)
@@ -113,10 +111,10 @@ public class RichString extends AbstractIndexedSeq<Character, RichString> implem
 		return ListSharp.from(CharOps.lift(value.toCharArray())).collect(pFunction);
 	}
 
-	public RichString collect(final PartialFunction1<? super Character, Character> pFunction)
-	{
-		return (RichString) super.collect(pFunction);
-	}
+//	public RichString collect(final PartialFunction1<? super Character, Character> pFunction)
+//	{
+//		return (RichString) super.collect(pFunction);
+//	}
 	
 	@Override
 	public IndexedSeq<Tuple2<Character, Integer>> zipWithIndex()

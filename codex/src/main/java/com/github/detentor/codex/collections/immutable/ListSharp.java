@@ -4,16 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
-import com.github.detentor.codex.collections.AbstractIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.IndexedSeq;
+import com.github.detentor.codex.collections.Seq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.codex.util.Builders;
 
 /**
  * Implementação de ListSharp imútável. <br/>
@@ -24,11 +27,11 @@ import com.github.detentor.codex.product.Tuple2;
  * 3 - Custo de memória constante nas operações O(1) (inclusive a operação map), 
  * pois a referência à lista original é compartilhada (padrão Flyweight). <br/>
  * 
- * @author f9540702 Vinícius Seufitele Pinto
+ * @author Vinícius Seufitele Pinto
  * 
  * @param <T>
  */
-public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements Serializable
+public class ListSharp<T> implements Serializable, IndexedSeq<T>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -127,6 +130,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 * @param collection A ListSharp a ser criada, a partir dos valores
 	 * @return Uma nova ListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
+	@SafeVarargs
 	public static <T> ListSharp<T> from(final T... valores)
 	{
 		return new ListSharp<T>(Arrays.copyOf(valores, valores.length));
@@ -152,12 +156,6 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	}
 
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
-	{
-		return new ImArrayBuilder<B>();
-	}
-
-	@Override
 	public <B> ListSharp<B> map(final Function1<? super T, B> function)
 	{
 		return new ListSharp<B>(data, startIndex, this.startIndex + this.size())
@@ -175,19 +173,19 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	@Override
 	public <B> ListSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
-		return (ListSharp<B>) super.collect(pFunction);
+		return (ListSharp<B>) IndexedSeq.super.collect(pFunction);
 	}
 
 	@Override
 	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (ListSharp<B>) super.flatMap(function);
+		return (ListSharp<B>) IndexedSeq.super.flatMap(function);
 	}
 
 	@Override
 	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (ListSharp<Tuple2<T, Integer>>) IndexedSeq.super.zipWithIndex();
 	}
 
 	@Override
@@ -215,18 +213,18 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 		};
 	}
 	
-	/**
-	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
-	 * Esse método não está definido quando os elementos contidos nesta lista não são instâncias 
-	 * de {@link Comparable} ou {@link Comparator}.
-	 * 
-	 * @return Esta lista com os elementos ordenados
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ListSharp<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
+//	/**
+//	 * Retorna esta lista, após a ordenação de seus elementos. <br/>
+//	 * Esse método não está definido quando os elementos contidos nesta lista não são instâncias 
+//	 * de {@link Comparable} ou {@link Comparator}.
+//	 * 
+//	 * @return Esta lista com os elementos ordenados
+//	 */
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	public ListSharp<T> sorted()
+//	{
+//		return sorted(new DefaultComparator());
+//	}
 
 	/**
 	 * Retorna esta lista, após a ordenação de seus elementos de acordo com a função de comparação passada como parâmetro. <br/>
@@ -277,7 +275,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function, final MapSharpType mapType)
 	{
-		//ATENÇÃO: VERIFICAR SE O CÓDIGO NÃO PODE SER REESCRITO PARA SER MAIS OTIMIZADO
+		//TODO: ATENÇÃO: VERIFICAR SE O CÓDIGO NÃO PODE SER REESCRITO PARA SER MAIS OTIMIZADO
 		final MapSharp<A, Builder<T, SharpCollection<T>>> mapaIntermediario = MapSharp.empty(mapType);
 
 		for (final T curEle : this)
@@ -287,7 +285,7 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 			
 			if (builder == null)
 			{
-				builder = new ImArrayBuilder<T>();
+				builder = Builders.arrayListBuilder();
 				mapaIntermediario.add(value, builder);
 			}
 			builder.add(curEle);
@@ -326,23 +324,23 @@ public class ListSharp<T> extends AbstractIndexedSeq<T, ListSharp<T>> implements
 		return new ListSharp<Tuple2<T,A>>(data);
 	}
 
-	/**
-	 * Essa classe é um builder para SharpCollection baseado em um ListSharp (imutável).
-	 */
-	private class ImArrayBuilder<E> implements Builder<E, SharpCollection<E>>
+	@Override
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder() 
 	{
-		private final List<E> list = new ArrayList<E>();
+		return Builders.arrayListBuilder();
+	}
 
-		@Override
-		public void add(final E element)
-		{
-			list.add(element);
-		}
+	@Override
+	public SharpCollection<T> add(final T element) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		@Override
-		public ListSharp<E> result()
-		{
-			return new ListSharp<E>(list.toArray());
-		}
+	@Override
+	public SharpCollection<T> remove(final T element) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
