@@ -1,8 +1,10 @@
 package com.github.detentor.codex.collections;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -11,6 +13,7 @@ import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.codex.util.Builders;
 
 /**
  * Para criar uma coleção (imutável) com base nesta implementação, basta prover o código dos seguintes métodos: <br/><br/>
@@ -55,7 +58,7 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * e ela determina qual o tipo da coleção retornada.
 	 * @see Builder
 	 */
-	<B> Builder<B, SharpCollection<B>> builder();
+	<B, U extends SharpCollection<B>> Builder<B, U> builder();
 	
 	/**
 	 * Ordena esta coleção, de acordo com a função de ordenação passada como parâmetro. <br/>
@@ -78,7 +81,6 @@ public interface SharpCollection<T> extends Iterable<T>
     
     /**
      * retorna <tt>true</tt> se esta coleção contém elementos
-     *
      * @return <tt>true</tt> se esta coleção contém elementos
      */
     default boolean notEmpty()
@@ -182,9 +184,13 @@ public interface SharpCollection<T> extends Iterable<T>
 	 */
 	default T last()
 	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("last foi chamado para uma coleção vazia");
+		}
 		return takeRight(1).head();
 	}
-	
+
 	/**
 	 * Retorna uma instância de Option que contém o último elemento, 
 	 * se ele existir, ou uma Option vazia, se a coleção estiver vazia. 
@@ -553,8 +559,6 @@ public interface SharpCollection<T> extends Iterable<T>
 		return colecaoRetorno.result();
 	}
 	
-	
-	
 	/**
 	 * Retorna o primeiro elemento (ordem definida pelo iterador da coleção) que satisfaz o predicado. <br/>
 	 * 
@@ -834,6 +838,36 @@ public interface SharpCollection<T> extends Iterable<T>
 		return colecaoRetorno.result();
 	}
 	
+	/**
+	 * Retorna um iterable a partir de um builder. <br/>
+	 *
+	 * @param builder O builder cujos elementos desta coleção serão adicionados
+	 * @return O resultado da adição de todos os elementos desta coleção ao builder.
+	 */
+	default <U extends Iterable<T>> U toColl(final Builder<T, U> builder)
+	{
+		builder.addAll(this);
+		return builder.result();
+	}
+	
+	/**
+	 * Retorna um {@link List} a partir desta coleção.
+	 * @return Uma instância de {@link ArrayList} a partir dos elementos desta coleção.
+	 */
+	default List<T> toList()
+	{
+		return toColl(Builders.arrayListBuilder());
+	}
+	
+	/**
+	 * Retorna um {@link Set} a partir desta coleção.
+	 * @return Uma instância de {@link HashSet} a partir dos elementos desta coleção.
+	 */
+	default Set<T> toSet()
+	{
+		return toColl(Builders.hashSetBuilder());
+	}
+	
 //	/**
 //	 * Ordena esta coleção, de acordo com a função mapeamento passada como parâmetro. <br/>
 //	 * Como exemplo, se você tiver uma lista de Strings e quiser ordená-las pelo tamanho, basta passar uma função
@@ -843,4 +877,23 @@ public interface SharpCollection<T> extends Iterable<T>
 //	 * @return Uma nova coleção, com os elementos ordenados de acordo com a função de mapeamento
 //	 */
 //	<K extends Comparable<? super K>> SharpCollection<T> sortWith(final Function1<? super T, K> mapFunction);
+	
+//	/**
+//	 * Classe com a implementação default do comparator
+//	 */
+//	protected static final class DefaultComparator<A extends Comparable<A>> implements Comparator<A>, Serializable
+//	{
+//		private static final long serialVersionUID = 6163897449143010763L;
+//
+//		public DefaultComparator()
+//		{
+//			//Definindo só para aumentar a visibilidade do construtor
+//		}
+//
+//		@Override
+//		public int compare(final A ob1, final A ob2)
+//		{
+//			return ob1.compareTo(ob2);
+//		}
+//	}
 }

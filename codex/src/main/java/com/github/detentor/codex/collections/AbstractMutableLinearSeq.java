@@ -31,7 +31,7 @@ import com.github.detentor.codex.product.Tuple2;
  * @author Vinícius Seufitele Pinto
  * 
  */
-public abstract class AbstractMutableLinearSeq<T, U extends LinearSeq<T>> extends AbstractLinearSeq<T, U> implements
+public abstract class AbstractMutableLinearSeq<T, U extends LinearSeq<T>> implements LinearSeq<T>,
 		MutableSharpCollection<T>
 {
 	@SuppressWarnings("unchecked")
