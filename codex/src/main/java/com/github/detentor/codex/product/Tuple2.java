@@ -1,6 +1,6 @@
 package com.github.detentor.codex.product;
 
-import com.github.detentor.codex.function.arrow.Arrow1;
+
 
 
 /**
@@ -56,7 +56,7 @@ public class Tuple2<A, B> implements Product
 	{
 		return Tuple2.from(this.getVal2(), this.getVal1());
 	}
-	
+
 	@Override
 	public <K> Tuple3<A, B, K> add(final K value)
 	{
@@ -141,36 +141,4 @@ public class Tuple2<A, B> implements Product
 		return "Tuple(" + val1 + ", " + val2 + ")";
 	}
 	
-	
-	/**
-	 * Retorna uma seta que transforma uma tupla em seu primeiro valor.
-	 * @return Uma seta que transforma uma tupla em seu primeiro valor.
-	 */
-	public static <C, D> Arrow1<Tuple2<C, D>, C> toVal1()
-	{
-		return new Arrow1<Tuple2<C, D>, C>()
-		{
-			@Override
-			public C apply(final Tuple2<C, D> param)
-			{
-				return param.getVal1();
-			}
-		};
-	}
-
-	/**
-	 * Retorna uma seta que transforma uma tupla em seu segundo valor.
-	 * @return Uma seta que transforma uma tupla em seu segundo valor.
-	 */
-	public static <C, D> Arrow1<Tuple2<C, D>, D> toVal2()
-	{
-		return new Arrow1<Tuple2<C, D>, D>()
-		{
-			@Override
-			public D apply(final Tuple2<C, D> param)
-			{
-				return param.getVal2();
-			}
-		};
-	}
 }

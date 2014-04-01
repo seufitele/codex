@@ -33,11 +33,10 @@ public abstract class MemoizedFunction1<A, B> implements Function1<A, B>
 
 	/**
 	 * Faz o efetivo cálculo da função, retornando o valor B. <br/>
-	 * Esse método será chamado somente quando não for possível contrar o valor na tabela de memoização
+	 * Esse método será chamado somente quando não for possível encontrar o valor na tabela de memoização
 	 * 
 	 * @param param O parâmetro a ser passado para a função
 	 * @return O valor, após a aplicação da função
 	 */
 	protected abstract B doApply(final A param);
-
 }
