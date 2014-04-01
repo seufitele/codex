@@ -26,6 +26,18 @@ public interface Builder<From, To extends Iterable<From>>
 	void add(final From element);
 	
 	/**
+	 * Adiciona todos os elemento passados como parâmetro no Builder
+	 * @param elements Os elementos a serem adicionados no builder
+	 */
+	default void addAll(final Iterable<From> elements)
+	{
+		for (From ele : elements)
+		{
+			add(ele);
+		}
+	}
+
+	/**
 	 * Retorna a coleção criada pelo Builder.
 	 * @return A coleção criada pelo Builder
 	 */
