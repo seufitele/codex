@@ -34,11 +34,6 @@ public final class CharOps
 	}
 
 	/**
-	 * Representa a função que converte um Character para String
-	 */
-	public static final Function1<Character, String> toString = (param) -> param.toString();
-	
-	/**
 	 * Representa a função que converte um Character para sua versão UpperCase
 	 */
 	public static final Function1<Character, Character> toUpperCase = Character::toUpperCase;
