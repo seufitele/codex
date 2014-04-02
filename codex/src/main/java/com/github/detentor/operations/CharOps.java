@@ -1,6 +1,6 @@
 package com.github.detentor.operations;
 
-import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.Function1;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link Character}.
@@ -36,25 +36,11 @@ public final class CharOps
 	/**
 	 * Representa a função que converte um Character para String
 	 */
-	public static final Arrow1<Character, String> toString = new Arrow1<Character, String>()
-	{
-		@Override
-		public String apply(final Character param)
-		{
-			return String.valueOf(param);
-		}
-	};
+	public static final Function1<Character, String> toString = (param) -> param.toString();
 	
 	/**
 	 * Representa a função que converte um Character para sua versão UpperCase
 	 */
-	public static final Arrow1<Character, Character> toUpperCase = new Arrow1<Character, Character>()
-	{
-		@Override
-		public Character apply(final Character param)
-		{
-			return Character.toUpperCase(param);
-		}
-	};
+	public static final Function1<Character, Character> toUpperCase = Character::toUpperCase;
 	
 }

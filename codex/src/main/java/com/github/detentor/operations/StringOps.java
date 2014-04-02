@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.github.detentor.codex.collections.immutable.ListSharp;
-import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.Function1;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link String}.
@@ -19,71 +19,36 @@ public final class StringOps
 	{
 		//previne instanciação
 	}
-	
+
 	/**
 	 * Representa a função que converte uma String para uppercase. Null-safe.
 	 */
-	public static final Arrow1<String, String> toUpperCase = new Arrow1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param == null ? null : param.toUpperCase();
-		}
-	};
+	public static final Function1<String, String> toUpperCase = (param -> param == null ? null : param.toUpperCase());
 	
 	/**
 	 * Representa a função que converte uma string para lowercase. Null-safe.
 	 */
-	public static final Arrow1<String, String> toLowerCase = new Arrow1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param == null ? null : param.toLowerCase();
-		}
-	};
+	public static final Function1<String, String> toLowerCase = (param -> param == null ? null : param.toLowerCase());
 	
 	/**
 	 * Representa a função que faz um trim na String. Null-safe
 	 */
-	public static final Arrow1<String, String> trim = new Arrow1<String, String>()
-	{
-		@Override
-		public String apply(final String param)
-		{
-			return param == null ? null : param.trim();
-		}
-	};
+	public static final Function1<String, String> trim = (param -> param == null ? null : param.trim());
 	
 	/**
 	 * Representa a função que converte uma String para Integer
 	 */
-	public static final Arrow1<String, Integer> toInt = new Arrow1<String, Integer>()
-	{
-		@Override
-		public Integer apply(final String param)
-		{
-			return Integer.parseInt(param);
-		}
-	};
+	public static final Function1<String, Integer> toInt = (param -> Integer.parseInt(param)); 
 	
 	/**
 	 * Representa a função que converte uma String para o seu tamanho
 	 */
-	public static final Arrow1<String, Integer> toSize = new Arrow1<String, Integer>()
-	{
-		@Override
-		public Integer apply(final String param)
-		{
-			return param.length();
-		}
-	};
+	public static final Function1<String, Integer> toSize = String::length;
 	
 	/**
 	 * Representa a função que converte uma string para properCase. Null-safe.
 	 */
-	public static final Arrow1<String, String> toProperCase = new Arrow1<String, String>()
+	public static final Function1<String, String> toProperCase = new Function1<String, String>()
 	{
 		@Override
 		public String apply(final String param)
