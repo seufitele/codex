@@ -77,9 +77,9 @@ public abstract class Either<B, A>
 
 	/**
 	 * Cria um novo Either com o valor de Right, se existir, mapeado.
-	 * @param <C>
-	 * @param mapFunction
-	 * @return
+	 * @param <C> O novo tipo do 
+	 * @param mapFunction A função de mapeamento a ser utilizada
+	 * @return Uma instância de Either com o valor em Right mapeado, se ele existir
 	 */
 	public <C> Either<B, C> map(final Function1<? super A, C> mapFunction)
 	{
@@ -89,8 +89,8 @@ public abstract class Either<B, A>
 	/**
 	 * Classe que representa o valor 'correto' contido em Either.
 	 * 
-	 * @param <B>
-	 * @param <A>
+	 * @param <B> O tipo de Left
+	 * @param <A> O tipo de Right
 	 */
 	public static final class Right<B, A> extends Either<B, A>
 	{
@@ -117,8 +117,8 @@ public abstract class Either<B, A>
 	/**
 	 * Classe que representa o valor 'errado' contido em Either.
 	 *
-	 * @param <B>
-	 * @param <A>
+	 * @param <B> O tipo de Left
+	 * @param <A> O tipo de Right
 	 */
 	public static final class Left<B, A> extends Either<B, A>
 	{
