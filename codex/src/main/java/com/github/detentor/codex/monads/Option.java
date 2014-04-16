@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.LinearSeq;
+import com.github.detentor.codex.collections.MutableSharpCollection;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
@@ -25,7 +26,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo do dado a ser guardado na Option
  */
-public class Option<T> implements Serializable, LinearSeq<T>
+public class Option<T> implements LinearSeq<T>, MutableSharpCollection<T>, Serializable 
 {
 	private static final long serialVersionUID = 1L;
 
@@ -230,6 +231,17 @@ public class Option<T> implements Serializable, LinearSeq<T>
 	{
 		return this.isEmpty() || ! this.get().equals(element) ? this : Option.empty();
 	}
+	
+	/**
+	 * {@inheritDoc} <br/>
+	 * Limpa todos os elementos desta Option, ou seja, retorna uma Option vazia. <br/>
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Option<T> clear() 
+	{
+		return (Option<T>) NONE;
+	}
 
 	@Override
 	public boolean isDefinedAt(final Integer forValue) 
@@ -272,5 +284,21 @@ public class Option<T> implements Serializable, LinearSeq<T>
 		{
 			return Option.from(valor);
 		}
+	}
+
+	@Override
+	public boolean isEmpty() 
+	{
+		return value.isEmpty();
+	}
+
+	@Override
+	public T head() 
+	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("head foi chamado para uma coleção vazia");
+		}
+		return value.get(0);
 	}
 }
