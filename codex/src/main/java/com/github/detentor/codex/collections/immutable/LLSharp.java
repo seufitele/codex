@@ -2,8 +2,8 @@ package com.github.detentor.codex.collections.immutable;
 
 import java.util.Comparator;
 
-import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.LinearSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
@@ -34,7 +34,7 @@ import com.github.detentor.codex.product.Tuple2;
  *
  * @param <T> O tipo de dados guardado na lista
  */
-public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
+public class LLSharp<T> implements LinearSeq<T>
 {
 	private T head;
 	private LLSharp<T> tail;
@@ -82,6 +82,7 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	 * @param valores A LinkedListSharp a ser criada, a partir dos valores
 	 * @return Uma nova LinkedListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> LLSharp<T> from(final T... valores)
 	{
 		LLSharp<T> retorno = LLSharp.empty();
@@ -132,9 +133,10 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	}
 
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
 	{
-		return new LinkedListBuilder<B>();
+		//TODO: Tentar remover o cast e remover o LLBuilder pra classe builders
+		return (Builder<B, U>) new LinkedListBuilder<B>();
 	}
 
 	/**
@@ -174,25 +176,25 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	@Override
 	public <B> LLSharp<B> map(final Function1<? super T, B> function)
 	{
-		return (LLSharp<B>) super.map(function);
+		return (LLSharp<B>) LinearSeq.super.map(function);
 	}
 
 	@Override
 	public <B> LLSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
-		return (LLSharp<B>) super.collect(pFunction);
+		return (LLSharp<B>) LinearSeq.super.collect(pFunction);
 	}
 
 	@Override
 	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (LLSharp<B>) super.flatMap(function);
+		return (LLSharp<B>) LinearSeq.super.flatMap(function);
 	}
 
 	@Override
 	public LLSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (LLSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (LLSharp<Tuple2<T, Integer>>) LinearSeq.super.zipWithIndex();
 	}
 
 	/**
@@ -200,7 +202,7 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 	 * Esse builder assegura que a ordem de inserção será preservada. 
 	 * @param <E> O tipo de dados do ListSharp retornado
 	 */
-	private static final class LinkedListBuilder<E> implements Builder<E, SharpCollection<E>>
+	private static final class LinkedListBuilder<E> implements Builder<E, LLSharp<E>>
 	{
 		private LLSharp<E> list = LLSharp.empty();
 		private LLSharp<E> last;
@@ -228,12 +230,12 @@ public class LLSharp<T> extends AbstractLinearSeq<T, LLSharp<T>>
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public LLSharp<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Override
+//	public LLSharp<T> sorted()
+//	{
+//		return sorted(new DefaultComparator());
+//	}
 
 	@Override
 	public LLSharp<T> sorted(Comparator<? super T> comparator)

@@ -1,6 +1,6 @@
 package com.github.detentor.operations;
 
-import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.Function1;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link Object}.
@@ -20,9 +20,9 @@ public final class ObjectOps
 	 * @param theObject O objeto a ser usado como comparador para a seta.
 	 * @return Uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'
 	 */
-	public static final Arrow1<Object, Boolean> isEquals(final Object theObject)
+	public static final Function1<Object, Boolean> isEquals(final Object theObject)
 	{
-		return new Arrow1<Object, Boolean>()
+		return new Function1<Object, Boolean>()
 		{
 			@Override
 			public Boolean apply(final Object param)
@@ -35,49 +35,21 @@ public final class ObjectOps
 	/**
 	 * Representa a função que transforma um objeto em sua representação em String.
 	 */
-	public static final Arrow1<Object, String> toString = new Arrow1<Object, String>()
-	{
-		@Override
-		public String apply(final Object param)
-		{
-			return param.toString();
-		}
-	};
+	public static final Function1<Object, String> toString = Object::toString;
 
 	/**
 	 * Representa a função que transforma um objeto em sua representação em hashcode.
 	 */
-	public static final Arrow1<Object, Integer> toHashcode = new Arrow1<Object, Integer>()
-	{
-		@Override
-		public Integer apply(final Object param)
-		{
-			return param.hashCode();
-		}
-	};
+	public static final Function1<Object, Integer> toHashcode = Object::hashCode;
 	
 	/**
 	 * Representa a função identidade
 	 */
-	public static final Arrow1<Object, Object> identity = new Arrow1<Object, Object>()
-	{
-		@Override
-		public Object apply(final Object param)
-		{
-			return param;
-		}
-	};
+	public static final Function1<Object, Object> identity = param -> param;
 	
 	/**
 	 * Transforma um enum em sua propriedade name
 	 */
-	public static final Arrow1<Enum<?>, String> enumToName = new Arrow1<Enum<?>, String>()
-	{
-		@Override
-		public String apply(final Enum<?> param)
-		{
-			return param.name();
-		}
-	};
+	public static final Function1<Enum<?>, String> enumToName = Enum::name;
 
 }

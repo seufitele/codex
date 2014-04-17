@@ -32,11 +32,9 @@ public final class Files
 	public static byte[] readBytes(final String fileName)
 	{
 		final File arq = new File(fileName);
-		FileInputStream fis = null;
 
-		try
+		try(FileInputStream fis = new FileInputStream(arq))
 		{
-			fis = new FileInputStream(arq);
 			byte[] data = new byte[(int)arq.length()];
 			fis.read(data);
 			fis.close();
@@ -44,21 +42,10 @@ public final class Files
 		}
 		catch (IOException ioe)
 		{
-			if (fis != null)
-			{
-				try
-				{
-					fis.close();
-				}
-				catch (IOException ioe2)
-				{
-					throw new IllegalArgumentException(ioe2);
-				}
-			}
 			throw new IllegalArgumentException(ioe);
 		}
 	}
-	
+
 	/**
 	 * Lê o conteúdo do arquivo como uma String no formato cp1252.
 	 * ATENÇÃO: A string estará mal-formada se ela foi gravada no formato UTF-8.
@@ -107,27 +94,14 @@ public final class Files
 	public static void writeBytes(final String fileName, final byte[] dados)
 	{
 		final File arq = new File(fileName);
-		FileOutputStream fis = null;
 
-		try
+		try(FileOutputStream fis = new FileOutputStream(arq))
 		{
-			fis = new FileOutputStream(arq);
 			fis.write(dados);
 			fis.close();
 		}
 		catch (IOException ioe)
 		{
-			if (fis != null)
-			{
-				try
-				{
-					fis.close();
-				}
-				catch (IOException ioe2)
-				{
-					throw new IllegalArgumentException(ioe2);
-				}
-			}
 			throw new IllegalArgumentException(ioe);
 		}
 	}

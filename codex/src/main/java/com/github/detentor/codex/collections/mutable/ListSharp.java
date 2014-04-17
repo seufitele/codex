@@ -6,14 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.github.detentor.codex.collections.AbstractMutableIndexedSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
+import com.github.detentor.codex.collections.MutableSharpCollection;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.codex.util.Builders;
 
 /**
  * Essa classe representa uma lista mutável, cujos elementos são armazenados num ArrayList usando composição. <br/>
@@ -28,7 +29,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> implements PartialFunction1<Integer, T>, Serializable
+public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, PartialFunction1<Integer, T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -85,6 +86,7 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	 * @param valores A ListSharp a ser criada, a partir dos valores
 	 * @return Uma nova ListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> ListSharp<T> from(final T... valores)
 	{
 		final ListSharp<T> retorno = new ListSharp<T>();
@@ -128,11 +130,10 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 		backingList.clear();
 		return this;
 	}
-
+	
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
-	{
-		return new ArrayBuilder<B>();
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder() {
+		return Builders.arrayListBuilder();
 	}
 
 	@Override
@@ -144,25 +145,25 @@ public class ListSharp<T> extends AbstractMutableIndexedSeq<T, ListSharp<T>> imp
 	@Override
 	public <B> ListSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
-		return (ListSharp<B>) super.collect(pFunction);
+		return (ListSharp<B>) IndexedSeq.super.collect(pFunction);
 	}
 
 	@Override
 	public <B> ListSharp<B> map(final Function1<? super T, B> function)
 	{
-		return (ListSharp<B>) super.map(function);
+		return (ListSharp<B>) IndexedSeq.super.map(function);
 	}
 
 	@Override
 	public <B> ListSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (ListSharp<B>) super.flatMap(function);
+		return (ListSharp<B>) IndexedSeq.super.flatMap(function);
 	}
 	
 	@Override
 	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (ListSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (ListSharp<Tuple2<T, Integer>>) IndexedSeq.super.zipWithIndex();
 	}
 
 	/**

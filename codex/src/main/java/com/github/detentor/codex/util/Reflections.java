@@ -4,10 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.function.arrow.Arrow0;
-import com.github.detentor.codex.function.arrow.Arrow1;
-import com.github.detentor.codex.function.arrow.ArrowN;
+import com.github.detentor.codex.function.Function0;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.monads.Option;
 
 /**
@@ -25,38 +26,44 @@ public final class Reflections
 	
 	/**
 	 * Transforma um método de uma classe em uma seta. <br/>
+	 * Funciona tanto para métodos estáticos como métodos de instância. <br/>
+	 * O método retornado será o primeiro método que tenha o nome passado como parâmetro.
 	 * 
 	 * @param fromClass A classe a partir da qual o método será 'promovido'
-	 * @param methodName O nome do método a ser transformado em seta. É necessário que o método não receba
+	 * @param methodName O nome do método a ser transformado em função. É necessário que o método não receba
 	 * parâmetros, tenha visibilidade public e um retorno diferente de void.
-	 * @return Uma seta que representa o método definido pela classe.
+	 * @return Uma função que representa o método definido pela classe.
 	 */
-	public static <A, B> Arrow1<A, B> lift(final Class<A> fromClass, final String methodName)
+	public static <A, B> Function1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
-
-		return new Arrow1<A, B>()
-		{
-			@Override
-			public B apply(final A param)
-			{
-				return invokeSafe(param, theMethod, (Object[]) null);
-			}
-		};
+		return param -> invokeSafe(param, theMethod, (Object[]) null);
 	}
 	
 	/**
-	 * Transforma um método de uma classe em uma {@link Arrow0}, amarrando os valores
-	 * passados como parâmetro na chamada do método, de forma que aplicar a seta 
+	 * Transforma um método estático de uma classe numa seta.
+	 * @param fromClass A classe onde o método estático existe.
+	 * @param methodName O nome do método a ser transformado em seta
+	 * @return Uma seta que representa o método definido pela classe
+	 */
+	public static <A, B, C> Function1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
+	{
+		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
+		return param -> invokeSafe(fromClass, theMethod, param);
+	}
+	
+	/**
+	 * Transforma um método de uma classe em uma {@link Function0}, amarrando os valores
+	 * passados como parâmetro na chamada do método, de forma que aplicar a função 
 	 * seja equivalente a chamar o método com os parâmetros passados.
 	 * 
 	 * @param fromInstance A instância a partir da qual o método será promovido
 	 * @param methodName O nome do método a ser transformado
 	 * @param params Os parâmetros a serem "amarrados" ao método. Para métodos que não recebem parâmetro pode-se passar
 	 * um array de tamanho 0.
-	 * @return Uma {@link Arrow0} que, ao ser aplicada, seja equivalente à chamada do método com os parâmetros passados
+	 * @return Uma {@link Function0} que, ao ser aplicada, seja equivalente à chamada do método com os parâmetros passados
 	 */
-	public static <B> Arrow0<B> liftBind(final Object fromInstance, final String methodName, final Object... params)
+	public static <B> Function0<B> liftBind(final Object fromInstance, final String methodName, final Object... params)
 	{
 		final Class<?>[] types = new Class[params.length]; 
 
@@ -65,73 +72,37 @@ public final class Reflections
 			types[i] = params[i].getClass();
 		}
 		final Method theMethod = ensureNotEmpty(getMethodFromNameAndType(fromInstance.getClass(), methodName, types));
-
-		return new Arrow0<B>()
-		{
-			@Override
-			public B apply()
-			{
-				return invokeSafe(fromInstance, theMethod, params);
-			}
-		};
+		return () -> invokeSafe(fromInstance, theMethod, params);
 	}
 
-	/**
-	 * Transforma um método estático de uma classe numa seta.
-	 * @param fromClass A classe onde o método estático existe.
-	 * @param methodName O nome do método a ser transformado em seta
-	 * @return Uma seta que representa o método definido pela classe
-	 */
-	public static <A, B, C> Arrow1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
-	{
-		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
-
-		return new Arrow1<B, C>()
-		{
-			@Override
-			public C apply(final B param)
-			{
-				return invokeSafe(fromClass, theMethod, param);
-			}
-		};
-	}
-	
 	/**
 	 * Transforma um método estático de uma classe numa seta.
 	 * @param fromClass A classe onde o método estático existe
 	 * @param methodName O nome do método a ser transformado em seta
 	 * @return Uma seta que representa o método definido pela classe
 	 */
-	public static <A, B, C> ArrowN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
+	public static <A, B, C> FunctionN<B, C> liftStaticVarArgs(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(
 									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
-
-		return new ArrowN<B, C>()
-		{
-			@Override
-			public C apply(final B... params)
-			{
-				return invokeSafe(fromClass, theMethod, new Object[] { params });
-			}
-		};
+		return params -> invokeSafe(fromClass, theMethod, new Object[] { params });
 	}
 
 	/**
 	 * Valida que a Option contém elementos, disparando uma exceção se não tiver.
 	 * @param theOption A Option a ser verificada
 	 * @return O elemento contido na Option.
-	 * @throws IllegalArgumentException Se a Option não contiver elementos 
+	 * @throws NoSuchElementException Se a Option não contiver elementos 
 	 */
 	private static Method ensureNotEmpty(final Option<Method> theOption)
 	{
 		if (theOption.isEmpty())
 		{
-			throw new IllegalArgumentException("The named method doesn't exist");
+			throw new NoSuchElementException("The named method doesn't exist");
 		}
 		return theOption.get();
 	}
-	
+
 	/**
 	 * Retorna o primeiro método de uma classe que possui o nome passado como parâmetro. <br/>
 	 * @param fromClass A classe onde o método será procurado
@@ -153,7 +124,7 @@ public final class Reflections
 	}
 	
 	/**
-	 * Retorna o método de uma classe a partir de seu nome e da sua lista de parâmetros. 
+	 * Retorna o método de uma classe a partir de seu nome e da sua lista de parâmetros. <br/> 
 	 * Passar um array vazio significa sem parâmetros.
 	 * @param fromClass A classe onde o método será procurado
 	 * @param methodName O nome do método a ser retornado
@@ -211,11 +182,7 @@ public final class Reflections
 		{
 			return (B) method.invoke(fromClass, params);
 		}
-		catch (final IllegalAccessException e)
-		{
-			throw new IllegalArgumentException(e);
-		}
-		catch (final InvocationTargetException e)
+		catch (final IllegalAccessException | InvocationTargetException e)
 		{
 			throw new IllegalArgumentException(e);
 		}
@@ -229,7 +196,7 @@ public final class Reflections
 	 * @param <T> o tipo da instancia desejada
 	 * @param type o tipo da instancia desejada
 	 * @return Uma nova instância da classe informada
-	 * @throws IllegalArgumentException caso aconteça erro ao se intanciar, por exemplo não ter construtor público
+	 * @throws IllegalArgumentException caso aconteça erro ao se instanciar, por exemplo não ter construtor público
 	 */
 	public static <T> T newInstance(final Class<T> type) throws IllegalArgumentException
 	{
@@ -237,9 +204,9 @@ public final class Reflections
 	}
 	
 	/**
-	 * Cria, via reflection, uma nova instancia da classe informada, passando os parâmetros informados. <br/>
-	 * ATENÇÃO: O construtor da classe deve ser público. Se params for nulo ou de tamanho 0, então será invocado
-	 * o construtor default da classe.
+	 * Cria, via reflection, uma nova instância da classe informada, passando os parâmetros informados. <br/>
+	 * O construtor da classe deve ser público. Se params for nulo ou de tamanho 0, então será invocado
+	 * o construtor padrão da classe.
 	 * 
 	 * @param <T> o tipo da instancia desejada
 	 * @param type o tipo da instancia desejada
@@ -265,28 +232,10 @@ public final class Reflections
 			
 			return type.getConstructor(paramTypes).newInstance(params);
 		}
-		catch (final InstantiationException instEx)
+		catch (IllegalAccessException | InstantiationException | SecurityException | 
+			   InvocationTargetException | NoSuchMethodException e)
 		{
-			throw new IllegalArgumentException("A classe " + type + " não possui construtor público", instEx);
-		}
-		catch (final IllegalAccessException iae)
-		{
-			throw new IllegalArgumentException(iae);
-		}
-		catch (SecurityException e)
-		{
-			throw new IllegalArgumentException("A classe " + type + 
-					" não possui um construtor público que receba os parâmetros informados", e);
-		}
-		catch (InvocationTargetException e)
-		{
-			throw new IllegalArgumentException("A classe " + type + 
-					" não possui um construtor público que receba os parâmetros informados", e);
-		}
-		catch (NoSuchMethodException e)
-		{
-			throw new IllegalArgumentException("A classe " + type + 
-					" não possui um construtor público que receba os parâmetros informados", e);
+			throw new IllegalArgumentException("Erro ao instanciar a classe " + type, e);
 		}
 	}
 }

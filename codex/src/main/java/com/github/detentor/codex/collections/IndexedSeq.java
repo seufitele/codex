@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.product.Tuple2;
 
@@ -223,28 +222,28 @@ public interface IndexedSeq<T> extends Seq<T>
 	@Override
 	default IndexedSeq<T> dropWhile(final Function1<? super T, Boolean> pred)
 	{
-		final int theIndex = indexWhere(Functions.not(pred));
+		final int theIndex = indexWhere(x -> ! pred.apply(x));
 		return this.drop(theIndex == -1 ? this.size() : theIndex);
 	}
 	
 	@Override
 	default IndexedSeq<T> dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
-		final int theIndex = lastIndexWhere(Functions.not(pred));
+		final int theIndex = lastIndexWhere(x -> ! pred.apply(x));
 		return this.dropRight(theIndex == -1 ? this.size() : this.size() - (theIndex + 1));
 	}
 	
 	@Override
 	default IndexedSeq<T> takeWhile(final Function1<? super T, Boolean> pred)
 	{
-		final int theIndex = indexWhere(Functions.not(pred));
+		final int theIndex = indexWhere(x -> ! pred.apply(x));
 		return this.take(theIndex == -1 ? this.size() : theIndex);
 	}
 
 	@Override
 	default IndexedSeq<T> takeRightWhile(final Function1<? super T, Boolean> pred)
 	{
-		final int index = lastIndexWhere(Functions.not(pred));
+		final int index = lastIndexWhere(x -> ! pred.apply(x));
 		return this.takeRight(index == -1 ? this.size() : this.size() - (index + 1));
 	}
 	

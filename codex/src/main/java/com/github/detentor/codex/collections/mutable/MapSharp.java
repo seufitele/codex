@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
@@ -27,7 +26,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction1<K, V>, Serializable
+public class MapSharp<K, V> implements SharpCollection<Tuple2<K, V>>, PartialFunction1<K, V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -91,6 +90,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * @param theMap O mapa a partir do qual este mapa será criado
 	 * @return Um MapSharp que contém os elementos do mapa passado como parâmetro
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T, U> MapSharp<T, U> from(final Tuple2<T, U>... values)
 	{
 		return from(Arrays.asList(values));
@@ -226,6 +226,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * @param elements Os elementos a serem adicionados
 	 * @return A referência a este mapa após a adição
 	 */
+	@SuppressWarnings("unchecked")
 	public MapSharp<K, V> addAll(final Tuple2<K, V>... elements)
 	{
 		for (int i = 0; i < elements.length; i++)
@@ -243,10 +244,10 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
 	{
 		Builder<B, SharpCollection<B>> builderRetorno = null;
-		
+
 		if (backingMap instanceof LinkedHashMap<?, ?>)
 		{
 			builderRetorno = new GenMapBuilder(MapSharpType.LINKED_HASH_MAP);
@@ -263,7 +264,9 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		{
 			throw new IllegalArgumentException("Tipo de instância não reconhecida");
 		}
-		return builderRetorno;
+		
+		//TODO: tentar remover o cast
+		return (Builder<B, U>) builderRetorno;
 	}
 	
 	/**
@@ -273,7 +276,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	@Override
 	public boolean contains(final Tuple2<K, V> element)
 	{
-		return super.contains(element);
+		return SharpCollection.super.contains(element);
 	}
 
 	/**
@@ -283,7 +286,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	@Override
 	public boolean containsAll(final Iterable<Tuple2<K, V>> col)
 	{
-		return super.containsAll(col);
+		return SharpCollection.super.containsAll(col);
 	}
 
 	/**

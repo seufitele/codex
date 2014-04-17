@@ -25,5 +25,4 @@ public interface Product extends Serializable
 	 * @return Um produto com um elemento a mais
 	 */
 	<K> Product add(K value);
-	
 }
