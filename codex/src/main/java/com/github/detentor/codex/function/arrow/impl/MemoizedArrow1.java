@@ -3,7 +3,7 @@ package com.github.detentor.codex.function.arrow.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.Function1;
 
 /**
  * A representação de uma {@link Arrow1} que guarda na memória valores previamente calculados.
@@ -13,7 +13,7 @@ import com.github.detentor.codex.function.arrow.Arrow1;
  * @param <A> O tipo de dados de entrada (o domínio da seta)
  * @param <B> O tipo de dados de saída (a imagem da seta)
  */
-public abstract class MemoizedArrow1<A, B> extends Arrow1<A, B>
+public abstract class MemoizedArrow1<A, B> implements Function1<A, B>
 {
 	private Map<A, B> memoValues = new HashMap<A, B>();
 
