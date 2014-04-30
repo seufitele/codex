@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -60,15 +61,8 @@ public interface SharpCollection<T> extends Iterable<T>
 	 */
 	<B, U extends SharpCollection<B>> Builder<B, U> builder();
 	
-	/**
-	 * Ordena esta coleção, de acordo com a função de ordenação passada como parâmetro. <br/>
-	 *
-	 * @param comparator A função de comparação, a ser utilizada para ordenar os elementos
-	 * @return Uma nova coleção com os elementos ordenados
-	 */
-	SharpCollection<T> sorted(final Comparator<? super T> comparator);
-	
-	//TODO: Verificar se os métodos podem ficar em todas as instâncias, ou somente nas mutáveis
+
+//TODO: Verificar se os métodos podem ficar em todas as instâncias, ou somente nas mutáveis
 //	/**
 //     * Retorna uma <b>nova</b> coleção, com a adição do elemento passado como parâmetro. <br/><br/>
 //     * 
@@ -200,203 +194,7 @@ public interface SharpCollection<T> extends Iterable<T>
 
     //Métodos diversos:
     
-    /**
-	 * Retorna o primeiro elemento desta coleção. <br/><br/>
-	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), a chamada
-	 * sucessiva a este método pode retornar elementos distintos.
-	 * @return O primeiro elemento desta coleção.
-	 * @throws NoSuchElementException Se a coleção estiver vazia
-	 */
-	default T head()
-	{
-		if (this.isEmpty())
-		{
-			throw new NoSuchElementException("head foi chamado para uma coleção vazia");
-		}
-		
-		return this.iterator().next();
-	}
-	
-	 /**
-	 * Retorna uma instância de Option que contém o primeiro elemento, se ele existir, 
-	 * ou uma Option vazia, se a coleção estiver vazia. 
-	 * @see Option 
-	 * @return O primeiro elemento desta coleção como uma instância de Option
-	 */
-	default Option<T> headOption()
-	{
-		return this.isEmpty() ? Option.<T> empty() : Option.from(this.head());
-	}
-	
-	/**
-	 * Retorna o último elemento desta coleção. <br/><br/>
-	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), a chamada
-	 * sucessiva a este método pode retornar elementos distintos.
-	 * @return O último elemento desta coleção.
-	 * @throws NoSuchElementException Se a coleção estiver vazia
-	 */
-	default T last()
-	{
-		if (this.isEmpty())
-		{
-			throw new NoSuchElementException("last foi chamado para uma coleção vazia");
-		}
-		return takeRight(1).head();
-	}
-
-	/**
-	 * Retorna uma instância de Option que contém o último elemento, 
-	 * se ele existir, ou uma Option vazia, se a coleção estiver vazia. 
-	 * @see Option 
-	 * @return O primeiro elemento desta coleção como uma instância de Option
-	 */
-	default Option<T> lastOption()
-	{
-		return this.isEmpty() ? Option.<T> empty() : Option.from(this.last());
-	}
-	
-//	/**
-//	//TODO: por que existe tail na sharpCollection? parece mais coisas de seq, e não de sharpCollection. drop(1)
-	// pode ser usado ao invés
-//	 * Seleciona todos os elementos exceto o primeiro.<br/><br/>
-//	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), este método
-//	 * retornará todos os elementos com exceção do primeiro elemento retornado pelo iterator.
-//	 * @return Uma coleção que consiste de todos os elementos desta coleção, exceto o primeiro
-//	 * @throws NoSuchElementException Se esta coleção estiver vazia
-//	 */
-//	default SharpCollection<T> tail()
-//	{
-//		if (this.isEmpty())
-//		{
-//			throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
-//		}
-//		
-//		//TODO: por que esse método dispara exceção e o drop(1) não?
-//		return drop(1);
-//	}
-
-	/**
-	 * Pega até os 'num' primeiros elementos desta coleção. 
-	 * Se a coleção não possuir 'num' elementos, retorna todos eles. <br/>
-	 * ATENÇÃO: Não afeta a lista original.
-	 * @param num O número de elementos a pegar desta coleção.
-	 * @return Uma nova coleção, com os 'num' primeiros elementos dela.
-	 */
-	default SharpCollection<T> take(final Integer num)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		int count = 0;
-
-		while (count++ < num && ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		return colecaoRetorno.result();
-	}
-	
-	/**
-	 * Pega até os 'num' últimos elementos desta coleção. 
-	 * Se a coleção não possuir 'num' elementos, retorna todos eles. <br/>
-	 * ATENÇÃO: Não afeta a lista original.
-	 * @param num O número de elementos a pegar desta coleção.
-	 * @return Uma nova coleção, com os 'num' últimos elementos dela.
-	 */
-	default SharpCollection<T> takeRight(final Integer num)
-	{
-		final int eleToSkip = Math.max(this.size() - num, 0);
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-		int curCount = 0;
-
-		while (ite.hasNext() && curCount < eleToSkip)
-		{
-			ite.next();
-			curCount++;
-		}
-
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-		return colecaoRetorno.result();
-	}
-	
-	/**
-	 * Retorna esta coleção sem os 'num' primeiros elementos. 
-	 * Se a coleção não possuir 'num' elementos, uma coleção vazia será retornada.<br/>
-	 * ATENÇÃO: Não afeta a lista original.
-	 * @param num O número de elementos a 'pular' desta coleção.
-	 * @return Uma nova coleção, composta pelos elementos desta coleção, exceto os 'num' primeiros.
-	 */
-	default SharpCollection<T> drop(final Integer num)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-
-		int count = 0;
-
-		while (count++ < num && ite.hasNext())
-		{
-			ite.next();
-		}
-
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-
-		return colecaoRetorno.result();
-	}
-	
-	/**
-	 * Retorna esta coleção sem os 'num' últimos elementos. 
-	 * Se a coleção não possuir 'num' elementos, uma coleção vazia será retornada.<br/>
-	 * ATENÇÃO: Não afeta a lista original.
-	 * @param num O número de elementos a 'pular' (contando da direita para a esquerda) desta coleção.
-	 * @return Uma nova coleção, composta pelos elementos desta coleção, exceto os 'num' últimos.
-	 */
-	default SharpCollection<T> dropRight(final Integer num)
-	{
-		final int toAdd = Math.max(0, this.size() - num);
-		final Builder<T, SharpCollection<T>> colecaoRetorno = this.builder();
-		final Iterator<T> ite = this.iterator();
-
-		int count = 0;
-
-		while (ite.hasNext() && count++ < toAdd)
-		{
-			colecaoRetorno.add(ite.next());
-		}
-
-		return colecaoRetorno.result();
-	}
-	
-	/**
-	 * Divide esta coleção em duas na posição definida. <br/>
-	 * Equivalente a {@link #take(num)} e {@link #drop(num)}, mas mais eficiente.
-	 * @param num A posição em que a lista será dividida (exclusive).
-	 * @return Um par de listas que consiste nos 'num' primeiros elementos, e os outros restantes.
-	 */
-	default Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> splitAt(final Integer num)
-	{
-		final Builder<T, SharpCollection<T>> colRetorno1 = this.builder();
-		final Iterator<T> ite = this.iterator();
-		int count = 0;
-
-		while (count++ < num && ite.hasNext())
-		{
-			colRetorno1.add(ite.next());
-		}
-		
-		final Builder<T, SharpCollection<T>> colRetorno2 = this.builder();
-		
-		while (ite.hasNext())
-		{
-			colRetorno2.add(ite.next());
-		}
-		return Tuple2.from(colRetorno1.result(), colRetorno2.result());
-	}
+    
 	
 //	/**
 //	 TODO: Esse método deve utilizar o sliding (a ser criado).
@@ -486,130 +284,32 @@ public interface SharpCollection<T> extends Iterable<T>
 	}
 	
 	
+	//MÉTODOS DE ORDEM SUPERIOR
+
 	/**
-	 * Descarta os elementos do início da coleção enquanto eles satisfizerem o predicado. <br/>
+	 * Reduz os elementos desta coleção a partir da função de redução passada como parâmetro. <br/>
+	 * A ordem que as operações são executadas nos elementos não está especificada, e pode ser não-determinística. <br/>
 	 * 
-	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return Os elementos desta coleção com exceção do grupo de elementos do início que satisfazem
-	 * o predicado.
+	 * @param func A função de redução a ser aplicada nos elementos 
+	 * @return Um elemento T, retornado a partir da redução dos elementos desta coleção.
+	 * @throws NoSuchElementException Se esta coleção estiver vazia
 	 */
-	default SharpCollection<T> dropWhile(final Function1<? super T, Boolean> pred)
+	default T reduce(final Function2<? super T, ? super T, T> func)
 	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("reduce foi chamado para uma coleção vazia");
+		}
+		
 		final Iterator<T> ite = this.iterator();
-
+		T ele = ite.next();
+		
 		while (ite.hasNext())
 		{
-			final T curEle = ite.next();
-
-			if (!pred.apply(curEle))
-			{
-				colecaoRetorno.add(curEle);
-				break;
-			}
+			ele = func.apply(ele, ite.next());
 		}
-
-		while (ite.hasNext())
-		{
-			colecaoRetorno.add(ite.next());
-		}
-
-		return colecaoRetorno.result();
-	}
-	
-	/**
-	 * Descarta os elementos do fim da coleção enquanto eles satisfizerem o predicado. <br/>
-	 * 
-	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return Os elementos desta coleção com exceção do grupo de elementos do fim que satisfazem
-	 * o predicado.
-	 */
-	default SharpCollection<T> dropRightWhile(final Function1<? super T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-
-		Builder<T, SharpCollection<T>> tempCollection = builder();
-
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-
-			if (pred.apply(curEle))
-			{
-				// Esse predicado pode ser o último
-				tempCollection.add(curEle);
-			}
-			else
-			{
-				// Adiciona os elementos que seriam descartados
-				for (final T ele : tempCollection.result())
-				{
-					colecaoRetorno.add(ele);
-				}
-				// Adiciona o elemento atual
-				colecaoRetorno.add(curEle);
-				tempCollection = builder(); // reseta o builder
-			}
-		}
-		return colecaoRetorno.result();
-	}
-	
-	
-	/**
-	 * Pega os elementos da coleção enquanto eles satisfizerem o predicado. <br/>
-	 * 
-	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return O mais longo prefixo desta coleção onde todos os elementos satisfazem o predicado. 
-	 */
-	default SharpCollection<T> takeWhile(final Function1<? super T, Boolean> pred)
-	{
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-
-			if (pred.apply(curEle))
-			{
-				colecaoRetorno.add(curEle);
-			}
-			else
-			{
-				break;
-			}
-		}
-		return colecaoRetorno.result();
-	}
-	
-	
-	/**
-	 * Pega os elementos da coleção, começando no último elemento, enquanto eles satisfizerem o predicado. <br/>
-	 * 
-	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return O mais longo prefixo (da direita para a esquerda) desta coleção onde todos os elementos satisfazem o predicado. 
-	 */
-	default SharpCollection<T> takeRightWhile(final Function1<? super T, Boolean> pred)
-	{
-		Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		final Iterator<T> ite = this.iterator();
-
-		while (ite.hasNext())
-		{
-			final T curEle = ite.next();
-
-			if (pred.apply(curEle))
-			{
-				// Coleta os elementos que satisfazem o predicado
-				colecaoRetorno.add(curEle);
-			}
-			else
-			{
-				colecaoRetorno = builder(); // reseta o builder
-			}
-		}
-		return colecaoRetorno.result();
+		
+		return ele;
 	}
 	
 	/**
@@ -735,33 +435,6 @@ public interface SharpCollection<T> extends Iterable<T>
 	}
 	
 	/**
-	 * Executa, na ordem do iterator desta coleção, a função passada como parâmetro, 
-	 * acumulando o resultado a cada iteração. <br/>
-	 * EX: Se você tiver uma coleção de inteiros, você pode utilizar o 
-	 * foldLeft para retornar a soma dos elementos, como no exemplo abaixo:
-	 * <pre>
-	 * myArray.foldLeft(0, new Action<Integer, Integer> (){ 
-	 *     Integer apply(Integer param1, Integer param2){ 
-	 *       return param1 + param2;
-	 *     }
-	 * } </pre>
-	 * @param <B> O retorno da função foldLeft
-	 * @param startValue O valor inicial a ser aplicação na ação
-	 * @param function A função a ser executada a cada passo
-	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
-	 */
-	default <B> B foldLeft(final B startValue, final Function2<B, ? super T, B> function)
-	{
-		B accumulator = startValue;
-
-		for (final T ele : this)
-		{
-			accumulator = function.apply(accumulator, ele);
-		}
-		return accumulator;
-	}
-	
-	/**
 	 * Constrói uma nova coleção a partir da aplicação da função passada como parâmetro em cada elemento da coleção. <br/>
 	 * A ordem é preservada, se ela estiver bem-definida.
 	 * @param <B> O tipo da nova coleção.
@@ -802,9 +475,8 @@ public interface SharpCollection<T> extends Iterable<T>
 	}
 	
 	/**
-	 * Constrói uma nova coleção, a partir da aplicação da função passada 
-	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
-	 * única coleção. <br/>
+	 * Constrói uma nova coleção, a partir da aplicação da função passada como 
+	 * parâmetro em cada elemento da coleção, coletando os resultados numa única coleção. <br/>
 	 * @param <B> O tipo da nova coleção
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um 
 	 * iterator de elementos de (potencialmente) outro tipo.
@@ -859,37 +531,89 @@ public interface SharpCollection<T> extends Iterable<T>
 	 */
 	default SharpCollection<T> distinct()
 	{
-		//TODO: Complexidade algorítmica está horrível. Isso porque o builder não expõe os elementos dentro dele
-		//é melhor até criar um LinkedSet do que usar take o tempo todo.
-		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
-		int count = -1;
-
-		for (final T ele : this)
+		//TODO: Esse método precisa de melhoria no algoritmo - complexidade de memória está alta
+		final Set<T> hashEles = new LinkedHashSet<T>();
+		
+		for (T ele : this)
 		{
-			if (!this.take(++count).contains(ele))
-			{
-				colecaoRetorno.add(ele);
-			}
+			hashEles.add(ele);
 		}
+		
+		final Builder<T, SharpCollection<T>> colecaoRetorno = builder();
+		
+		for (T ele : hashEles)
+		{
+			colecaoRetorno.add(ele);
+		}
+
 		return colecaoRetorno.result();
 	}
 	
+	//MÉTODOS DE COMPARAÇÃO:
+	
 	/**
-	 * Retorna uma coleção de tuplas a partir desta coleção, onde o primeiro elemento é o elemento desta coleção,
-	 * e o segundo o seu índice (de acordo com o iterator).
-	 * @return Uma coleção de tuplas, onde o primeiro elemento é o elemento original, e o segundo o seu índice
+	 * Retorna o valor mínimo, a partir da função de comparação passada como parâmetro. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde comparator.compare(T, U) < 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param comparator A função de comparação entre os elementos.
+	 * @return O elemento com o menor valor na comparação
+	 * @throws NoSuchElementException Caso a coleção esteja vazia
 	 */
-	default SharpCollection<Tuple2<T, Integer>> zipWithIndex()
+	default <K extends Comparator<? super T>> T min(final K comparator)
 	{
-		final Builder<Tuple2<T, Integer>, SharpCollection<Tuple2<T, Integer>>> colecaoRetorno = builder();
-		int curIndex = -1;
-
-		for (final T ele : this)
+		if (this.isEmpty())
 		{
-			colecaoRetorno.add(Tuple2.from(ele, ++curIndex));
+			throw new NoSuchElementException("min foi chamado para uma coleção vazia");
 		}
-		return colecaoRetorno.result();
+
+		return reduce((param1, param2) -> comparator.compare(param1, param2) <= 0 ? param1 : param2);
 	}
+	
+	/**
+	 * Retorna o valor mínimo, a partir de uma função transformadora para um elemento comparável. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde func(T).compareTo(func(U)) < 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param func A função de transformação do tipo T em um tipo comparável.
+	 * @return O elemento com o menor valor na comparação
+	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 */
+	default <K extends Comparable<? super K>> T min(final Function1<? super T, K> func)
+	{
+		return min((param1, param2) -> func.apply(param1).compareTo(func.apply(param2)));
+	}
+	
+	/**
+	 * Retorna o valor máximo, a partir da função de comparação passada como parâmetro. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde a comparator.compare(T, U) > 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param comparator A função de comparação entre os elementos.
+	 * @return O elemento com o maior valor na comparação
+	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 */
+	default T max(final Comparator<? super T> comparator)
+	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("max foi chamado para uma coleção vazia");
+		}
+		
+		return reduce((param1, param2) -> comparator.compare(param1, param2) >= 0 ? param1 : param2);
+	}
+	
+	/**
+	 * Retorna o valor máximo, a partir de uma função transformadora para um elemento comparável. <br/>
+	 * Formalmente, retorna um valor T tal que não exista um elemento U onde func(T).compareTo(func(U)) > 0. <br/>
+	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
+	 * @param func A função de transformação do tipo T em um tipo comparável.
+	 * @return O elemento com o maior valor na comparação
+	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 */
+	default <K extends Comparable<? super K>> T max(final Function1<? super T, K> func)
+	{
+		return max((param1, param2) -> func.apply(param1).compareTo(func.apply(param2)));
+	}
+	
+	//MÉTODOS DE COLEÇÕES
 	
 	/**
 	 * Retorna um iterable a partir de um builder. <br/>
