@@ -20,6 +20,12 @@ import com.github.detentor.codex.product.Tuple2;
  */
 public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 {
+	default boolean isDefinedAt(final Integer forValue)
+	{
+		return forValue >= 0 && forValue < this.size();
+	}
+	
+	
 	/**
 	 * Seleciona todos os elementos exceto o primeiro.<br/><br/>
 	 * Retornará todos os elementos com exceção do primeiro elemento, na ordem retornada pelo iterator.
@@ -28,15 +34,8 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	 */
 	Seq<T> tail();
 	
-	default boolean isDefinedAt(final Integer forValue)
-	{
-		return forValue >= 0 && forValue < this.size();
-	}
-	
 	/**
 	 * Retorna o primeiro elemento desta coleção. <br/><br/>
-	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), a chamada
-	 * sucessiva a este método pode retornar elementos distintos.
 	 * @return O primeiro elemento desta coleção.
 	 * @throws NoSuchElementException Se a coleção estiver vazia
 	 */
@@ -63,8 +62,6 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	
 	/**
 	 * Retorna o último elemento desta coleção. <br/><br/>
-	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), a chamada
-	 * sucessiva a este método pode retornar elementos distintos.
 	 * @return O último elemento desta coleção.
 	 * @throws NoSuchElementException Se a coleção estiver vazia
 	 */
@@ -359,33 +356,6 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	}
 	
 	/**
-	 * Executa, na ordem do iterator desta coleção, a função passada como parâmetro, 
-	 * acumulando o resultado a cada iteração. <br/>
-	 * EX: Se você tiver uma coleção de inteiros, você pode utilizar o 
-	 * foldLeft para retornar a soma dos elementos, como no exemplo abaixo:
-	 * <pre>
-	 * myArray.foldLeft(0, new Action<Integer, Integer> (){ 
-	 *     Integer apply(Integer param1, Integer param2){ 
-	 *       return param1 + param2;
-	 *     }
-	 * } </pre>
-	 * @param <B> O retorno da função foldLeft
-	 * @param startValue O valor inicial a ser aplicação na ação
-	 * @param function A função a ser executada a cada passo
-	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
-	 */
-	default <B> B foldLeft(final B startValue, final Function2<? super B, ? super T, B> function)
-	{
-		B accumulator = startValue;
-
-		for (final T ele : this)
-		{
-			accumulator = function.apply(accumulator, ele);
-		}
-		return accumulator;
-	}
-
-	/**
 	 * Retorna uma coleção de tuplas a partir desta coleção, onde o primeiro elemento é o elemento desta coleção,
 	 * e o segundo o seu índice (de acordo com o iterator).
 	 * @return Uma coleção de tuplas, onde o primeiro elemento é o elemento original, e o segundo o seu índice
@@ -402,9 +372,6 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 		return colecaoRetorno.result();
 	}
 	
-	
-	
-	
 	/**
 	 * Ordena esta coleção, de acordo com a função de ordenação passada como parâmetro. <br/>
 	 *
@@ -413,11 +380,50 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	 */
 	Seq<T> sorted(final Comparator<? super T> comparator);
 	
+	/**
+	 * Executa, na ordem do iterator desta sequência, a função passada como parâmetro, 
+	 * acumulando o resultado a cada iteração. <br/>
+	 * EX: Se você tiver uma sequência de inteiros, você pode utilizar o 
+	 * fold para retornar a soma dos elementos, como no exemplo abaixo:
+	 * <pre>
+	 * myArray.fold(0, (param1, param2) -> param1 + param2); 
+	 * </pre>
+	 * @param <B> O retorno da função foldLeft
+	 * @param startValue O valor inicial a ser aplicação na ação
+	 * @param function A função a ser executada a cada passo
+	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
+	 */
+	default <B> B fold(final B startValue, final Function2<? super B, ? super T, B> function)
+	{
+		return SharpCollection.super.fold(startValue, function); 
+	}
 	
-	
-	
-	
-	
+//	/**
+//	 * Executa, na ordem do iterator desta coleção, a função passada como parâmetro, 
+//	 * acumulando o resultado a cada iteração. <br/>
+//	 * EX: Se você tiver uma coleção de inteiros, você pode utilizar o 
+//	 * foldLeft para retornar a soma dos elementos, como no exemplo abaixo:
+//	 * <pre>
+//	 * myArray.foldLeft(0, new Action<Integer, Integer> (){ 
+//	 *     Integer apply(Integer param1, Integer param2){ 
+//	 *       return param1 + param2;
+//	 *     }
+//	 * } </pre>
+//	 * @param <B> O retorno da função foldLeft
+//	 * @param startValue O valor inicial a ser aplicação na ação
+//	 * @param function A função a ser executada a cada passo
+//	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
+//	 */
+//	default <B> B foldLeft(final B startValue, final Function2<? super B, ? super T, B> function)
+//	{
+//		B accumulator = startValue;
+//
+//		for (final T ele : this)
+//		{
+//			accumulator = function.apply(accumulator, ele);
+//		}
+//		return accumulator;
+//	}
 	
 	//ATENÇÃO: Esse método está aqui apenas para permitir ao tipo 'U' ser acessado pelas classes
 	//inferiores. Se esse método for removido, então a classe mais abaixo não vai conseguir saber
