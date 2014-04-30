@@ -374,7 +374,7 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	 * @param function A função a ser executada a cada passo
 	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
 	 */
-	default <B> B foldLeft(final B startValue, final Function2<B, ? super T, B> function)
+	default <B> B foldLeft(final B startValue, final Function2<? super B, ? super T, B> function)
 	{
 		B accumulator = startValue;
 

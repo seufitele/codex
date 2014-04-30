@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.github.detentor.codex.function.Function1;
@@ -290,15 +289,14 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * Reduz os elementos desta coleção a partir da função de redução passada como parâmetro. <br/>
 	 * A ordem que as operações são executadas nos elementos não está especificada, e pode ser não-determinística. <br/>
 	 * 
-	 * @param func A função de redução a ser aplicada nos elementos 
-	 * @return Um elemento T, retornado a partir da redução dos elementos desta coleção.
-	 * @throws NoSuchElementException Se esta coleção estiver vazia
+	 * @param function Uma função de redução associativa a ser aplicada nos elementos desta coleção 
+	 * @return Uma Option que poderá conter um elemento T, retornado a partir da redução dos elementos desta coleção.
 	 */
-	default T reduce(final Function2<? super T, ? super T, T> func)
+	default Option<T> reduce(final Function2<? super T, ? super T, T> function)
 	{
 		if (this.isEmpty())
 		{
-			throw new NoSuchElementException("reduce foi chamado para uma coleção vazia");
+			return Option.empty();
 		}
 		
 		final Iterator<T> ite = this.iterator();
@@ -306,7 +304,29 @@ public interface SharpCollection<T> extends Iterable<T>
 		
 		while (ite.hasNext())
 		{
-			ele = func.apply(ele, ite.next());
+			ele = function.apply(ele, ite.next());
+		}
+		
+		return Option.from(ele);
+	}
+
+	/**
+	 * Aplica uma transformação nos elementos desta coleção, 
+	 * a partir de um valor inicial e uma função associativa. <br/>
+	 * A ordem que as operações são executadas nos elementos não está especificada, e pode ser não-determinística. <br/>
+	 * 
+	 * @param startValue O valor inicial, a ser retornado caso esta coleção esteja vazia
+	 * @param function Uma função de transformação associativa a ser aplicada nos elementos desta coleção
+	 * @return Um elemento do tipo B, retornado a partir da transformação dos elementos desta coleção.
+	 */
+	default <B> B fold(final B startValue, final Function2<? super B, ? super T, B> function)
+	{
+		final Iterator<T> ite = this.iterator();
+		B ele = startValue;
+
+		while (ite.hasNext())
+		{
+			ele = function.apply(ele, ite.next());
 		}
 		
 		return ele;
@@ -556,16 +576,10 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * Formalmente, retorna um valor T tal que não exista um elemento U onde comparator.compare(T, U) < 0. <br/>
 	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
 	 * @param comparator A função de comparação entre os elementos.
-	 * @return O elemento com o menor valor na comparação
-	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 * @return Uma Option que conterá o elemento com o menor valor na comparação, se ele existir
 	 */
-	default <K extends Comparator<? super T>> T min(final K comparator)
+	default <K extends Comparator<? super T>> Option<T> min(final K comparator)
 	{
-		if (this.isEmpty())
-		{
-			throw new NoSuchElementException("min foi chamado para uma coleção vazia");
-		}
-
 		return reduce((param1, param2) -> comparator.compare(param1, param2) <= 0 ? param1 : param2);
 	}
 	
@@ -574,10 +588,9 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * Formalmente, retorna um valor T tal que não exista um elemento U onde func(T).compareTo(func(U)) < 0. <br/>
 	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
 	 * @param func A função de transformação do tipo T em um tipo comparável.
-	 * @return O elemento com o menor valor na comparação
-	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 * @return Uma Option que conterá o elemento com o menor valor na comparação, se ele existir
 	 */
-	default <K extends Comparable<? super K>> T min(final Function1<? super T, K> func)
+	default <K extends Comparable<? super K>> Option<T> min(final Function1<? super T, K> func)
 	{
 		return min((param1, param2) -> func.apply(param1).compareTo(func.apply(param2)));
 	}
@@ -587,16 +600,10 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * Formalmente, retorna um valor T tal que não exista um elemento U onde a comparator.compare(T, U) > 0. <br/>
 	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
 	 * @param comparator A função de comparação entre os elementos.
-	 * @return O elemento com o maior valor na comparação
-	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 * @return Uma Option que conterá o elemento com o maior valor na comparação, se ele existir
 	 */
-	default T max(final Comparator<? super T> comparator)
+	default Option<T> max(final Comparator<? super T> comparator)
 	{
-		if (this.isEmpty())
-		{
-			throw new NoSuchElementException("max foi chamado para uma coleção vazia");
-		}
-		
 		return reduce((param1, param2) -> comparator.compare(param1, param2) >= 0 ? param1 : param2);
 	}
 	
@@ -605,10 +612,9 @@ public interface SharpCollection<T> extends Iterable<T>
 	 * Formalmente, retorna um valor T tal que não exista um elemento U onde func(T).compareTo(func(U)) > 0. <br/>
 	 * Havendo mais de um valor T com essa propriedade, o primeiro deles é retornado. 
 	 * @param func A função de transformação do tipo T em um tipo comparável.
-	 * @return O elemento com o maior valor na comparação
-	 * @throws NoSuchElementException Caso a coleção esteja vazia
+	 * @return Uma Option que conterá o elemento com o maior valor na comparação, se ele existir
 	 */
-	default <K extends Comparable<? super K>> T max(final Function1<? super T, K> func)
+	default <K extends Comparable<? super K>> Option<T> max(final Function1<? super T, K> func)
 	{
 		return max((param1, param2) -> func.apply(param1).compareTo(func.apply(param2)));
 	}
