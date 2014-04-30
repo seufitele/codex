@@ -218,7 +218,7 @@ public class LLSharp<T> implements LinearSeq<T>, MutableSharpCollection<T>
 	@Override
 	public LLSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (LLSharp<Tuple2<T, Integer>>) MutableSharpCollection.super.zipWithIndex();
+		return (LLSharp<Tuple2<T, Integer>>) LinearSeq.super.zipWithIndex();
 	}
 	
 //	@SuppressWarnings({ "rawtypes", "unchecked" })
