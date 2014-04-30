@@ -1,19 +1,17 @@
 package com.github.detentor.codex.collections.mutable;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.MutableSharpCollection;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.PartialFunction1;
-import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Essa classe representa uma conjunto (Set) mutável, cujos elementos são armazenados num HashSet usando composição. <br/>
@@ -27,7 +25,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>> implements PartialFunction1<T, Boolean>, Serializable
+public class SetSharp<T> implements MutableSharpCollection<T>, PartialFunction1<T, Boolean>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -76,6 +74,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	 * @param valores Os valores que irão compor o SetSharp
 	 * @return Um novo SetSharp, cujos elementos são os elementos passados como parâmetro
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> SetSharp<T> from(final T... valores)
 	{
 		final SetSharp<T> retorno = new SetSharp<T>();
@@ -165,9 +164,11 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
 	{
+		//TODO: VERIFICAR SE É POSSÍVEL REMOVER O CAST
 		Builder<B, SharpCollection<B>> builderRetorno = null;
 		
 		if (backingSet instanceof LinkedHashSet<?>)
@@ -186,31 +187,25 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		{
 			throw new IllegalArgumentException("Tipo de instância não reconhecida");
 		}
-		return builderRetorno;
+		return (Builder<B, U>) builderRetorno;
 	}
 
 	@Override
 	public <B> SetSharp<B> map(final Function1<? super T, B> function)
 	{
-		return (SetSharp<B>) super.map(function);
+		return (SetSharp<B>) MutableSharpCollection.super.map(function);
 	}
 
 	@Override
 	public <B> SetSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (SetSharp<B>) super.flatMap(function);
+		return (SetSharp<B>) MutableSharpCollection.super.flatMap(function);
 	}
 	
 	@Override
 	public <B> SetSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
-		return (SetSharp<B>) super.collect(pFunction);
-	}
-
-	@Override
-	public SetSharp<Tuple2<T, Integer>> zipWithIndex()
-	{
-		return (SetSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (SetSharp<B>) MutableSharpCollection.super.collect(pFunction);
 	}
 
 	/**
@@ -342,22 +337,5 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	public enum SetSharpType
 	{
 		HASH_SET, LINKED_HASH_SET, TREE_SET;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public SetSharp<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
-
-	/**
-	 * Transforma este SetSharp num Set que mantém os elementos ordenados. <br/>
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SetSharp<T> sorted(final Comparator<? super T> comparator)
-	{
-		return new SetSharp<T>(new TreeSet<T>(comparator)).addAll(this);
 	}
 }
