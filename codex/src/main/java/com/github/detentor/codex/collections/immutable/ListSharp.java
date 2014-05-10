@@ -4,12 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
-import com.github.detentor.codex.collections.Seq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.MapSharp;
 import com.github.detentor.codex.collections.mutable.MapSharp.MapSharpType;
@@ -330,17 +328,4 @@ public class ListSharp<T> implements Serializable, IndexedSeq<T>
 		return Builders.arrayListBuilder();
 	}
 
-	@Override
-	public SharpCollection<T> add(final T element) 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SharpCollection<T> remove(final T element) 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
