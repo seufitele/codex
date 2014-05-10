@@ -2,7 +2,6 @@ package com.github.detentor.codex.collections.mutable;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -381,18 +380,19 @@ public class MapSharp<K, V> implements SharpCollection<Tuple2<K, V>>, PartialFun
 		return backingMap.containsValue(value);
 	}
 	
-	/**
-	 * Constrói uma nova coleção a partir da aplicação da função passada como parâmetro em cada elemento da coleção. <br/>
-	 * A ordem é preservada, se ela estiver bem-definida.
-	 * @param <B> O tipo da nova coleção.
-	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
-	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento.
-	 */
-	@SuppressWarnings("unchecked")
-	public <W, Y> MapSharp<W, Y> map(final Function1<Tuple2<K, V>, Tuple2<W, Y>> function)
-	{
-		return (MapSharp<W, Y>) super.map(function);
-	}
+//	TODO: Verificar se é possível corrigir esse problema
+//	/**
+//	 * Constrói uma nova coleção a partir da aplicação da função passada como parâmetro em cada elemento da coleção. <br/>
+//	 * A ordem é preservada, se ela estiver bem-definida.
+//	 * @param <B> O tipo da nova coleção.
+//	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
+//	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento.
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public <W, Y> MapSharp<W, Y> map(final Function1<Tuple2<K, V>, Tuple2<W, Y>> function)
+//	{
+//		return (MapSharp<W, Y>) super.map(function);
+//	}
 
 	@Override
 	public <B> SharpCollection<B> map(final Function1<? super Tuple2<K, V>, B> function)
@@ -406,19 +406,19 @@ public class MapSharp<K, V> implements SharpCollection<Tuple2<K, V>>, PartialFun
 		return colecaoRetorno.result();
 	}
 
-	/**
-	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
-	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
-	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
-	 * @param <B> O tipo da nova coleção.
-	 * @param pFunction Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
-	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
-	 */
-	@SuppressWarnings("unchecked")
-	public <W, Y> MapSharp<W, Y> collect(final PartialFunction1<Tuple2<K, V>, Tuple2<W, Y>> pFunction)
-	{
-		return (MapSharp<W, Y>) super.collect(pFunction);
-	}
+//	/**
+//	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
+//	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
+//	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
+//	 * @param <B> O tipo da nova coleção.
+//	 * @param pFunction Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
+//	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public <W, Y> MapSharp<W, Y> collect(final PartialFunction1<Tuple2<K, V>, Tuple2<W, Y>> pFunction)
+//	{
+//		return (MapSharp<W, Y>) super.collect(pFunction);
+//	}
 
 	@Override
 	public <B> SharpCollection<B> collect(final PartialFunction1<? super Tuple2<K, V>, B> pFunction)
@@ -435,21 +435,21 @@ public class MapSharp<K, V> implements SharpCollection<Tuple2<K, V>>, PartialFun
 		return colecaoRetorno.result();
 	}
 	
-	/**
-	 * Constrói uma nova coleção, a partir da aplicação da função passada 
-	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
-	 * única coleção. <br/>
-	 * @param <B> O tipo da nova coleção
-	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma 
-	 * coleção de elementos de (potencialmente) outro tipo.
-	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
-	 * das coleção.
-	 */
-	@SuppressWarnings("unchecked")
-	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends Iterable<Tuple2<W, Y>>> function)
-	{
-		return (MapSharp<W, Y>) super.flatMap(function);
-	}
+//	/**
+//	 * Constrói uma nova coleção, a partir da aplicação da função passada 
+//	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
+//	 * única coleção. <br/>
+//	 * @param <B> O tipo da nova coleção
+//	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma 
+//	 * coleção de elementos de (potencialmente) outro tipo.
+//	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
+//	 * das coleção.
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends Iterable<Tuple2<W, Y>>> function)
+//	{
+//		return (MapSharp<W, Y>) super.flatMap(function);
+//	}
 
 	@Override
 	public <B> SharpCollection<B> flatMap(final Function1<? super Tuple2<K, V>, ? extends Iterable<B>> function)
@@ -566,32 +566,32 @@ public class MapSharp<K, V> implements SharpCollection<Tuple2<K, V>>, PartialFun
 		HASH_MAP, LINKED_HASH_MAP, TREE_MAP;
 	}
 
-	/**
-	 * Ordena o mapa, de acordo com a ordenação natural das chaves.  <br/>
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public MapSharp<K, V> sorted()
-	{
-		return (MapSharp<K, V>) sorted(new DefaultComparator());
-	}
-
-	/**
-	 * Ordena o mapa, de acordo com a ordenação definida pelo comparator passado como parâmetro.  <br/>
-	 * ATENÇÃO: O mapa retornado será uma instância de LinkedHashMap, 
-	 * portanto a adição de novos elementos poderá, potencialmente, corromper a ordenação. 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public MapSharp<K, V> sorted(final Comparator<? super Tuple2<K, V>> comparator)
-	{
-		final MapSharp<K, V> mapaRetorno = empty(MapSharpType.LINKED_HASH_MAP);
-		
-		for (Tuple2<K, V> curEle : ListSharp.from(this).sorted(comparator))
-		{
-			mapaRetorno.add(curEle);
-		}
-		return mapaRetorno;
-	}
+//	/**
+//	 * Ordena o mapa, de acordo com a ordenação natural das chaves.  <br/>
+//	 * {@inheritDoc}
+//	 */
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Override
+//	public MapSharp<K, V> sorted()
+//	{
+//		return (MapSharp<K, V>) sorted(new DefaultComparator());
+//	}
+//
+//	/**
+//	 * Ordena o mapa, de acordo com a ordenação definida pelo comparator passado como parâmetro.  <br/>
+//	 * ATENÇÃO: O mapa retornado será uma instância de LinkedHashMap, 
+//	 * portanto a adição de novos elementos poderá, potencialmente, corromper a ordenação. 
+//	 * {@inheritDoc}
+//	 */
+//	@Override
+//	public MapSharp<K, V> sorted(final Comparator<? super Tuple2<K, V>> comparator)
+//	{
+//		final MapSharp<K, V> mapaRetorno = empty(MapSharpType.LINKED_HASH_MAP);
+//		
+//		for (Tuple2<K, V> curEle : ListSharp.from(this).sorted(comparator))
+//		{
+//			mapaRetorno.add(curEle);
+//		}
+//		return mapaRetorno;
+//	}
 }

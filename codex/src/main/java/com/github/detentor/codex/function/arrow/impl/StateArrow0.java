@@ -1,6 +1,6 @@
 package com.github.detentor.codex.function.arrow.impl;
 
-import com.github.detentor.codex.function.arrow.Arrow0;
+import com.github.detentor.codex.function.Function0;
 
 /**
  * StateArrow representa uma seta que carrega um estado. Pela atualização
@@ -12,7 +12,7 @@ import com.github.detentor.codex.function.arrow.Arrow0;
  * @param <S> O tipo do estado a ser carregado
  * @param <A> O tipo a ser retornado pela seta
  */
-public abstract class StateArrow0<S, A> extends Arrow0<A>
+public abstract class StateArrow0<S, A> implements Function0<A>
 {
 	protected S state;
 

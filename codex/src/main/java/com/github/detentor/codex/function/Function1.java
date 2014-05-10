@@ -29,7 +29,7 @@ public interface Function1<A, B> extends Function
 	 * @param <B> O tipo de dados de retorno da primeira função, e de entrada da segunda (contravariante)
 	 * @param <C> O tipo de dados de retorno da segunda função
 	 * @param func Uma função <b>g: B -> C</b>, a ser feita a composição.
-	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas função.
+	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas funções.
 	 */
 	default public <C> Function1<A, C> and(final Function1<? super B, C> func)
 	{

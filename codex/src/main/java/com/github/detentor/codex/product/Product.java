@@ -20,7 +20,7 @@ public interface Product extends Serializable
 //	int productArity();
 	
 	/**
-	 * Adiciona um elemento neste produto, produzindo um produto com um elemento mais mais
+	 * Adiciona um elemento neste produto, produzindo um produto com um elemento a mais
 	 * @param value O valor a ser adicionado neste produto
 	 * @return Um produto com um elemento a mais
 	 */

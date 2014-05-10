@@ -2,8 +2,9 @@ package com.github.detentor.codex.collections.mutable;
 
 import java.util.Comparator;
 
-import com.github.detentor.codex.collections.AbstractMutableLinearSeq;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.LinearSeq;
+import com.github.detentor.codex.collections.MutableSharpCollection;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
@@ -25,7 +26,7 @@ import com.github.detentor.codex.product.Tuple2;
  *
  * @param <T>
  */
-public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
+public class LLSharp<T> implements LinearSeq<T>, MutableSharpCollection<T>
 {
 	private T head;
 	private LLSharp<T> tail;
@@ -91,6 +92,7 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	 * @param valores A LinkedListSharp a ser criada, a partir dos valores
 	 * @return Uma nova LinkedListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> LLSharp<T> from(final T... valores)
 	{
 		final LLSharp<T> retorno = LLSharp.empty();
@@ -140,10 +142,11 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 		return tail;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
 	{
-		return new LinkedListBuilder<B>();
+		return (Builder<B, U>) new LinkedListBuilder<B>();
 	}
 
 	/**
@@ -179,26 +182,6 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	}
 	
 	@Override
-	public LLSharp<T> addAll(final Iterable<? extends T> col)
-	{
-		for (T ele : col)
-		{
-			this.add(ele);
-		}
-		return this;
-	}
-
-	@Override
-	public LLSharp<T> removeAll(final Iterable<T> col)
-	{
-		for (T ele : col)
-		{
-			this.remove(ele);
-		}
-		return this;
-	}
-
-	@Override
 	public LLSharp<T> clear()
 	{
 		this.head = null;
@@ -217,33 +200,33 @@ public class LLSharp<T> extends AbstractMutableLinearSeq<T, LLSharp<T>>
 	@Override
 	public <B> LLSharp<B> map(final Function1<? super T, B> function)
 	{
-		return (LLSharp<B>) super.map(function);
+		return (LLSharp<B>) MutableSharpCollection.super.map(function);
 	}
 
 	@Override
 	public <B> LLSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
-		return (LLSharp<B>) super.collect(pFunction);
+		return (LLSharp<B>) MutableSharpCollection.super.collect(pFunction);
 	}
 
 	@Override
 	public <B> LLSharp<B> flatMap(final Function1<? super T, ? extends Iterable<B>> function)
 	{
-		return (LLSharp<B>) super.flatMap(function);
+		return (LLSharp<B>) MutableSharpCollection.super.flatMap(function);
 	}
 
 	@Override
 	public LLSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
-		return (LLSharp<Tuple2<T, Integer>>) super.zipWithIndex();
+		return (LLSharp<Tuple2<T, Integer>>) LinearSeq.super.zipWithIndex();
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public LLSharp<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Override
+//	public LLSharp<T> sorted()
+//	{
+//		return sorted(new DefaultComparator());
+//	}
 
 	@Override
 	public LLSharp<T> sorted(final Comparator<? super T> comparator)

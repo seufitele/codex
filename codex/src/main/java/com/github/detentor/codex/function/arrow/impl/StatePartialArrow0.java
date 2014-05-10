@@ -1,6 +1,6 @@
 package com.github.detentor.codex.function.arrow.impl;
 
-import com.github.detentor.codex.function.arrow.PartialArrow0;
+import com.github.detentor.codex.function.PartialFunction0;
 
 /**
  * StatePartialArrow representa uma seta que carrega um estado. Pela atualização
@@ -12,7 +12,7 @@ import com.github.detentor.codex.function.arrow.PartialArrow0;
  * @param <S> O tipo do estado a ser carregado
  * @param <A> O tipo a ser retornado pela seta
  */
-public abstract class StatePartialArrow0<S, A> extends PartialArrow0<A>
+public abstract class StatePartialArrow0<S, A> implements PartialFunction0<A>
 {
 	protected S state;
 

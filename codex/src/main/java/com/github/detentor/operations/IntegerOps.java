@@ -38,7 +38,7 @@ public final class IntegerOps
 	}
 
 	public static final Function2<Integer, Integer, Integer> sum = (param1, param2) -> param1 + param2;
-	public static final Function2<Integer, Integer, Integer> max = (param1, param2) -> param1.compareTo(param2) < 0 ? param2 : param1;
+	public static final Function2<Integer, Integer, Integer> max = Math::max;
 	public static final Function1<Integer, Integer> square = param1 -> param1 * param1;
 
 }

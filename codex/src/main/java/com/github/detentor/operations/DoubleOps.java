@@ -44,6 +44,5 @@ public final class DoubleOps
 	/**
 	 * Representa uma seta que retorna, dentre dois números, aquele de maior valor.
 	 */
-	public static final Function2<Double, Double, Double> max = (param1, param2) -> param1.compareTo(param2) < 0 ? param2 : param1;
-	
+	public static final Function2<Double, Double, Double> max = Math::max;
 }
