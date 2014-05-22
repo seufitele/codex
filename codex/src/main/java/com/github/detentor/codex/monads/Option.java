@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.LinearSeq;
-import com.github.detentor.codex.collections.MutableSharpCollection;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.product.Tuple2;
@@ -26,7 +25,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo do dado a ser guardado na Option
  */
-public class Option<T> implements LinearSeq<T>, MutableSharpCollection<T>, Serializable 
+public class Option<T> implements LinearSeq<T>, Serializable 
 {
 	private static final long serialVersionUID = 1L;
 
@@ -207,41 +206,41 @@ public class Option<T> implements LinearSeq<T>, MutableSharpCollection<T>, Seria
 		return value.equals(((Option) obj).value);
 	}
 	
-	/**
-	 * {@inheritDoc} <br/>
-	 * Se esta Option estiver vazia, retorna uma Option que contém o elemento passado como parâmetro. <br/>
-	 * @param element O elemento a ser adicionado
-	 * @return Uma Option que conterá o elemento, se esta Option estiver vazia
-	 */
-	@Override
-	public Option<T> add(final T element) 
-	{
-		return this.isEmpty() ? Option.from(element) : this;
-	}
-
-	/**
-	 * {@inheritDoc} <br/>
-	 * Retorna uma Option que não contém o elemento passado como parâmetro. <br/>
-	 * Em particular, se o único elemento contido nesta Option for o elemento, será retornado uma Option vazia. <br/>
-	 * @param element O elemento a ser removido
-	 * @return Uma Option que não contém o elemento
-	 */
-	@Override
-	public SharpCollection<T> remove(final T element) 
-	{
-		return this.isEmpty() || ! this.get().equals(element) ? this : Option.empty();
-	}
-	
-	/**
-	 * {@inheritDoc} <br/>
-	 * Limpa todos os elementos desta Option, ou seja, retorna uma Option vazia. <br/>
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Option<T> clear() 
-	{
-		return (Option<T>) NONE;
-	}
+//	/**
+//	 * {@inheritDoc} <br/>
+//	 * Se esta Option estiver vazia, retorna uma Option que contém o elemento passado como parâmetro. <br/>
+//	 * @param element O elemento a ser adicionado
+//	 * @return Uma Option que conterá o elemento, se esta Option estiver vazia
+//	 */
+//	@Override
+//	public Option<T> add(final T element) 
+//	{
+//		return this.isEmpty() ? Option.from(element) : this;
+//	}
+//
+//	/**
+//	 * {@inheritDoc} <br/>
+//	 * Retorna uma Option que não contém o elemento passado como parâmetro. <br/>
+//	 * Em particular, se o único elemento contido nesta Option for o elemento, será retornado uma Option vazia. <br/>
+//	 * @param element O elemento a ser removido
+//	 * @return Uma Option que não contém o elemento
+//	 */
+//	@Override
+//	public Option<T> remove(final T element) 
+//	{
+//		return this.isEmpty() || ! this.get().equals(element) ? this : Option.empty();
+//	}
+//	
+//	/**
+//	 * {@inheritDoc} <br/>
+//	 * Limpa todos os elementos desta Option, ou seja, retorna uma Option vazia. <br/>
+//	 */
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public Option<T> clear() 
+//	{
+//		return (Option<T>) NONE;
+//	}
 
 	@Override
 	public boolean isDefinedAt(final Integer forValue) 
