@@ -9,9 +9,6 @@ package com.github.detentor.codex.collections;
  * de ordem superior for chamada. Por exemplo, é possível passar um builder de LinkedHashSet, que assegurará
  * a ordem de inclusão dos elementos. <br/><br/>
  * 
- * Se coleções forem vistas como mônades, builders são o 'unit' ou 'return': eles fornecem uma interface comum
- * para a criação destas mônades. 
- * 
  * @author Vinícius Seufitele Pinto
  *
  * @param <From> O tipo de elementos que serão alimentados no builder
