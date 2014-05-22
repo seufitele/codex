@@ -16,7 +16,7 @@ public interface MutableSharpCollection<T> extends SharpCollection<T>
      * @param element o elemento a ser adicionado nesta coleção
      * @return A referência à coleção, após o elemento ser adicionado.
      */
-    SharpCollection<T> add(final T element);
+	MutableSharpCollection<T> add(final T element);
     
     /**
      * Adiciona todos os elementos da coleção especificada nesta coleção.
@@ -24,7 +24,7 @@ public interface MutableSharpCollection<T> extends SharpCollection<T>
      * @param col Coleção contendo elemento a serem adicionados nesta coleção
      * @return A referência a esta coleção, após a adição dos elementos
      */
-    default SharpCollection<T> addAll(final Iterable<? extends T> col)
+    default MutableSharpCollection<T> addAll(final Iterable<? extends T> col)
     {
     	for (T ele : col)
     	{
@@ -43,7 +43,7 @@ public interface MutableSharpCollection<T> extends SharpCollection<T>
      * @param element O elemento a ser removido desta coleção, se presente
      * @return A referência à coleção, após o elemento ser removido.
      */
-    SharpCollection<T> remove(final T element);
+    MutableSharpCollection<T> remove(final T element);
     
     /**
      * Remove desta coleção todos os elementos que também estão contidos na coleção 
@@ -55,7 +55,7 @@ public interface MutableSharpCollection<T> extends SharpCollection<T>
      * @param col A coleção contendo elementos a serem removidos desta coleção
      * @return A referência a esta coleção, após a remoção dos elementos
      */
-    default SharpCollection<T> removeAll(final Iterable<T> col)
+    default MutableSharpCollection<T> removeAll(final Iterable<T> col)
     {
     	for (T ele : col)
     	{
@@ -68,5 +68,5 @@ public interface MutableSharpCollection<T> extends SharpCollection<T>
      * Remove todos os elementos desta coleção. 
      * @return A referência a esta coleção, após ela ser limpa.
      */
-    SharpCollection<T> clear();
+    MutableSharpCollection<T> clear();
 }
