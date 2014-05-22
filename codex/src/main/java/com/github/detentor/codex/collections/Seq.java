@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
@@ -25,15 +24,21 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 		return forValue >= 0 && forValue < this.size();
 	}
 	
-	
 	/**
 	 * Seleciona todos os elementos exceto o primeiro.<br/><br/>
 	 * Retornará todos os elementos com exceção do primeiro elemento, na ordem retornada pelo iterator.
 	 * @return Uma coleção que consiste de todos os elementos desta coleção, exceto o primeiro
 	 * @throws NoSuchElementException Se esta coleção estiver vazia
 	 */
-	Seq<T> tail();
-	
+	default Seq<T> tail()
+	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
+		}
+		return drop(1);
+	}
+
 	/**
 	 * Retorna o primeiro elemento desta coleção. <br/><br/>
 	 * @return O primeiro elemento desta coleção.
@@ -85,26 +90,6 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 		return this.isEmpty() ? Option.<T> empty() : Option.from(this.last());
 	}
 	
-//	/**
-//	//TODO: por que existe tail na sharpCollection? parece mais coisas de seq, e não de sharpCollection. drop(1)
-	// pode ser usado ao invés
-//	 * Seleciona todos os elementos exceto o primeiro.<br/><br/>
-//	 * ATENÇÃO: Para coleções onde a posição de um elemento não está bem-definida (ex: sets), este método
-//	 * retornará todos os elementos com exceção do primeiro elemento retornado pelo iterator.
-//	 * @return Uma coleção que consiste de todos os elementos desta coleção, exceto o primeiro
-//	 * @throws NoSuchElementException Se esta coleção estiver vazia
-//	 */
-//	default SharpCollection<T> tail()
-//	{
-//		if (this.isEmpty())
-//		{
-//			throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
-//		}
-//		
-//		//TODO: por que esse método dispara exceção e o drop(1) não?
-//		return drop(1);
-//	}
-
 	/**
 	 * Pega até os 'num' primeiros elementos desta coleção. 
 	 * Se a coleção não possuir 'num' elementos, retorna todos eles. <br/>
@@ -379,52 +364,7 @@ public interface Seq<T> extends SharpCollection<T>, PartialFunction1<Integer, T>
 	 * @return Uma nova coleção com os elementos ordenados
 	 */
 	Seq<T> sorted(final Comparator<? super T> comparator);
-	
-	/**
-	 * Executa, na ordem do iterator desta sequência, a função passada como parâmetro, 
-	 * acumulando o resultado a cada iteração. <br/>
-	 * EX: Se você tiver uma sequência de inteiros, você pode utilizar o 
-	 * fold para retornar a soma dos elementos, como no exemplo abaixo:
-	 * <pre>
-	 * myArray.fold(0, (param1, param2) -> param1 + param2); 
-	 * </pre>
-	 * @param <B> O retorno da função foldLeft
-	 * @param startValue O valor inicial a ser aplicação na ação
-	 * @param function A função a ser executada a cada passo
-	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
-	 */
-	default <B> B fold(final B startValue, final Function2<? super B, ? super T, B> function)
-	{
-		return SharpCollection.super.fold(startValue, function); 
-	}
-	
-//	/**
-//	 * Executa, na ordem do iterator desta coleção, a função passada como parâmetro, 
-//	 * acumulando o resultado a cada iteração. <br/>
-//	 * EX: Se você tiver uma coleção de inteiros, você pode utilizar o 
-//	 * foldLeft para retornar a soma dos elementos, como no exemplo abaixo:
-//	 * <pre>
-//	 * myArray.foldLeft(0, new Action<Integer, Integer> (){ 
-//	 *     Integer apply(Integer param1, Integer param2){ 
-//	 *       return param1 + param2;
-//	 *     }
-//	 * } </pre>
-//	 * @param <B> O retorno da função foldLeft
-//	 * @param startValue O valor inicial a ser aplicação na ação
-//	 * @param function A função a ser executada a cada passo
-//	 * @return Um valor B, a partir da aplicação da função passada como parâmetro em cada elemento.
-//	 */
-//	default <B> B foldLeft(final B startValue, final Function2<? super B, ? super T, B> function)
-//	{
-//		B accumulator = startValue;
-//
-//		for (final T ele : this)
-//		{
-//			accumulator = function.apply(accumulator, ele);
-//		}
-//		return accumulator;
-//	}
-	
+
 	//ATENÇÃO: Esse método está aqui apenas para permitir ao tipo 'U' ser acessado pelas classes
 	//inferiores. Se esse método for removido, então a classe mais abaixo não vai conseguir saber
 	//o tipo 'U', pois o método tail() também está definido em LinearSeq
