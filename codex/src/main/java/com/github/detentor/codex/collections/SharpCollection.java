@@ -22,13 +22,13 @@ import com.github.detentor.codex.util.Builders;
  * 
  * Não esquecer de sobrescrever o equals e o hashcode também. <br/><br/>
  * 
- * Para coleções mutáveis, veja {@link AbstractMutableCollection}. <br/><br/>
+ * Para coleções mutáveis, veja {@link MutableSharpCollection}. <br/><br/>
  * Subclasses que não possuam size() facilmente calculável devem sobrescrever o método isEmpty(). <br/> <br/>
  * 
  * NOTA: Subclasses devem sempre dar override nos métodos {@link #map(Function1) map}, {@link #collect(PartialFunction1) collect},
  * {@link #flatMap(Function1) flatMap} e {@link #zipWithIndex() zipWithIndex}.   
  * Devido à incompetência do Java com relação a Generics, isso é necessário para assegurar que o tipo
- * de retorno seja o mesmo da coleção. A implementação padrão (chamado o método da super classe é suficiente).
+ * de retorno seja o mesmo da coleção. A implementação padrão (chamando o método da super classe) é suficiente.
  * 
  * @author Vinícius Seufitele Pinto
  *
@@ -144,14 +144,28 @@ public interface SharpCollection<T> extends Iterable<T>
      */
     default boolean contains(T element)
     {
-    	for (final T ele : this)
+    	//Se o elemento for nulo, procura por um nulo
+    	if (element == null)
+    	{
+    		for (final T ele : this)
+    		{
+    			if (ele == null)
+    			{
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+		
+    	//Se o elemento não for nulo, pode verificar o equals com segurança
+		for (final T ele : this)
 		{
-    		//TODO: a comparação do equals irá falhar para os casos que a coleção permitir null
-			if (ele.equals(element))
+			if (element.equals(ele))
 			{
 				return true;
 			}
 		}
+		
 		return false;
     }
     
@@ -333,7 +347,7 @@ public interface SharpCollection<T> extends Iterable<T>
 	}
 	
 	/**
-	 * Retorna o primeiro elemento (ordem definida pelo iterador da coleção) que satisfaz o predicado. <br/>
+	 * Retorna o primeiro elemento a partir da ordem definida pelo iterador que satisfaz o predicado. <br/>
 	 * 
 	 * @param pred O predicado a ser utilizado para testar o elemento
 	 * @return Uma Option que conterá o elemento se ele existir.
@@ -355,10 +369,10 @@ public interface SharpCollection<T> extends Iterable<T>
 	}
 	
 	/**
-	 * Seleciona todos os elementos desta coleções que satisfazem um determinado predicado
+	 * Seleciona todos os elementos desta coleção que satisfazem um determinado predicado
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
-	 * satisfazem o predicado pred. A ordem dos elementos será a mesma ordem retornada pelo iterator.
+	 * satisfazem o predicado. A ordem dos elementos será a mesma definida pelo iterador desta coleção.
 	 */
 	default SharpCollection<T> filter(final Function1<? super T, Boolean> pred)
 	{
@@ -376,10 +390,10 @@ public interface SharpCollection<T> extends Iterable<T>
 	
 	/**
 	 * Divide essa coleção em duas coleções, onde o primeiro elemento da tupla representa os elementos
-	 * cujo predicado é satisfeito, e o segundo os elementos que não é
+	 * cujo predicado é satisfeito, e o segundo os elementos onde ele não é.
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma tupla onde o primeiro elemento contém uma coleção cujos elementos satisfazem o predicado,
-	 * e o segundo não satisfazem
+	 * e o segundo uma coleção cujos elementos não satisfazem
 	 */
 	default Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> partition(final Function1<? super T, Boolean> pred)
 	{
