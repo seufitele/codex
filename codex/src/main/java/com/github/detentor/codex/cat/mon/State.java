@@ -1,3 +1,4 @@
+package com.github.detentor.codex.cat.mon;
 //package com.github.detentor.codex.cat;
 //
 //import com.github.detentor.codex.function.Function1;

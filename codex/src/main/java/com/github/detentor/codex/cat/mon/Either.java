@@ -1,5 +1,6 @@
-package com.github.detentor.codex.cat;
+package com.github.detentor.codex.cat.mon;
 
+import com.github.detentor.codex.cat.Monad;
 import com.github.detentor.codex.function.Function1;
 
 public class Either<Left, Right> implements Monad<Right>
