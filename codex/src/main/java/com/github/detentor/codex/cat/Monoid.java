@@ -3,7 +3,7 @@ package com.github.detentor.codex.cat;
 import com.github.detentor.codex.function.Function2;
 
 /**
- * Monóides são estruturas que comportam uma operação binária associativa e uma identidade.
+ * Monóides são estruturas algébricas que comportam uma operação binária associativa e possuem um elemento identidade.
  * 
  * @param <A> O tipo de dados que a estrutura monoidal contém
  */
