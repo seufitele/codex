@@ -17,7 +17,7 @@ public final class Arrows
 	}
 	
 	/**
-	 * Promove a função passada como parâmetro à seta.
+	 * Promove a função passada como parâmetro a seta.
 	 * 
 	 * @param func A função a ser transformada em seta
 	 * @return Uma seta, cujo comportamento será o mesmo da função passada como parâmetro
