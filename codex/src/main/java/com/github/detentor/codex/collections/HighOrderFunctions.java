@@ -46,7 +46,7 @@ public interface HighOrderFunctions<T>
 	 * Pega os elementos da coleção, começando no último elemento, enquanto eles satisfizerem o predicado. <br/>
 	 * 
 	 * @param pred O predicado a ser utilizado para testar os elementos
-	 * @return O mais longo prefixo (da direita para a esquerda) desta coleção onde todos os elementos satisfazem o predicado. 
+	 * @return O mais longo sufixo (da direita para a esquerda) desta coleção onde todos os elementos satisfazem o predicado. 
 	 */
 	SharpCollection<T> takeRightWhile(final Function1<? super T, Boolean> pred);
 	
@@ -59,7 +59,7 @@ public interface HighOrderFunctions<T>
 	Option<T> find(final Function1<? super T, Boolean> pred);
 	
 	/**
-	 * Seleciona todos os elementos desta coleções que satisfazem um determinado predicado
+	 * Seleciona todos os elementos desta coleção que satisfazem um determinado predicado
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma nova coleção consistindo de todos os elementos desta coleção que
 	 * satisfazem o predicado pred. A ordem dos elementos será a mesma ordem retornada pelo iterator.
@@ -67,11 +67,11 @@ public interface HighOrderFunctions<T>
 	SharpCollection<T> filter(final Function1<? super T, Boolean> pred);
 	
 	/**
-	 * Divide essa coleção em duas coleções, onde o primeiro elemento da tupla representa os elementos
-	 * cujo predicado é satisfeito, e o segundo os elementos que não é
+	 * Divide essa coleção em duas coleções, onde a primeira estão os elementos que satisfazem o predicado,
+	 * e na segunda aqueles que não satisfazem
 	 * @param pred O predicado a ser utilizado para testar os elementos
 	 * @return Uma tupla onde o primeiro elemento contém uma coleção cujos elementos satisfazem o predicado,
-	 * e o segundo não satisfazem
+	 * e o segundo os elementos que não satisfazem
 	 */
 	Tuple2<? extends SharpCollection<T>, ? extends SharpCollection<T>> partition(final Function1<? super T, Boolean> pred);
 
@@ -93,10 +93,10 @@ public interface HighOrderFunctions<T>
 	/**
 	 * Executa, na ordem do iterator desta coleção, a função passada como parâmetro, 
 	 * acumulando o resultado a cada iteração. <br/>
-	 * EX: Se você tiver uma coleção de inteiros, você pode utilizar o 
+	 * Ex: Se você tiver uma coleção de inteiros, você pode utilizar o 
 	 * foldLeft para retornar a soma dos elementos, como no exemplo abaixo:
 	 * <pre>
-	 * myArray.foldLeft(0, new Action<Integer, Integer> (){ 
+	 * myArray.foldLeft(0, new Function2<Integer, Integer> (){ 
 	 *     Integer apply(Integer param1, Integer param2){ 
 	 *       return param1 + param2;
 	 *     }
@@ -120,7 +120,7 @@ public interface HighOrderFunctions<T>
 	/**
 	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
 	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
-	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
+	 * Nos casos onde é necessário usar um {@link #filter(Function1)} antes de aplicar um {@link #map(Function1)}, considere utilizar esta função. <br/>
 	 * @param <B> O tipo da nova coleção.
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
