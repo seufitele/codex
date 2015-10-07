@@ -40,11 +40,71 @@ public final class Reflections
 			@Override
 			public B apply(final A param)
 			{
-				return invokeSafe(param, theMethod, (Object[]) null);
+				return safeInvoke(param, theMethod, (Object[]) null);
 			}
 		};
 	}
 	
+	/**
+     * Promove um método de uma classe que possui parâmetros para uma seta. <br/> <br/>
+     * ATENÇÃO: O método retornado será o primeiro método encontrado da classe que possa ser chamado para os parâmetros. 
+     * Isso significa que nem sempre o método com o tipo mais específico é encontrado, e sim um método que esteja definido para os parâmetros
+     * passados. Para a maior parte dos casos, no entanto, isso é suficiente. <br/><br/>
+     * Para um maior controle sobre os tipos dos parâmetros, use {@link #getMethodFromNameAndType(Class, String, Class[])}. 
+     * @param fromClass A classe cujo método será transformado em seta.
+     * @param methodName O nome do método a ser transformado
+     * @return Uma seta que recebe a instância e os parâmetros para retornar um valor do tipo C
+     */
+    public static <A, C> ArrowN<Object, Arrow1<A, C>> liftArgs(final Class<? extends A> fromClass, final String methodName)
+    {
+        return new ArrowN<Object, Arrow1<A, C>>()
+        {
+            @Override
+            public Arrow1<A, C> apply(final Object... params)
+            {
+                return new Arrow1<A, C>()
+                {
+                    @Override
+                    public C apply(final A instance)
+                    {
+                        final Method method = ensureNotEmpty(getMethodFromNameAndAssignableType(fromClass, methodName, params));
+                        return safeInvoke(instance, method, params);
+                    }
+                };
+            }
+    
+        };
+    }
+    
+	/**
+     * Transforma um campo de uma classe em uma seta, de forma que chamar a seta com uma instância da classe
+     * retornará o valor de seu campo. <br/>
+     * 
+     * @param fromClass A classe a partir da qual o campo será 'promovido' a método
+     * @param fieldName O nome do campo a ser transformado em seta.
+     * @return Uma {@link Option} que irá conter a seta que retorna o valor do campo, se o campo existir na classe.
+     */
+    public static <A, B> Option<Arrow1<A, B>> liftField(final Class<A> fromClass, final String fieldName)
+    {
+        final Option<Field> theField = fieldFromName(fromClass, fieldName);
+        
+        if (theField.isEmpty())
+        {
+            return Option.empty();
+        }
+
+        final Arrow1<A, B> arrowRetorno = new Arrow1<A, B>()
+        {
+            @Override
+            public B apply(final A param)
+            {
+                return safeGet(param, theField.get());
+            }
+        };
+        
+        return Option.from(arrowRetorno);
+    }
+    
 	/**
 	 * Transforma um método de uma classe em uma {@link Arrow0}, amarrando os valores
 	 * passados como parâmetro na chamada do método, de forma que aplicar a seta 
@@ -71,7 +131,7 @@ public final class Reflections
 			@Override
 			public B apply()
 			{
-				return invokeSafe(fromInstance, theMethod, params);
+				return safeInvoke(fromInstance, theMethod, params);
 			}
 		};
 	}
@@ -91,7 +151,7 @@ public final class Reflections
 			@Override
 			public C apply(final B param)
 			{
-				return invokeSafe(fromClass, theMethod, param);
+				return safeInvoke(fromClass, theMethod, param);
 			}
 		};
 	}
@@ -112,7 +172,7 @@ public final class Reflections
 			@Override
 			public C apply(final B... params)
 			{
-				return invokeSafe(fromClass, theMethod, new Object[] { params });
+				return safeInvoke(fromClass, theMethod, new Object[] { params });
 			}
 		};
 	}
@@ -175,6 +235,45 @@ public final class Reflections
 		final Class<? super A> superClass = fromClass.getSuperclass();
 		return superClass == null ? Option.<Method>empty() : getMethodFromNameAndType(superClass, methodName, parameterType);
 	}
+	
+	/**
+     * Retorna o método de uma classe a partir de seu nome que possa ser chamado para os valores de parâmetros passados. 
+     * Passar um array vazio significa sem parâmetros.
+     * @param fromClass A classe onde o método será procurado
+     * @param methodName O nome do método a ser retornado
+     * @param paramValues Um array com os valores que o método retornado deve ser capaz de receber
+     * @return Uma instância de Option que conterá o método, se ele existir
+     */
+    private static <A> Option<Method> getMethodFromNameAndAssignableType(final Class<A> fromClass, 
+                                                                         final String methodName, 
+                                                                         final Object[] paramValues)
+    {
+        for (final Method curMethod : fromClass.getDeclaredMethods())
+        {
+            if (curMethod.getName().equals(methodName) && paramValues.length == curMethod.getParameterTypes().length)
+            {
+                final Class<?>[] paramTypes = curMethod.getParameterTypes();
+                boolean isAssignable = true;
+                
+                for (int i = 0; i < paramValues.length; i++)
+                {
+                    if (!paramTypes[i].isAssignableFrom(paramValues[i].getClass()))
+                    {
+                        isAssignable = false;
+                        break;
+                    }
+                }
+                
+                if (isAssignable)
+                {
+                    return Option.from(curMethod); 
+                }
+            }
+        }
+
+        final Class<? super A> superClass = fromClass.getSuperclass();
+        return superClass == null ? Option.<Method>empty() : getMethodFromNameAndAssignableType(superClass, methodName, paramValues);
+    }
 
 	/**
 	 * Retorna a referência a um campo de uma classe, a partir de seu nome.<br/>
@@ -198,14 +297,15 @@ public final class Reflections
 	}
 
 	/**
-	 * Invoca o método de uma classe, pulando as verificações de exceção.
+	 * Invoca o método de uma classe, transformando as exceções checked em unchecked.
 	 * @param fromClass A instância da classe onde o método será chamado
 	 * @param method O método a ser chamado
 	 * @param params A lista de parâmetros esperada pela classe
 	 * @return O valor retornado pelo método
+	 * @throws IllegalArgumentException Se ocorrer alguma exceção na chamada do método
 	 */
 	@SuppressWarnings("unchecked")
-	public static <A, B> B invokeSafe(final Object fromClass, final Method method, final Object ... params)
+	public static <A, B> B safeInvoke(final Object fromClass, final Method method, final Object ... params)
 	{
 		try
 		{
@@ -221,6 +321,33 @@ public final class Reflections
 		}
 	}
 	
+	/**
+	 * Retorna o valor de um determinado campo de uma classe, transformando as exceções checked em unchecked. <br/>
+	 * @param theInstance A instância cujo valor do campo será retornado
+	 * @param theField O campo cujo valor está sendo buscado
+	 * @return O valor do campo na instância passada como parâmetro
+	 * @throws IllegalArgumentException Se ocorrer alguma exceção na tentativa de acessar o campo
+	 */
+    @SuppressWarnings("unchecked")
+    private static <T, A> A safeGet(final T theInstance, final Field theField)
+    {
+        boolean accessibleValue = theField.isAccessible();
+        try
+        {
+            theField.setAccessible(true);
+            return (A) theField.get(theInstance);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new IllegalArgumentException(e);
+        }
+        finally
+        {
+            //finally vai assegurar que isso será definitivamente executado
+            theField.setAccessible(accessibleValue);
+        }
+    }
+
 	/**
 	 * Cria, via reflection, uma nova instancia da classe informada. <br/>
 	 * A classe deve possuir construtor público que não recebe parâmetros. <br/>
