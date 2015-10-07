@@ -13,7 +13,7 @@ import com.github.detentor.codex.function.Function1;
 public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow
 {
 	/**
-	 * Faz a composição de duas setas passadas como parâmetro. <br/>
+	 * Faz a composição desta seta com a seta passada como parâmetro. <br/>
 	 * Formalmente, seja
 	 * 
 	 * <pre>
