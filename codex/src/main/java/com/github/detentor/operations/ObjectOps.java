@@ -16,7 +16,7 @@ public final class ObjectOps
 	}
 	
 	/**
-	 * Retorna uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'
+	 * Retorna uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'. Null safe.
 	 * @param theObject O objeto a ser usado como comparador para a seta.
 	 * @return Uma seta que valida se o objeto passado como parâmetro é igual a 'theObject'
 	 */
@@ -31,7 +31,7 @@ public final class ObjectOps
 			}
 		};
 	}
-
+	
 	/**
 	 * Representa a função que transforma um objeto em sua representação em String.
 	 */
@@ -55,7 +55,20 @@ public final class ObjectOps
 			return param.hashCode();
 		}
 	};
-	
+
+	/**
+	 * Representa a função que transforma um objeto em seu valor .class
+	 */
+	public static final Arrow1<Object, Class<Object>> toClass = new Arrow1<Object, Class<Object>>()
+    {
+        @SuppressWarnings("unchecked")
+        @Override
+        public Class<Object> apply(final Object param)
+        {
+            return (Class<Object>) param.getClass();
+        }
+    };
+
 	/**
 	 * Representa a função identidade
 	 */
@@ -79,5 +92,4 @@ public final class ObjectOps
 			return param.name();
 		}
 	};
-
 }
