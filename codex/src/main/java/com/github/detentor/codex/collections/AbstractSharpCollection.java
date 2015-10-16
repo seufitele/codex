@@ -639,6 +639,32 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	{
 		return this.isEmpty() ? Option.<T>empty() : Option.from(max());
 	}
+	
+	@Override
+	public <K extends Comparable<? super K>> T maxWith(final Function1<? super T, K> mapFunction)
+	{
+		return max(new Comparator<T>()
+		{
+			@Override
+			public int compare(final T ob1, final T ob2)
+			{
+				return mapFunction.apply(ob1).compareTo(mapFunction.apply(ob2));
+			}
+		});
+	}
+	
+	@Override
+	public <K extends Comparable<? super K>> T minWith(final Function1<? super T, K> mapFunction)
+	{
+		return min(new Comparator<T>()
+		{
+			@Override
+			public int compare(final T ob1, final T ob2)
+			{
+				return mapFunction.apply(ob1).compareTo(mapFunction.apply(ob2));
+			}
+		});
+	}
 
 	@SuppressWarnings(UNCHECKED)
 	@Override
