@@ -213,7 +213,7 @@ public class SharpCollectionTest
 		
 		final SharpCollection<Integer> listaOri = func.apply((Object[]) elementos);
 		final SharpCollection<Integer> lista = func.apply((Object[]) elementos);
-		final SharpCollection<Integer> listaVazia = Reflections.invokeSafe(theClass, func2.get());
+		final SharpCollection<Integer> listaVazia = Reflections.safeInvoke(theClass, func2.get());
 
 		if (theClass.equals(SetSharp.class))
 		{
@@ -362,7 +362,7 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.minOption().isEmpty());
 		
 		//minWith
-		assertTrue(sharpCol.minWith(theComparator).equals(ssComparator.first()));
+		assertTrue(sharpCol.min(theComparator).equals(ssComparator.first()));
 		
 		//max & maxOption
 		assertTrue(sharpCol.max().equals(sortedSet.last()));
@@ -370,7 +370,7 @@ public class SharpCollectionTest
 		assertTrue(emptyCol.maxOption().isEmpty());
 		
 		//maxWith
-		assertTrue(sharpCol.maxWith(theComparator).equals(ssComparator.last()));
+		assertTrue(sharpCol.max(theComparator).equals(ssComparator.last()));
 		
 		//filter
 		List<Object> listaFiltro = new ArrayList<Object>();
@@ -768,7 +768,7 @@ public class SharpCollectionTest
 			assertTrue(emptyCol.minOption().isEmpty());
 	
 			//minWith
-			assertTrue(sharpCol.minWith(theComparator).equals(ssComparator.first()));
+			assertTrue(sharpCol.min(theComparator).equals(ssComparator.first()));
 			
 			//max & maxOption
 			assertTrue(sharpCol.max().equals(sortedSet.last()));
@@ -776,7 +776,7 @@ public class SharpCollectionTest
 			assertTrue(emptyCol.maxOption().isEmpty());
 			
 			//maxWith
-			assertTrue(sharpCol.maxWith(theComparator).equals(ssComparator.last()));
+			assertTrue(sharpCol.max(theComparator).equals(ssComparator.last()));
 		}
 		else
 		{
