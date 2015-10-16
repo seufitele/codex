@@ -12,6 +12,12 @@ import com.github.detentor.codex.function.Function1;
  */
 public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow
 {
+	@Override
+	public int getArity()
+	{
+		return 1;
+	}
+
 	/**
 	 * Faz a composição desta seta com a seta passada como parâmetro. <br/>
 	 * Formalmente, seja
@@ -56,11 +62,4 @@ public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow
 			}
 		};
 	}
-
-	@Override
-	public int getArity()
-	{
-		return 1;
-	}
-
 }

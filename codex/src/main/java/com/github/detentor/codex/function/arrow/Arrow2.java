@@ -4,6 +4,12 @@ import com.github.detentor.codex.function.Function2;
 
 public abstract class Arrow2<A, B, C> implements Function2<A, B, C>, Arrow
 {
+	@Override
+	public int getArity()
+	{
+		return 2;
+	}
+	
 	/**
 	 * Retorna uma seta de aridade 1, a partir da aplicação do primeiro parâmetro. <br/>
 	 * Essa técnica é também conhecida como Currying.
@@ -22,11 +28,4 @@ public abstract class Arrow2<A, B, C> implements Function2<A, B, C>, Arrow
 			}
 		};
 	}
-
-	@Override
-	public int getArity()
-	{
-		return 2;
-	}
-	
 }
