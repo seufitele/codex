@@ -72,7 +72,7 @@ public final class ObjectOps
 	/**
 	 * Representa a função identidade
 	 */
-	public static final Arrow1<Object, Object> identity = new Arrow1<Object, Object>()
+	private static final Arrow1<Object, Object> identity = new Arrow1<Object, Object>()
 	{
 		@Override
 		public Object apply(final Object param)
@@ -80,6 +80,16 @@ public final class ObjectOps
 			return param;
 		}
 	};
+	
+	/**
+	 * Retorna a função identidade
+	 * @return Uma função identidade
+	 */
+	@SuppressWarnings("unchecked")
+    public static <A, B> Arrow1<A, B> identity()
+	{
+	    return (Arrow1<A, B>) identity;
+	}
 	
 	/**
 	 * Transforma um enum em sua propriedade name

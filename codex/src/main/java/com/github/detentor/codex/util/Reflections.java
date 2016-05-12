@@ -72,7 +72,6 @@ public final class Reflections
                     }
                 };
             }
-    
         };
     }
     
@@ -157,6 +156,29 @@ public final class Reflections
 	}
 	
 	/**
+     * Transforma um método estático de uma classe que possui vários parâmetros numa seta. <br/>
+     * O tipo do método chamado vai ser definido dinamicamente, a partir dos tipos passados como parâmetro. <br/>
+     * Em outras palavras, será procurado um método que possui o nome passado como parâmetro e que seja possível 
+     * ser invocado com os parâmetros dos tipos passados. <br/>
+     * Note que o método encontrado será o primeiro método com essas características, e não o mais específico.
+     *  
+     * @param fromClass A classe onde o método estático existe.
+     * @param methodName O nome do método a ser transformado em seta
+     * @return Uma seta que representa o método definido pela classe
+     */
+    public static <A, B, C> ArrowN<Object, C> liftStaticArgs(final Class<A> fromClass, final String methodName)
+    {
+        return new ArrowN<Object, C>()
+        {
+            public C apply(final Object... params)
+            {
+                final Method method = ensureNotEmpty(getMethodFromNameAndAssignableType(fromClass, methodName, params));
+                return safeInvoke(null, method, params);
+            }
+        };
+    }
+	
+	/**
 	 * Transforma um método estático de uma classe numa seta.
 	 * @param fromClass A classe onde o método estático existe
 	 * @param methodName O nome do método a ser transformado em seta
@@ -237,7 +259,8 @@ public final class Reflections
 	}
 	
 	/**
-     * Retorna o método de uma classe a partir de seu nome que possa ser chamado para os valores de parâmetros passados. 
+     * Retorna o método de uma classe a partir de seu nome que possa ser chamado para os valores de parâmetros passados,
+     * considerando inclusive subtipos. <br/>
      * Passar um array vazio significa sem parâmetros.
      * @param fromClass A classe onde o método será procurado
      * @param methodName O nome do método a ser retornado
@@ -257,7 +280,7 @@ public final class Reflections
                 
                 for (int i = 0; i < paramValues.length; i++)
                 {
-                    if (!paramTypes[i].isAssignableFrom(paramValues[i].getClass()))
+                    if (paramValues[i] != null && !paramTypes[i].isAssignableFrom(paramValues[i].getClass()))
                     {
                         isAssignable = false;
                         break;

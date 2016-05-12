@@ -141,7 +141,6 @@ public class Tuple2<A, B> implements Product
 		return "Tuple(" + val1 + ", " + val2 + ")";
 	}
 	
-	
 	/**
 	 * Retorna uma seta que transforma uma tupla em seu primeiro valor.
 	 * @return Uma seta que transforma uma tupla em seu primeiro valor.

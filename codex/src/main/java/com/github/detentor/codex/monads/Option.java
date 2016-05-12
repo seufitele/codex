@@ -7,10 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.github.detentor.codex.cat.Monad;
 import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.function.arrow.Arrow1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -25,7 +27,8 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo do dado a ser guardado na Option
  */
-public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable
+@SuppressWarnings("rawtypes")
+public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> implements Serializable, Monad<T>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -180,6 +183,24 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	{
 		return this;
 	}
+	
+    @Override
+    public <B> Option<B> pure(B value)
+    {
+        return Option.from(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <B> Option<B> bind(final Function1<? super T, Monad<B>> function)
+    {
+        if (this.isEmpty())
+        {
+            return (Option<B>) this;
+        }
+        
+        return (Option<B>) function.apply(this.get());
+    }
 
 	@Override
 	public int hashCode()
@@ -190,7 +211,6 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 		return result;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -234,5 +254,22 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 		{
 			return Option.from(valor);
 		}
+	}
+	
+	/**
+	 * Transforma uma função que (potencialmente) retorna null para uma seta null-safe
+	 * @param func A função que será transformada
+	 * @return Uma seta que garante que o resultado da função será null-safe
+	 */
+	public static <A, B> Arrow1<A, Option<B>> lift(final Function1<A, B> func) 
+	{
+	    return new Arrow1<A, Option<B>>()
+        {
+            @Override
+            public Option<B> apply(final A param)
+            {
+                return Option.from(func.apply(param));
+            }
+        };
 	}
 }
