@@ -1,5 +1,8 @@
 package com.github.detentor.codex.product;
 
+import com.github.detentor.codex.cat.Functor;
+import com.github.detentor.codex.function.Function1;
+
 /**
  * Na teoria dos conjuntos, uma n-tuple (enupla) é uma sequência de n elementos, onde n é um inteiro positivo.<br/>
  * Uma enupla é igual a outra se, e somente se, os seus valores são iguais.<br/>
@@ -12,7 +15,7 @@ package com.github.detentor.codex.product;
  * @param <C> O objeto do terceiro tipo
  * @param <D> O objeto do quarto tipo
  */
-public final class Tuple4<A, B, C, D> implements Product
+public final class Tuple4<A, B, C, D> implements Product, Functor<A>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -59,6 +62,12 @@ public final class Tuple4<A, B, C, D> implements Product
 	public <K> Tuple5<A, B, C, D, K> add(final K value)
 	{
 		return Tuple5.from(this.val1, this.val2, this.val3, this.val4, value);
+	}
+	
+	@Override
+	public <U> Tuple4<U, B, C, D> map(final Function1<? super A, U> function)
+	{
+		return Tuple4.from(function.apply(val1), val2, val3, val4);
 	}
 
 	public A getVal1()
@@ -182,5 +191,4 @@ public final class Tuple4<A, B, C, D> implements Product
 	{
 		return "Tuple(" + val1 + ", " + val2 + ", " + val3 +  ", " + val4 + ")";
 	}
-
 }

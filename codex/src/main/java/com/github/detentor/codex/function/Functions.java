@@ -1,6 +1,7 @@
 package com.github.detentor.codex.function;
 
 import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.codex.function.arrow.Arrow2;
 
 /**
  * Classe utilitária, com métodos a serem aplicados a funções.
@@ -41,16 +42,17 @@ public final class Functions
 			}
 		};
 	}
-	
+
 	/**
-	 * Faz a composição de duas setas booleanas, de forma que a seta retornada 
-	 * só retornará true caso a aplicação das duas funções seja true.
+	 * Faz a composição de duas setas booleanas, de forma que a seta retornada só retornará true caso a aplicação das duas funções seja
+	 * true.
 	 * 
 	 * @param function1 A primeira função a ser feita a composição
 	 * @param function2 A segunda função a ser feita a composição
 	 * @return Uma seta que retornará true somente se a aplicação das duas funções passadas como parâmetro retornar true.
 	 */
-	public static <A, B, C> Arrow1<A, Boolean> composeBool(final Function1<? super A, Boolean> function1, final Function1<? super A, Boolean> function2)
+	public static <A, B, C> Arrow1<A, Boolean> composeBool(final Function1<? super A, Boolean> function1,
+			final Function1<? super A, Boolean> function2)
 	{
 		return new Arrow1<A, Boolean>()
 		{
@@ -65,7 +67,8 @@ public final class Functions
 	/**
 	 * Faz a composição de uma função parcial com uma função de mapeamento
 	 */
-	public static <A, B, C> PartialFunction1<A, C> compose(final PartialFunction1<? super A, B> function1, final Function1<? super B, C> function2)
+	public static <A, B, C> PartialFunction1<A, C> compose(final PartialFunction1<? super A, B> function1,
+			final Function1<? super B, C> function2)
 	{
 		return new PartialFunction1<A, C>()
 		{
@@ -76,17 +79,18 @@ public final class Functions
 			}
 
 			@Override
-			public boolean isDefinedAt(A forValue)
+			public boolean isDefinedAt(final A forValue)
 			{
 				return function1.isDefinedAt(forValue);
 			}
 		};
 	}
-	
+
 	/**
 	 * Faz a composição de uma função de mapeamento com uma função parcial
 	 */
-	public static <A, B, C> PartialFunction1<A, C> compose(final Function1<? super A, B> function1, final PartialFunction1<? super B, C> function2)
+	public static <A, B, C> PartialFunction1<A, C> compose(final Function1<? super A, B> function1,
+			final PartialFunction1<? super B, C> function2)
 	{
 		return new PartialFunction1<A, C>()
 		{
@@ -97,7 +101,7 @@ public final class Functions
 			}
 
 			@Override
-			public boolean isDefinedAt(A forValue)
+			public boolean isDefinedAt(final A forValue)
 			{
 				return function2.isDefinedAt(function1.apply(forValue));
 			}
@@ -106,14 +110,13 @@ public final class Functions
 
 	/**
 	 * Faz a composição de duas funções parciais. <br/>
-	 * A função parcial retornada está definida apenas nos pontos em que as duas funções parciais 
-	 * estão definidas.
+	 * A função parcial retornada está definida apenas nos pontos em que as duas funções parciais estão definidas.
 	 * 
 	 * @param function1
 	 * @param function2
 	 * 
-	 * @return Uma função parcial que representa a composição das duas funções parciais passadas como
-	 * parâmetro. O domínio da função parcial será a interseção dos domínios da function1 e function2
+	 * @return Uma função parcial que representa a composição das duas funções parciais passadas como parâmetro. O domínio da função parcial
+	 *         será a interseção dos domínios da function1 e function2
 	 */
 	public static <A, B, C> PartialFunction1<A, C> compose(final PartialFunction1<? super A, B> function1,
 			final PartialFunction1<? super B, C> function2)
@@ -153,13 +156,32 @@ public final class Functions
 	}
 
 	/**
+	 * Flip inverte a ordem dos dois primeiros argumentos de uma seta.
+	 * 
+	 * @param function A função cujos argumentos serão invertidos
+	 * @return Uma seta onde os dois primeiros argumentos serão aplicados em ordem inversa
+	 */
+	public static <A, B, C> Arrow2<B, A, C> flip(final Arrow2<A, B, C> function)
+	{
+		return new Arrow2<B, A, C>()
+		{
+			@Override
+			public C apply(final B param1, final A param2)
+			{
+				return function.apply(param2, param1);
+			}
+		};
+	}
+
+	/**
 	 * Cria uma função parcial a partir de uma função predicado e uma função de transformação.
 	 * 
 	 * @param pred A função predicado, que irá definir os argumentos que a função parcial está definida
 	 * @param transform A função de mapeamento, a ser usada quando a função estiver definida para o argumento
 	 * @return Uma função parcial a partir da função predicado e de transformação passadas.
 	 */
-	public static <A, B> PartialFunction1<A, B> createPartial(final Function1<? super A, Boolean> pred, final Function1<? super A, B> transform)
+	public static <A, B> PartialFunction1<A, B> createPartial(final Function1<? super A, Boolean> pred,
+			final Function1<? super A, B> transform)
 	{
 		return new PartialCreation<A, B>(pred, transform);
 	}

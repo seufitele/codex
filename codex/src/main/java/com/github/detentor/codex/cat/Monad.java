@@ -23,6 +23,9 @@ public interface Monad<T> extends Functor<T>
 	 * @return Uma mônade que contém o valor
 	 */
 	public <U> Monad<U> pure(final U value);
+	
+	@Override
+	public <U> Monad<U> map(final Function1<? super T, U> function);
 
 	/**
 	 * Composição monádica, equivalente à composição de funções. <br/>

@@ -72,7 +72,7 @@ public final class ObjectOps
 	/**
 	 * Representa a função identidade
 	 */
-	private static final Arrow1<Object, Object> identity = new Arrow1<Object, Object>()
+	public static final Arrow1<Object, Object> identity = new Arrow1<Object, Object>()
 	{
 		@Override
 		public Object apply(final Object param)
@@ -82,13 +82,31 @@ public final class ObjectOps
 	};
 	
 	/**
-	 * Retorna a função identidade
-	 * @return Uma função identidade
+	 * Retorna a função identidade. <br/>
+	 * A diferença para o atributo é apenas o cast para o tipo inferido.
+	 * @return A função identidade, ou seja, uma função que possui como retorno o mesmo 
+	 * valor de entrada.
 	 */
 	@SuppressWarnings("unchecked")
     public static <A, B> Arrow1<A, B> identity()
 	{
 	    return (Arrow1<A, B>) identity;
+	}
+	
+	/**
+	 * Representa a função que transforma um objeto em seu valor .class
+	 */
+	public static <A> Arrow1<A, Class<A>> toClass()
+	{
+		return new Arrow1<A, Class<A>>()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class<A> apply(final A param)
+			{
+				return (Class<A>) param.getClass();
+			}
+		};
 	}
 	
 	/**

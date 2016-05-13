@@ -1,5 +1,7 @@
 package com.github.detentor.codex.product;
 
+import com.github.detentor.codex.cat.Functor;
+import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.arrow.Arrow1;
 
 
@@ -13,7 +15,7 @@ import com.github.detentor.codex.function.arrow.Arrow1;
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo
  */
-public class Tuple2<A, B> implements Product
+public class Tuple2<A, B> implements Product, Functor<A>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -61,6 +63,12 @@ public class Tuple2<A, B> implements Product
 	public <K> Tuple3<A, B, K> add(final K value)
 	{
 		return Tuple3.from(this.val1, this.val2, value);
+	}
+	
+	@Override
+	public <U> Tuple2<U, B> map(final Function1<? super A, U> function)
+	{
+		return Tuple2.from(function.apply(val1), val2);
 	}
 
 	public A getVal1()
