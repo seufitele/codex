@@ -58,7 +58,7 @@ import com.github.detentor.codex.util.RichIterator;
  * 2) Criar os métodos baseados no foldLeft: Tem o benefício de ter a implementação mais curta e simples: o código fica menor,
  * e é mais fácil intuir o comportamento da função a partir do código; é possível inspecionar sempre o estado anterior da lista,
  * visto que ele é sempre 'carregado' para a próxima execução. O lado ruim é que isso impossibilita a coleta da lista na maior parte
- * dos métodos.
+ * dos métodos. <br/><br/>
  * 
  * O custo, em memória, de cada LazyList é 24 bytes numa máquina de 64bits. 
  * 

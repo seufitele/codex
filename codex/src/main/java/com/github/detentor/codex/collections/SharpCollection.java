@@ -63,9 +63,8 @@ public interface SharpCollection<T> extends Iterable<T>, HighOrderFunctions<T>, 
     boolean containsAny(final Iterable<T> col);
 
     /**
-     * Retorna um iterador sobre os elementos desta coleção. Não há garantias quanto à
-     * ordem que os elementos serão retornados (a menos que esta coleção seja uma instância
-     * de uma classe que provê essa garantia).
+     * Retorna um iterador sobre os elementos desta coleção. A ordem será preservada, se ela estiver
+     * bem-definida.
      * 
      * @return um <tt>Iterator</tt> sobre os elementos desta coleção
      */

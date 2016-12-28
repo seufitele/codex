@@ -51,7 +51,9 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 
 	/**
 	 * Cria uma instância de SetSharp a partir dos elementos existentes no iterable 
-	 * passado como parâmetro. A ordem da adição dos elementos será a mesma ordem do iterable.
+	 * passado como parâmetro. A ordem da adição dos elementos será a mesma ordem do iterable. <br/><br/>
+	 * Se o iterable for do tipo {@link TreeSet} ou {@link LinkedHashSet} o tipo será preservado, 
+	 * do contrário será retornada uma instância de SetSharp que utiliza o {@link HashSet}.
 	 * 
 	 * @param <T> O tipo de dados do set
 	 * @param theIterable O iterator que contém os elementos
@@ -59,12 +61,8 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	 */
 	public static <T> SetSharp<T> from(final Iterable<T> theIterable)
 	{
-		final SetSharp<T> retorno = new SetSharp<T>();
-
-		for (final T ele : theIterable)
-		{
-			retorno.add(ele);
-		}
+		final SetSharp<T> retorno = SetSharp.empty(typeFromIterable(theIterable));
+		retorno.addAll(theIterable);
 		return retorno;
 	}
 
@@ -78,7 +76,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	 */
 	public static <T> SetSharp<T> from(final T... valores)
 	{
-		final SetSharp<T> retorno = new SetSharp<T>();
+		final SetSharp<T> retorno = SetSharp.empty();
 
 		for (final T ele : valores)
 		{
@@ -125,7 +123,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		}
 		return new SetSharp<T>(setInstance);
 	}
-
+	
 	@Override
 	public int size()
 	{
@@ -164,6 +162,26 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		backingSet.clear();
 		return this;
 	}
+	
+	/**
+	 * Retorna o tipo de SetSharp apropriado para o iterable passado como parâmetro
+	 * @param theIterable O iterable cujo SetSharpType será calculado
+	 * @return
+	 */
+	private static <T> SetSharpType typeFromIterable(final Iterable<T> theIterable)
+	{
+		if (theIterable instanceof LinkedHashSet<?>)
+		{
+			return SetSharpType.LINKED_HASH_SET;
+		}
+		else if (theIterable instanceof TreeSet<?>)
+		{
+			return SetSharpType.TREE_SET;
+		}
+		
+		//Retorna o tipo padrão para os outros casos
+		return SetSharpType.HASH_SET;
+	}
 
 	@Override
 	public <B> Builder<B, SharpCollection<B>> builder()
@@ -172,21 +190,36 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 		
 		if (backingSet instanceof LinkedHashSet<?>)
 		{
-			builderRetorno = new LinkedHashBuilder<B>();
-		}
-		else if (backingSet instanceof HashSet<?>)
-		{
-			builderRetorno = new HashSetBuilder<B>();
+			builderRetorno = new SetBuilder<B>(new LinkedHashSet<B>());
 		}
 		else if (backingSet instanceof TreeSet<?>)
 		{
-			builderRetorno = new TreeSetBuilder<B>();
+			builderRetorno = new SetBuilder<B>(new TreeSet<B>());
 		}
 		else
 		{
-			throw new IllegalArgumentException("Tipo de instância não reconhecida");
+			//Retorno padrão para um tipo não específico
+			builderRetorno = new SetBuilder<B>(new HashSet<B>());
 		}
+		
 		return builderRetorno;
+	}
+	
+	/**
+	 * Transforma este SetSharp em um {@link Set}
+	 * @return O {@link Set} que representa esta coleção
+	 */
+	@Override
+	public Set<T> toSet()
+	{
+		final Builder<T, SharpCollection<T>> builderRetorno = builder();
+		
+		for (T ele : this)
+		{
+			builderRetorno.add(ele);
+		}
+		
+		return ((SetSharp<T>) builderRetorno.result()).backingSet;
 	}
 
 	@Override
@@ -256,6 +289,7 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 			return false;
 		}
 		final SetSharp other = (SetSharp) obj;
+		
 		if (backingSet == null)
 		{
 			if (other.backingSet != null)
@@ -275,70 +309,34 @@ public class SetSharp<T> extends AbstractMutableGenericCollection<T, SetSharp<T>
 	{
 		return backingSet.toString();
 	}
-
+	
 	/**
-	 * Essa classe é um builder para Set baseado em um HashSet. <br/>
-	 * @param <E> O tipo de dados armazenado no HashSet.
+	 * Builder de Sets a partir de um backingSet apropriado
+	 * @param <E>
 	 */
-	private static final class HashSetBuilder<E> implements Builder<E, SharpCollection<E>>
+	private static final class SetBuilder<E> implements Builder<E, SharpCollection<E>>
 	{
-		private final Set<E> backingSet = new HashSet<E>();
+		private final Set<E> theBackingSet;
+		
+		protected SetBuilder(final Set<E> backingSet)
+		{
+			super();
+			this.theBackingSet = backingSet;
+		}
 
 		@Override
 		public void add(final E element)
 		{
-			backingSet.add(element);
+			theBackingSet.add(element);
 		}
 
 		@Override
 		public SetSharp<E> result()
 		{
-			return new SetSharp<E>(backingSet);
+			return new SetSharp<E>(theBackingSet);
 		}
 	}
-
-	/**
-	 * Essa classe é um builder para Set baseado em um TreeSet. <br/>
-	 * @param <E> O tipo de dados armazenado no TreeSet.
-	 */
-	private static final class TreeSetBuilder<E> implements Builder<E, SharpCollection<E>>
-	{
-		private final Set<E> backingSet = new TreeSet<E>();
-
-		@Override
-		public void add(final E element)
-		{
-			backingSet.add(element);
-		}
-
-		@Override
-		public SetSharp<E> result()
-		{
-			return new SetSharp<E>(backingSet);
-		}
-	}
-
-	/**
-	 * Essa classe é um builder para Set baseado em um LinkedHashSet. <br/>
-	 * @param <E> O tipo de dados armazenado no LinkedHashSet.
-	 */
-	private static final class LinkedHashBuilder<E> implements Builder<E, SharpCollection<E>>
-	{
-		private final Set<E> backingSet = new LinkedHashSet<E>();
-
-		@Override
-		public void add(final E element)
-		{
-			backingSet.add(element);
-		}
-
-		@Override
-		public SetSharp<E> result()
-		{
-			return new SetSharp<E>(backingSet);
-		}
-	}
-
+	
 	public enum SetSharpType
 	{
 		HASH_SET, LINKED_HASH_SET, TREE_SET;

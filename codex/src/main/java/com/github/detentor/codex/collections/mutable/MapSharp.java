@@ -6,11 +6,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
-import com.github.detentor.codex.collections.AbstractSharpCollection;
+import com.github.detentor.codex.collections.AbstractMutableGenericCollection;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.collections.mutable.ListSharp.ArrayBuilder;
@@ -27,7 +29,9 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction1<K, V>, Serializable
+// public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSharp<K, V>> implements PartialFunction1<K, V>, Serializable
+public class MapSharp<K, V> extends AbstractMutableGenericCollection<Tuple2<K, V>, MapSharp<K, V>>
+		implements PartialFunction1<K, V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +44,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		this(new HashMap<K, V>());
 	}
-	
+
 	/**
 	 * Construtor privado. Instâncias devem ser criadas com o 'from'
 	 */
@@ -64,8 +68,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 
 	/**
 	 * Cria uma instância de MapSharp a partir do mapa passado como parâmetro. <br/>
-	 * Os elementos do mapa serão copiados para o MapSharp, portanto mudanças estruturais 
-	 * no mapa original não afetarão este mapa.
+	 * Os elementos do mapa serão copiados para o MapSharp, portanto mudanças estruturais no mapa original não afetarão este mapa.
 	 * 
 	 * @param T O tipo de dados da chave
 	 * @param U O tipo de dados do valor
@@ -82,7 +85,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		}
 		return retorno;
 	}
-	
+
 	/**
 	 * Cria uma instância de MapSharp a partir dos valores passados como parâmetro. <br/>
 	 * 
@@ -97,8 +100,8 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	/**
-	 * Cria uma instância de MapSharp a partir dos elementos existentes no iterable passado como parâmetro. 
-	 * A ordem da adição dos elementos será a mesma ordem do iterable.
+	 * Cria uma instância de MapSharp a partir dos elementos existentes no iterable passado como parâmetro. A ordem da adição dos elementos
+	 * será a mesma ordem do iterable.
 	 * 
 	 * @param <T> O tipo de dados da chave
 	 * @param <U> O tipo de dados do valor
@@ -107,7 +110,9 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 */
 	public static <T, U> MapSharp<T, U> from(final Iterable<Tuple2<T, U>> theIterable)
 	{
-		final MapSharp<T, U> retorno = new MapSharp<T, U>();
+		final MapSharp<T, U> retorno = MapSharp.empty(typeFromIterable(theIterable));
+
+		retorno.addAll(theIterable);
 
 		for (final Tuple2<T, U> ele : theIterable)
 		{
@@ -115,18 +120,19 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		}
 		return retorno;
 	}
-	
+
 	/**
 	 * Constrói uma instância de MapSharp vazia.
+	 * 
 	 * @param <T> O tipo da chave
-	 * @param <U> O tipo dos valores 
+	 * @param <U> O tipo dos valores
 	 * @return Uma instância de MapSharp vazia.
 	 */
 	public static <T, U> MapSharp<T, U> empty()
 	{
 		return new MapSharp<T, U>();
 	}
-	
+
 	/**
 	 * Constrói uma instância de MapSharp vazia, baseado no tipo passado como parâmetro.
 	 * 
@@ -137,22 +143,43 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	public static <T, U> MapSharp<T, U> empty(final MapSharpType mapType)
 	{
 		Map<T, U> mapInstance = null;
-		
-		switch(mapType)
+
+		switch (mapType)
 		{
-			case HASH_MAP:
-				mapInstance = new HashMap<T, U>();
-				break;
-			case LINKED_HASH_MAP:
-				mapInstance = new LinkedHashMap<T, U>();
-				break;
-			case TREE_MAP:
-				mapInstance = new TreeMap<T, U>();
-				break;
-			default:
-				throw new IllegalArgumentException("Tipo de MapSharp não reconhecido");
+		case HASH_MAP:
+			mapInstance = new HashMap<T, U>();
+			break;
+		case LINKED_HASH_MAP:
+			mapInstance = new LinkedHashMap<T, U>();
+			break;
+		case TREE_MAP:
+			mapInstance = new TreeMap<T, U>();
+			break;
+		default:
+			throw new IllegalArgumentException("Tipo de MapSharp não reconhecido");
 		}
 		return new MapSharp<T, U>(mapInstance);
+	}
+
+	/**
+	 * Retorna o tipo de MapSharp apropriado para o iterable passado como parâmetro
+	 * 
+	 * @param theIterable O iterable cujo MapSharpType será calculado
+	 * @return
+	 */
+	private static <T> MapSharpType typeFromIterable(final Iterable<T> theIterable)
+	{
+		if (theIterable instanceof LinkedHashSet<?>)
+		{
+			return MapSharpType.LINKED_HASH_MAP;
+		}
+		else if (theIterable instanceof TreeSet<?>)
+		{
+			return MapSharpType.TREE_MAP;
+		}
+
+		// Retorna o tipo padrão para os outros casos
+		return MapSharpType.HASH_MAP;
 	}
 
 	@Override
@@ -189,9 +216,10 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 			}
 		};
 	}
-	
+
 	/**
 	 * Retorna o conjunto de chaves contido neste mapa, como uma instância de {@link SetSharp}
+	 * 
 	 * @return Uma instância de SetSharp que contém as chaves deste mapa
 	 */
 	public SetSharp<K> keySet()
@@ -201,6 +229,7 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 
 	/**
 	 * Retorna os valores contidos neste mapa, como uma instância de {@link SharpCollection}
+	 * 
 	 * @return Uma coleção que contém os valores do mapa.
 	 */
 	public SharpCollection<V> values()
@@ -214,27 +243,14 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	 * @param element O elemento que representa o valor a ser adicionado
 	 * @return A referência a este mapa após a adição
 	 */
+	@Override
 	public MapSharp<K, V> add(final Tuple2<K, V> element)
 	{
 		backingMap.put(element.getVal1(), element.getVal2());
 		return this;
 	}
-	
-	/**
-	 * Adiciona os elementos para este mapa, onde o val1 é a chave, e val2 o valor
-	 * 
-	 * @param elements Os elementos a serem adicionados
-	 * @return A referência a este mapa após a adição
-	 */
-	public MapSharp<K, V> addAll(final Tuple2<K, V>... elements)
-	{
-		for (int i = 0; i < elements.length; i++)
-		{
-			add(elements[i]);
-		}
-		return this;
-	}
 
+	@Override
 	public MapSharp<K, V> clear()
 	{
 		backingMap.clear();
@@ -246,29 +262,25 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	public <B> Builder<B, SharpCollection<B>> builder()
 	{
 		Builder<B, SharpCollection<B>> builderRetorno = null;
-		
+
 		if (backingMap instanceof LinkedHashMap<?, ?>)
 		{
-			builderRetorno = new GenMapBuilder(MapSharpType.LINKED_HASH_MAP);
-		}
-		else if (backingMap instanceof HashMap<?, ?>)
-		{
-			builderRetorno = new GenMapBuilder(MapSharpType.HASH_MAP);
+			builderRetorno = new MapBuilder(new LinkedHashMap<K, V>());
 		}
 		else if (backingMap instanceof TreeMap<?, ?>)
 		{
-			builderRetorno = new GenMapBuilder(MapSharpType.TREE_MAP);
+			builderRetorno = new MapBuilder(new TreeMap<K, V>());
 		}
 		else
 		{
-			throw new IllegalArgumentException("Tipo de instância não reconhecida");
+			builderRetorno = new MapBuilder(new HashMap<K, V>());
 		}
 		return builderRetorno;
 	}
-	
+
 	/**
-	 * ATENÇÃO: O método contains verifica se este mapa, representado por uma coleção de tuplas, 
-	 * contém a tupla passada como parâmetro. Para verificar se ele possui a chave, use o método {@link #containsKey containsKey}.
+	 * ATENÇÃO: O método contains verifica se este mapa, representado por uma coleção de tuplas, contém a tupla passada como parâmetro. Para
+	 * verificar se ele possui a chave, use o método {@link #containsKey containsKey}.
 	 */
 	@Override
 	public boolean contains(final Tuple2<K, V> element)
@@ -277,8 +289,8 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	/**
-	 * ATENÇÃO: O método contains verifica se este mapa, representado por uma coleção de tuplas, 
-	 * contém todos os elementos de uma outra coleção de tuplas.
+	 * ATENÇÃO: O método contains verifica se este mapa, representado por uma coleção de tuplas, contém todos os elementos de uma outra
+	 * coleção de tuplas.
 	 */
 	@Override
 	public boolean containsAll(final Iterable<Tuple2<K, V>> col)
@@ -299,7 +311,8 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	/**
-	 * Adiciona o elemento passado como parâmetro nesta coleção. <br/><br/>
+	 * Adiciona o elemento passado como parâmetro nesta coleção. <br/>
+	 * <br/>
 	 * 
 	 * @param key A chave do elemento a ser adicionado
 	 * @param value O valor do elemento a ser adicionado
@@ -312,22 +325,23 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	/**
-	 * Retorna o valor para o qual a chave especificada está mapeada, ou {@code null} se 
-	 * este mapa não contém mapeamento para a chave. <br/><br/>
+	 * Retorna o valor para o qual a chave especificada está mapeada, ou {@code null} se este mapa não contém mapeamento para a chave. <br/>
+	 * <br/>
 	 * 
 	 * Formalmente, se este mapa contém um mapeamento de uma chave {@code k} para um valor {@code v} tal que
-	 * {@code (key==null ? k==null : key.equals(k))}, então este método retorna {@code v}; 
-	 * do contrário ele retorna {@code null}. (Há, no máximo um mapeamento) <br/><br/>
+	 * {@code (key==null ? k==null : key.equals(k))}, então este método retorna {@code v}; do contrário ele retorna {@code null}. (Há, no
+	 * máximo um mapeamento) <br/>
+	 * <br/>
 	 * 
-	 * Um valor de retorno {@code null} não significa, necessariamente, que o mapa não contém 
-	 * mapeamento para a chave: é também possível que o mapa explicitamente mapeou a chave para {@code null}. 
-	 * A operação {@link #containsKey containsKey} pode ser utilizada para distinguir entre os dois casos.
+	 * Um valor de retorno {@code null} não significa, necessariamente, que o mapa não contém mapeamento para a chave: é também possível que
+	 * o mapa explicitamente mapeou a chave para {@code null}. A operação {@link #containsKey containsKey} pode ser utilizada para
+	 * distinguir entre os dois casos.
 	 */
 	public V get(final K key)
 	{
 		return backingMap.get(key);
 	}
-	
+
 	/**
 	 * Uma Option que conterá o valor para o qual a chave especificada está mapeada, se ele existir. <br/>
 	 * ATENÇÃO: Se o valor da chave estiver mapeado para null, a Option retornada estará vazia.
@@ -377,10 +391,11 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return backingMap.containsValue(value);
 	}
-	
+
 	/**
 	 * Constrói uma nova coleção a partir da aplicação da função passada como parâmetro em cada elemento da coleção. <br/>
 	 * A ordem é preservada, se ela estiver bem-definida.
+	 * 
 	 * @param <B> O tipo da nova coleção.
 	 * @param function Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento.
@@ -404,9 +419,11 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	}
 
 	/**
-	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção
-	 * onde a função parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/><br/>
+	 * Constrói uma nova coleção a partir da aplicação da função parcial passada como parâmetro em cada elemento da coleção onde a função
+	 * parcial está definida. A ordem é preservada, se ela estiver bem-definida. <br/>
+	 * <br/>
 	 * Nos casos onde é necessário usar um filtro antes de aplicar um mapa, considere utilizar esta função. <br/>
+	 * 
 	 * @param <B> O tipo da nova coleção.
 	 * @param pFunction Uma função que recebe um elemento desta coleção, e retorna um elemento de (potencialmente) outro tipo.
 	 * @return Uma nova coleção, a partir da aplicação da função parcial para cada elemento onde ela está definida.
@@ -431,16 +448,14 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		}
 		return colecaoRetorno.result();
 	}
-	
+
 	/**
-	 * Constrói uma nova coleção, a partir da aplicação da função passada 
-	 * como parâmetro em cada elemento da coleção, coletando os resultados numa
-	 * única coleção. <br/>
+	 * Constrói uma nova coleção, a partir da aplicação da função passada como parâmetro em cada elemento da coleção, coletando os
+	 * resultados numa única coleção. <br/>
+	 * 
 	 * @param <B> O tipo da nova coleção
-	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma 
-	 * coleção de elementos de (potencialmente) outro tipo.
-	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos
-	 * das coleção.
+	 * @param function Uma função que recebe um elemento desta coleção, e retorna uma coleção de elementos de (potencialmente) outro tipo.
+	 * @return Uma nova coleção, a partir da aplicação da função para cada elemento, concatenando os elementos das coleção.
 	 */
 	@SuppressWarnings("unchecked")
 	public <W, Y> MapSharp<W, Y> flatMap(final Function1<Tuple2<K, V>, ? extends Iterable<Tuple2<W, Y>>> function)
@@ -462,17 +477,65 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 		}
 		return colecaoRetorno.result();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public SharpCollection<? extends MapSharp<K, V>> grouped(final Integer size)
+	{
+		//TODO: Arrumar uma forma de não depender de implementação específica
+		//OBS: Reimplementado porque a coleção de retorno não vai ser um mapa
+		
+		if (size <= 0)
+		{
+			throw new IllegalArgumentException("size deve ser maior do que zero");
+		}
+
+		final Builder<MapSharp<K, V>, SharpCollection<MapSharp<K, V>>> colOfCols = new ArrayBuilder<MapSharp<K,V>>();
+		final Iterator<Tuple2<K, V>> ite = this.iterator();
+		
+		int count = 0;
+
+		Builder<Tuple2<K, V>, SharpCollection<Tuple2<K, V>>> curColecao = this.builder();
+		
+		while (ite.hasNext())
+		{
+			count++;
+			curColecao.add(ite.next());
+			
+			if (count == size)
+			{
+				colOfCols.add((MapSharp<K, V>)curColecao.result());
+				curColecao = this.builder();
+				count = 0;
+			}
+		}
+
+		if (count != 0)
+		{
+			colOfCols.add((MapSharp<K, V>)curColecao.result());
+		}
+		
+		return colOfCols.result();
+	}
 
 	/**
-	 * Retorna esta coleção como um mapa do Java. As modificações no mapa retornado afetam também este mapa.
+	 * Transforma este SetSharp em um {@link Map}
 	 * 
-	 * @return O mapa que representa esta coleção
+	 * @return O {@link Map} que representa esta coleção
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<K, V> toMap()
 	{
-		return backingMap;
+		final Builder<Tuple2<K, V>, SharpCollection<Tuple2<K, V>>> builderRetorno = builder();
+		
+		for (Tuple2<K, V> ele : this)
+		{
+			builderRetorno.add(ele);
+		}
+		
+		return ((MapSharp<K, V>) builderRetorno.result()).backingMap;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -518,77 +581,76 @@ public class MapSharp<K, V> extends AbstractSharpCollection<Tuple2<K, V>, MapSha
 	{
 		return backingMap.toString();
 	}
-	
+
 	/**
 	 * Essa classe é um builder genérico para mapas. <br/>
+	 * 
 	 * @param <K, V> K é o tipo de dados da chave, V é o tipo de dados do valor.
 	 */
-	private class GenMapBuilder<X,Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
+	private class MapBuilder<X, Y> implements Builder<Tuple2<X, Y>, SharpCollection<Tuple2<X, Y>>>
 	{
-		private final Map<X, Y> backMap;
-		
-		protected GenMapBuilder(final MapSharpType mapType)
+		private final Map<X, Y> theBackingMap;
+
+		protected MapBuilder(final Map<X, Y> backingMap)
 		{
-			switch (mapType)
-			{
-				case HASH_MAP:
-					backMap = new HashMap<X, Y>();
-					break;
-				case LINKED_HASH_MAP:
-					backMap = new LinkedHashMap<X, Y>();
-					break;
-				case TREE_MAP:
-					backMap = new TreeMap<X, Y>();
-					break;
-				default :
-					throw new IllegalArgumentException("Tipo de mapa não reconhecido");
-			}
+			super();
+			this.theBackingMap = backingMap;
 		}
 
 		@Override
 		public void add(final Tuple2<X, Y> element)
 		{
-			backMap.put(element.getVal1(), element.getVal2());
+			theBackingMap.put(element.getVal1(), element.getVal2());
 		}
 
 		@Override
 		public MapSharp<X, Y> result()
 		{
-			return new MapSharp<X, Y>(backMap);
+			return new MapSharp<X, Y>(theBackingMap);
 		}
 	}
-	
+
 	public enum MapSharpType
 	{
 		HASH_MAP, LINKED_HASH_MAP, TREE_MAP;
 	}
 
 	/**
-	 * Ordena o mapa, de acordo com a ordenação natural das chaves.  <br/>
+	 * Ordena o mapa, de acordo com a ordenação natural das chaves. <br/>
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public MapSharp<K, V> sorted()
 	{
-		return (MapSharp<K, V>) sorted(new DefaultComparator());
+		return sorted(new DefaultComparator());
 	}
 
 	/**
-	 * Ordena o mapa, de acordo com a ordenação definida pelo comparator passado como parâmetro.  <br/>
-	 * ATENÇÃO: O mapa retornado será uma instância de LinkedHashMap, 
-	 * portanto a adição de novos elementos poderá, potencialmente, corromper a ordenação. 
-	 * {@inheritDoc}
+	 * Ordena o mapa, de acordo com a ordenação definida pelo comparator passado como parâmetro. <br/>
+	 * ATENÇÃO: O mapa retornado será uma instância de LinkedHashMap, portanto a adição de novos elementos poderá, potencialmente, corromper
+	 * a ordenação. {@inheritDoc}
 	 */
 	@Override
 	public MapSharp<K, V> sorted(final Comparator<? super Tuple2<K, V>> comparator)
 	{
 		final MapSharp<K, V> mapaRetorno = empty(MapSharpType.LINKED_HASH_MAP);
-		
-		for (Tuple2<K, V> curEle : ListSharp.from(this).sorted(comparator))
+
+		for (final Tuple2<K, V> curEle : ListSharp.from(this).sorted(comparator))
 		{
 			mapaRetorno.add(curEle);
 		}
 		return mapaRetorno;
+	}
+
+	/**
+	 * Atenção: Esse método remove o elemento passado como parâmetro apenas se existir uma chave mapeada 
+	 * para o valor definido na tupla. Para remover um elemento pela chave apenas, use {@link #removeKey(Object)}
+	 */
+	@Override
+	public SharpCollection<Tuple2<K, V>> remove(final Tuple2<K, V> element)
+	{
+		backingMap.remove(element.getVal1(), element.getVal2());
+		return this;
 	}
 }

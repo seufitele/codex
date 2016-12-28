@@ -12,8 +12,6 @@ package com.github.detentor.codex.collections;
  * Se coleções forem vistas como mônades, builders são o 'unit' ou 'return': eles fornecem uma interface comum
  * para a criação destas mônades. 
  * 
- * @author Vinícius Seufitele Pinto
- *
  * @param <From> O tipo de elementos que serão alimentados no builder
  * @param <To> O tipo de coleção a ser retornada pelo builder
  */

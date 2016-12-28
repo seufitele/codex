@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.github.detentor.codex.cat.Applicative;
 import com.github.detentor.codex.cat.Monad;
 import com.github.detentor.codex.collections.AbstractSharpCollection;
 import com.github.detentor.codex.collections.Builder;
@@ -16,10 +17,11 @@ import com.github.detentor.codex.function.arrow.Arrow1;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Option é uma mônade que representa um container que pode ou não conter um elemento. <br/><br/>
- * Option também pode ser vista como uma lista que pode ter, no máximo, um elemento. O valor
- * informado na criação da Option determinará se ela estará vazia ou não (a passagem do parâmetro com valor nulo cria uma
- * Option vazia). <br/><br/>
+ * Option é uma mônade que representa um container que pode ou não conter um elemento. <br/>
+ * <br/>
+ * Option também pode ser vista como uma lista que pode ter, no máximo, um elemento. O valor informado na criação da Option determinará se
+ * ela estará vazia ou não (a passagem do parâmetro com valor nulo cria uma Option vazia). <br/>
+ * <br/>
  * 
  * Classe imutável.
  * 
@@ -72,8 +74,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	/**
-	 * Retorna o valor T se ele existir nesta Option. 
-	 * Chamar esse método para uma Option vazia disparará uma exceção.
+	 * Retorna o valor T se ele existir nesta Option. Chamar esse método para uma Option vazia disparará uma exceção.
 	 * 
 	 * @return O valor T guardado nesta Option (se ele existir)
 	 * @throws NoSuchElementException Se a Option estiver vazio
@@ -159,7 +160,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	{
 		return (Option<B>) super.flatMap(function);
 	}
-	
+
 	@Override
 	public Option<T> filter(final Function1<? super T, Boolean> pred)
 	{
@@ -171,7 +172,7 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	{
 		return (Option<Tuple2<T, Integer>>) super.zipWithIndex();
 	}
-	
+
 	@Override
 	public Option<T> sorted()
 	{
@@ -179,28 +180,42 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 	}
 
 	@Override
-	public Option<T> sorted(Comparator<? super T> comparator)
+	public Option<T> sorted(final Comparator<? super T> comparator)
 	{
 		return this;
 	}
-	
-    @Override
-    public <B> Option<B> pure(B value)
-    {
-        return Option.from(value);
-    }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <B> Option<B> bind(final Function1<? super T, Monad<B>> function)
-    {
-        if (this.isEmpty())
-        {
-            return (Option<B>) this;
-        }
-        
-        return (Option<B>) function.apply(this.get());
-    }
+	@Override
+	public <B> Option<B> pure(final B value)
+	{
+		return Option.from(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B> Option<B> ap(final Applicative<Function1<? super T, B>> applicative)
+	{
+		final Option<Function1<? super T, B>> apOption = (Option<Function1<? super T, B>>) applicative;
+		
+		if (apOption.isEmpty())
+		{
+			return (Option<B>) this;
+		}
+		
+		return this.map(apOption.get());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B> Option<B> bind(final Function1<? super T, Monad<B>> function)
+	{
+		if (this.isEmpty())
+		{
+			return (Option<B>) this;
+		}
+
+		return (Option<B>) function.apply(this.get());
+	}
 
 	@Override
 	public int hashCode()
@@ -228,9 +243,10 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 		}
 		return value.equals(((Option) obj).value);
 	}
-	
+
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um Option.
+	 * 
 	 * @param <E> O tipo de dados do Option retornado
 	 */
 	private class OptionBuilder<E> implements Builder<E, SharpCollection<E>>
@@ -255,21 +271,22 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 			return Option.from(valor);
 		}
 	}
-	
+
 	/**
 	 * Transforma uma função que (potencialmente) retorna null para uma seta null-safe
+	 * 
 	 * @param func A função que será transformada
 	 * @return Uma seta que garante que o resultado da função será null-safe
 	 */
-	public static <A, B> Arrow1<A, Option<B>> lift(final Function1<A, B> func) 
+	public static <A, B> Arrow1<A, Option<B>> lift(final Function1<A, B> func)
 	{
-	    return new Arrow1<A, Option<B>>()
-        {
-            @Override
-            public Option<B> apply(final A param)
-            {
-                return Option.from(func.apply(param));
-            }
-        };
+		return new Arrow1<A, Option<B>>()
+		{
+			@Override
+			public Option<B> apply(final A param)
+			{
+				return Option.from(func.apply(param));
+			}
+		};
 	}
 }

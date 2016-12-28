@@ -2,6 +2,7 @@ package com.github.detentor.codex.collections;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -722,7 +723,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	@Override
 	public List<T> toList()
 	{
-		return toList(new ArrayListBuilder<T>());
+		return toList(CollBuilder.from((List<T>)new ArrayList<T>()));
 	}
 
 	@Override
@@ -738,7 +739,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 	@Override
 	public Set<T> toSet()
 	{
-		return toSet(new HashSetBuilder<T>());
+		return toSet(CollBuilder.from((Set<T>)new HashSet<T>()));
 	}
 
 	@Override
@@ -748,6 +749,7 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 		{
 			builder.add(ele);
 		}
+		
 		return builder.result();
 	}
 
@@ -789,46 +791,32 @@ public abstract class AbstractSharpCollection<T, U extends SharpCollection<T>> i
 		}
 	}
 	
-	/**
-	 * Essa classe é um builder para Set baseado em um HashSet. <br/>
-	 * @param <E> O tipo de dados armazenado no HashSet.
-	 */
-	private static final class HashSetBuilder<E> implements Builder<E, Set<E>>
+	private static class CollBuilder<E> implements Builder<E, Collection<E>>
 	{
-		private final Set<E> backingSet = new HashSet<E>();
+		private final Collection<E> backingCollection;
+		
+		@SuppressWarnings("unchecked")
+		protected static <A, B extends Collection<A>> Builder<A, B> from(final B theCollection)
+		{
+			return (Builder<A, B>) new CollBuilder<A>(theCollection);
+		}
+		
+		private CollBuilder(Collection<E> backingCollection)
+		{
+			super();
+			this.backingCollection = backingCollection;
+		}
 
 		@Override
 		public void add(final E element)
 		{
-			backingSet.add(element);
+			backingCollection.add(element);
 		}
 
 		@Override
-		public Set<E> result()
+		public Collection<E> result()
 		{
-			return backingSet;
+			return backingCollection;
 		}
 	}
-	
-	/**
-	 * Essa classe é um builder para List baseado em um ArrayList.
-	 * @param <E> O tipo de dados do ArrayList retornado
-	 */
-	private static final class ArrayListBuilder<E> implements Builder<E, List<E>>
-	{
-		private final List<E> list = new ArrayList<E>();
-
-		@Override
-		public void add(final E element)
-		{
-			list.add(element);
-		}
-
-		@Override
-		public List<E> result()
-		{
-			return list;
-		}
-	}
-	
 }
