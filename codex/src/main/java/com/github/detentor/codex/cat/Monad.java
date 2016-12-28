@@ -13,7 +13,7 @@ import com.github.detentor.codex.function.Function1;
  * @param <C> O type constructor (a classe) representada por essa Mônade
  * @param <T> O tipo de dados que a Mônade guarda
  */
-public interface Monad<T> extends Functor<T>
+public interface Monad<T> extends Applicative<T>
 {
 	/**
 	 * Põe um valor num contexto monádico 'puro'.<br/>  Note que isso equivale ao constructor da classe.
@@ -26,6 +26,9 @@ public interface Monad<T> extends Functor<T>
 	
 	@Override
 	public <U> Monad<U> map(final Function1<? super T, U> function);
+	
+	@Override
+	<B> Monad<B> ap(Applicative<Function1<? super T, B>> applicative);
 
 	/**
 	 * Composição monádica, equivalente à composição de funções. <br/>

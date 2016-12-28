@@ -10,7 +10,10 @@ import com.github.detentor.codex.function.Function2;
  */
 public interface Foldable<A>
 {
+	//Definição mínima: foldr | foldMap
+	
+	//foldr :: (a -> b -> b) -> b -> t a -> b
+	//foldMap :: Monoid m => (a -> m) -> t a -> m
 	
 	<B> B foldRight(final B startValue, final Function2<B, ? super A, B> function);
-
 }
