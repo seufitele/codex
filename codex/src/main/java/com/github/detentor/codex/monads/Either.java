@@ -6,9 +6,11 @@ import com.github.detentor.codex.function.Function1;
 
 /**
  * Either é uma mônade que representa um dentre dois tipos possíveis (união disjunta). <br/>
- * Instâncias de Either são ou instâncias de {@link Left} ou instâncias de {@link Right}. <br/><br/>
+ * Instâncias de Either são ou instâncias de {@link Left} ou instâncias de {@link Right}. <br/>
+ * <br/>
  * Either representa uma alternativa a {@link Option}, onde a Option vazia seria representado por Left. Ao contrário de Option, entretanto,
- * Left pode possuir um valor útil (por exemplo, uma mensagem de erro). <br/><br/>
+ * Left pode possuir um valor útil (por exemplo, uma mensagem de erro). <br/>
+ * <br/>
  * 
  * Convenção dita que Left é usado para os casos de falha (resultados não esperados), e Right para os de sucesso (resultados esperados).
  * <br/>
@@ -63,7 +65,7 @@ public abstract class Either<B, A> implements Monad<A>
 	 * @return O valor contido em Right
 	 */
 	public abstract A getRight();
-	
+
 	/**
 	 * Retorna o valor de Left, se ele existir
 	 * 
@@ -72,26 +74,24 @@ public abstract class Either<B, A> implements Monad<A>
 	 * @return O valor contido em Left
 	 */
 	public abstract B getLeft();
-	
-	
 
 	@Override
 	public <C> Either<B, C> pure(final C value)
 	{
 		return new Right<B, C>(value);
 	}
-	
+
 	@Override
 	public <C> Either<B, C> map(final Function1<? super A, C> function)
 	{
 		return isLeft() ? Either.<B, C> createLeft(getLeft()) : Either.<B, C> createRight(function.apply(this.getRight()));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public <C> Either<B, C> ap(final Applicative<Function1<? super A, C>> applicative)
+	public <C> Either<B, C> ap(final Applicative<Function1<A, C>> applicative)
 	{
-		final Either<B, Function1<? super A, C>> eitherAp = (Either<B, Function1<? super A, C>>) applicative;
+		final Either<B, Function1<A, C>> eitherAp = (Either<B, Function1<A, C>>) applicative;
 
 		if (this.isLeft())
 		{
@@ -105,7 +105,7 @@ public abstract class Either<B, A> implements Monad<A>
 
 		return this.map(eitherAp.getRight());
 	}
-	
+
 	@SuppressWarnings({ "unchecked" })
 	@Override
 	public <U> Either<B, U> bind(final Function1<? super A, Monad<U>> function)
@@ -114,7 +114,7 @@ public abstract class Either<B, A> implements Monad<A>
 		{
 			return (Either<B, U>) this;
 		}
-		
+
 		return (Either<B, U>) function.apply(this.getRight());
 	}
 
@@ -123,7 +123,6 @@ public abstract class Either<B, A> implements Monad<A>
 	{
 		return isRight() ? "Right: " + getRight() : "Left: " + getLeft();
 	}
-	
 
 	/**
 	 * Classe que representa o valor 'correto' contido em Either.
@@ -151,6 +150,47 @@ public abstract class Either<B, A> implements Monad<A>
 		{
 			throw new UnsupportedOperationException("getLeft chamado para Right");
 		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (value == null ? 0 : value.hashCode());
+			return result;
+		}
+
+		@SuppressWarnings("rawtypes")
+		@Override
+		public boolean equals(final Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj == null)
+			{
+				return false;
+			}
+			if (getClass() != obj.getClass())
+			{
+				return false;
+			}
+			final Right other = (Right) obj;
+			if (value == null)
+			{
+				if (other.value != null)
+				{
+					return false;
+				}
+			}
+			else if (!value.equals(other.value))
+			{
+				return false;
+			}
+			return true;
+		}
+
 	}
 
 	/**
@@ -178,6 +218,46 @@ public abstract class Either<B, A> implements Monad<A>
 		public B getLeft()
 		{
 			return value;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (value == null ? 0 : value.hashCode());
+			return result;
+		}
+
+		@SuppressWarnings("rawtypes")
+		@Override
+		public boolean equals(final Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj == null)
+			{
+				return false;
+			}
+			if (getClass() != obj.getClass())
+			{
+				return false;
+			}
+			final Left other = (Left) obj;
+			if (value == null)
+			{
+				if (other.value != null)
+				{
+					return false;
+				}
+			}
+			else if (!value.equals(other.value))
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }
