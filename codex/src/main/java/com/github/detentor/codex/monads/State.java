@@ -33,10 +33,10 @@ public abstract class State<S, A> implements Monad<A>, Function1<S, Tuple2<A, S>
 	}
 
 	@Override
-	public <B> State<S, B> ap(final Applicative<Function1<? super A, B>> applicative)
+	public <B> State<S, B> ap(final Applicative<Function1<A, B>> applicative)
 	{
 		@SuppressWarnings("unchecked")
-		final State<S, Function1<? super A, B>> stateAp = (State<S, Function1<? super A, B>>) applicative;
+		final State<S, Function1<A, B>> stateAp = (State<S, Function1<A, B>>) applicative;
 
 		return new State<S, B>()
 		{
@@ -44,7 +44,7 @@ public abstract class State<S, A> implements Monad<A>, Function1<S, Tuple2<A, S>
 			public Tuple2<B, S> apply(final S param)
 			{
 				final Tuple2<A, S> ret = State.this.apply(param);
-				final Tuple2<Function1<? super A, B>, S> res = stateAp.apply(ret.getVal2());
+				final Tuple2<Function1<A, B>, S> res = stateAp.apply(ret.getVal2());
 				return Tuple2.from(res.getVal1().apply(ret.getVal1()), res.getVal2());
 			}
 		};
