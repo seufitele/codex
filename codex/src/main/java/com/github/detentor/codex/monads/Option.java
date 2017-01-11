@@ -193,13 +193,13 @@ public class Option<T> extends AbstractSharpCollection<T, SharpCollection<T>> im
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <B> Option<B> ap(final Applicative<Function1<? super T, B>> applicative)
+	public <B> Option<B> ap(final Applicative<Function1<T, B>> applicative)
 	{
-		final Option<Function1<? super T, B>> apOption = (Option<Function1<? super T, B>>) applicative;
+		final Option<Function1<T, B>> apOption = (Option<Function1<T, B>>) applicative;
 		
 		if (apOption.isEmpty())
 		{
-			return (Option<B>) this;
+			return (Option<B>) Option.empty();
 		}
 		
 		return this.map(apOption.get());
