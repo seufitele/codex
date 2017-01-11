@@ -28,7 +28,7 @@ public interface Monad<T> extends Applicative<T>
 	public <U> Monad<U> map(final Function1<? super T, U> function);
 	
 	@Override
-	<B> Monad<B> ap(Applicative<Function1<? super T, B>> applicative);
+	<B> Monad<B> ap(Applicative<Function1<T, B>> applicative);
 
 	/**
 	 * Composição monádica, equivalente à composição de funções. <br/>
