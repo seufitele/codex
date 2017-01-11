@@ -26,7 +26,7 @@ public interface Applicative<A> extends Functor<A>
 	 * @param applicative O Applicative que possui a função a ser executada
 	 * @return Um Applicative obtido a partir da aplicação da função contida no Applicative passado como parâmetro
 	 */
-	public <B> Applicative<B> ap(final Applicative<Function1<? super A, B>> applicative);
+	public <B> Applicative<B> ap(final Applicative<Function1<A, B>> applicative);
 
 	public <B> Applicative<B> map(final Function1<? super A, B> function);
 
