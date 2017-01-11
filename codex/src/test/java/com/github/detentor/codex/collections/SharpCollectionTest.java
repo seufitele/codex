@@ -21,84 +21,20 @@ import com.github.detentor.codex.util.Reflections;
 import com.github.detentor.operations.IntegerOps;
 import com.github.detentor.operations.ObjectOps;
 
-//Genérico 
-
-//size
-//isEmpty
-//notEmpty
-//contains
-//containsAll
-//intersect
-//distinct
-//sorted
-//sorted(comparator)
-//mkString (só a chamada mesmo, pra assegurar que não há erro)
-//min
-//minOption
-//max
-//maxOption
-//maxWith
-//minWith
-//filter
-//partition
-//exists
-//forall
-//map
-//collect
-//flatMap
-//count
-
-//Dependem de ordem
-
-//head
-//headOption
-//last
-//lastOption
-//tail
-//take
-//takeWhile
-//takeRight
-//takeRightWhile
-//drop
-//dropWhile
-//dropRight
-//dropRightWhile
-//splitAt
-//grouped
-//zipWithIndex
-//iterator <- depende de ordem
-//find
-
-//Funções a serem verificadas 'na unha', por ter que verificar resultados específicos:
-
-//map
-//flatMap
-//foldLeft <- usualmente não é dependente de ordem, mas pode ser
-//
 
 public class SharpCollectionTest
 {
-	private static final class ComparatorFunction implements Comparator<Integer>
-	{
-		@Override
-		public int compare(final Integer ob1, final Integer ob2)
-		{
-			return ob2.compareTo(ob1);
-		}
-	}
+	// faltou (por depender da ordem do iterator):
+	// foldLeft <- usualmente não é dependente de ordem, mas pode ser
 
-	private static final class FlatmapFunction implements Function1<Integer, List<Integer>>
+	@Test
+	public void testCat()
 	{
-		@Override
-		public List<Integer> apply(final Integer param)
-		{
-			final List<Integer> retorno = new ArrayList<Integer>();
-			retorno.add(param);
-			retorno.add(param);
-			return retorno;
-		}
+		OptionTest.testOption();
+		EitherTest.testEither();
+		StateTest.testState();
 	}
-
+	
 	@Test
 	public void testSharpCollection()
 	{
@@ -121,11 +57,6 @@ public class SharpCollectionTest
 		{
 			classTests.add(genClassTest(theClass));
 		}
-
-		// ListSharp<Class<?>> collections = ListSharp.<Class<?>> from(
-		// // MapSharp.class,
-		// SetSharp.class, LazyList.class, ListSharp.class, com.github.detentor.codex.collections.immutable.ListSharp.class,
-		// LLSharp.class, com.github.detentor.codex.collections.immutable.LLSharp.class);
 
 		try
 		{
@@ -186,9 +117,6 @@ public class SharpCollectionTest
 
 		// Comparison
 		SharpCollectionComparator.testSharpCollectionComparator(sharpCol, oriCol, emptyCol, comparator, eleNotInCol, elems);
-
-		// faltou (por depender da ordem do iterator):
-		// foldLeft <- usualmente não é dependente de ordem, mas pode ser
 	}
 
 	@SuppressWarnings("unchecked")
@@ -281,47 +209,25 @@ public class SharpCollectionTest
 
 		return classTest;
 	}
+	
+	private static final class ComparatorFunction implements Comparator<Integer>
+	{
+		@Override
+		public int compare(final Integer ob1, final Integer ob2)
+		{
+			return ob2.compareTo(ob1);
+		}
+	}
 
-	// public void testMapCollection()
-	// {
-	// final Option<Method> func2 = Reflections.getMethodFromNameAndType(MapSharp.class, "empty", new Class<?>[0]);
-	//
-	// final Tuple2<String, Integer> ele1 = Tuple2.from("a", 1);
-	// final Tuple2<String, Integer> ele2 = Tuple2.from("b", 2);
-	// final Tuple2<String, Integer> ele3 = Tuple2.from("c", 3);
-	// final Tuple2<String, Integer> ele4 = Tuple2.from("d", 4);
-	// final Tuple2<String, Integer> ele5 = Tuple2.from("e", 5);
-	//
-	// final Tuple2<String, Integer>[] elements = new Tuple2[] {ele1, ele2, ele3, ele4, ele5};
-	//
-	// SharpCollection<Tuple2<String, Integer>> listaOri = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
-	//
-	// SharpCollection<Tuple2<String, Integer>> lista = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(elements);
-	// SharpCollection<Integer> listaVazia = Reflections.invokeSafe(MapSharp.class, func2.get());
-	//
-	// SharpCollection<Tuple2<String, Integer>> listaDrop1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele2,
-	// ele3, ele4, ele5);
-	// SharpCollection<Tuple2<String, Integer>> listaDrop2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele3,
-	// ele4, ele5);
-	//
-	// SharpCollection<Tuple2<String, Integer>> listaTake1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1);
-	// SharpCollection<Tuple2<String, Integer>> listaTake2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1,
-	// ele2);
-	//
-	// SharpCollection<Tuple2<String, Integer>> listaTakeRight1 = MapSharp.<String,
-	// Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele5);
-	// SharpCollection<Tuple2<String, Integer>> listaTakeRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele4,
-	// ele5);
-	//
-	// SharpCollection<Tuple2<String, Integer>> listaDropRight1 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1,
-	// ele2, ele3, ele4);
-	// SharpCollection<Tuple2<String, Integer>> listaDropRight2 = MapSharp.<String, Integer>empty(MapSharpType.LINKED_HASH_MAP).addAll(ele1,
-	// ele2, ele3);
-	//
-	//// testGenSharpCollection(lista, listaOri,
-	//// listaDrop1, listaDrop2,
-	//// listaTake1, listaTake2,
-	//// listaTakeRight1, listaTakeRight2,
-	//// listaDropRight1, listaDropRight2, listaVazia, Tuple2.from("f", "6"), new Object[] { ele1, ele2, ele3, ele4, ele5} );
-	// }
+	private static final class FlatmapFunction implements Function1<Integer, List<Integer>>
+	{
+		@Override
+		public List<Integer> apply(final Integer param)
+		{
+			final List<Integer> retorno = new ArrayList<Integer>();
+			retorno.add(param);
+			retorno.add(param);
+			return retorno;
+		}
+	}
 }
