@@ -1,6 +1,5 @@
 package com.github.detentor.codex.function;
 
-
 /**
  * Interface de funções que recebem um parâmetro, e retornam um valor. (f : A -> B).
  * 
@@ -9,16 +8,15 @@ package com.github.detentor.codex.function;
  * @param <A> O tipo de dado de entrada da função
  * @param <B> O tipo de dado de saída da função
  */
-public interface Function1<A, B> extends Function
+public interface Function1<A, B>
 {
-
 	default public int getArity()
 	{
 		return 1;
 	}
-	
+
 	/**
-	 * Faz a composição de duas funções passadas como parâmetro. <br/>
+	 * Faz a composição desta função com a função passada como parâmetro. <br/>
 	 * Formalmente, seja
 	 * 
 	 * <pre>
@@ -31,11 +29,11 @@ public interface Function1<A, B> extends Function
 	 * @param func Uma função <b>g: B -> C</b>, a ser feita a composição.
 	 * @return Uma função <b>h: A -> C</b>, que representa a composição das duas funções.
 	 */
-	default public <C> Function1<A, C> and(final Function1<? super B, C> func)
+	default public <C> Function1<A, C> compose(final Function1<? super B, ? extends C> func)
 	{
 		return param -> func.apply(Function1.this.apply(param));
 	}
-
+	
 	/**
 	 * Retorna uma função de aridade 0, a partir da aplicação do primeiro parâmetro. <br/>
 	 * Essa técnica é também conhecida como Currying.

@@ -3,20 +3,20 @@ package com.github.detentor.codex.cat;
 import com.github.detentor.codex.function.Function1;
 
 /**
- * Em teoria das categorias, Functor é um mapeamento entre categorias, de forma a preservar a sua estrutura. <br/>
- * Em particular, um Functor é como uma função que opera em contâineres. Se uma função f : A -> B opera transformando elementos
- * A em elementos B, um Functor opera transformando uma estrutura que contém elementos do tipo A numa outra estrutura (Functor) contendo
- * elementos do tipo B. <br/>
- * 
- * @author Vinicius Seufitele Pinto
+ * Functores representam estruturas que podem ser mapeadas. </br>
+ * Além disso, esse mapeamento garante que a estrutura não será modificada, ou seja, se o Functor seguir
+ * as leis de funtores, o tipo da estrutura não vai ser modificado.
  *
+ * @param <A> O tipo de dados que o functor contém
  */
-public interface Functor<A> 
+public interface Functor<A>
 {
 	/**
-	 * Mapeia esse functor para um outro functor
-	 * @param func A função de mapeamento que transforma elementos do tipo 'A' em 'B'
-	 * @return Um functor que contém elementos do tipo B
+	 * Constrói um novo functor a partir da aplicação da função passada como parâmetro em cada elemento deste functor. <br/>
+	 * A ordem é preservada, se ela estiver bem-definida.
+	 * @param <B> O tipo da novo functor.
+	 * @param function Uma função que recebe um elemento deste functor, e retorna um elemento de (potencialmente) outro tipo.
+	 * @return Uma novo functor, a partir da aplicação da função para cada elemento.
 	 */
-	<B> Functor<B> fmap(final Function1<A, B> func);
+    public <B> Functor<B> map(final Function1<? super A, B> function);
 }

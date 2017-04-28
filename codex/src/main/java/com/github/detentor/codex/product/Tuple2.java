@@ -1,7 +1,7 @@
 package com.github.detentor.codex.product;
 
-
-
+import com.github.detentor.codex.cat.Functor;
+import com.github.detentor.codex.function.Function1;
 
 /**
  * Na teoria dos conjuntos, uma n-tuple (enupla) é uma sequência de n elementos, onde n é um inteiro positivo.<br/>
@@ -13,7 +13,7 @@ package com.github.detentor.codex.product;
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo
  */
-public class Tuple2<A, B> implements Product
+public class Tuple2<A, B> implements Product, Functor<B>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -52,9 +52,15 @@ public class Tuple2<A, B> implements Product
 	 * Retorna uma nova tupla, com os elementos em posições trocadas.
 	 * @return Uma nova tupla, onde a posição dos elementos está invertida.
 	 */
-	public Tuple2<B, A> swap()
+	public Tuple2<B, A> flip()
 	{
 		return Tuple2.from(this.getVal2(), this.getVal1());
+	}
+	
+	@Override
+	public <C> Tuple2<A, C> map(final Function1<? super B, C> function)
+	{
+		return Tuple2.from(this.val1, function.apply(this.val2));
 	}
 
 	@Override

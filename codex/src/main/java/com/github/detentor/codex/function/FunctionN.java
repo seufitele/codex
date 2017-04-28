@@ -11,7 +11,7 @@ import java.lang.reflect.Array;
  * @param <A> O tipo dos parâmetros da função
  * @param <B> O tipo de retorno da função
  */
-public interface FunctionN<A, B> extends Function
+public interface FunctionN<A, B>
 {
 	/**
 	 * Executa a função, a partir da aplicação dos parâmetros passados.

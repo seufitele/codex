@@ -20,17 +20,17 @@ public interface Predicate<A> extends Function1<A, Boolean>
 		return param -> ! Predicate.this.apply(param);
 	}
 
-	/**
-	 * Faz a composição deste predicado com o predicado passado como parâmetro. <br/>
-	 * Em particular, o predicado retornado será verdadeiro se, e somente se, ele for verdadeiro para
-	 * este predicado e para o predicado passado como parâmetro. 
-	 *  
-	 * @param predicate O predicado a ser composto com esta função
-	 * @return Uma função que retornará true somente se a aplicação deste predicado e da função
-	 * passada como parâmetro retornarem true.
-	 */
-	default <G extends Function1<? super A, Boolean>> Predicate<A> compose(final G predicate)
-	{
-		return param -> Predicate.this.apply(param) && predicate.apply(param);
-	}
+//	/**
+//	 * Faz a composição deste predicado com o predicado passado como parâmetro. <br/>
+//	 * Em particular, o predicado retornado será verdadeiro se, e somente se, ele for verdadeiro para
+//	 * este predicado e para o predicado passado como parâmetro. 
+//	 *  
+//	 * @param predicate O predicado a ser composto com esta função
+//	 * @return Uma função que retornará true somente se a aplicação deste predicado e da função
+//	 * passada como parâmetro retornarem true.
+//	 */
+//	default <G extends Function1<? super A, Boolean>> Predicate<A> compose(final G predicate)
+//	{
+//		return param -> Predicate.this.apply(param) && predicate.apply(param);
+//	}
 }

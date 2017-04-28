@@ -2,6 +2,7 @@ package com.github.detentor.codex.cat;
 
 import java.util.Date;
 
+import com.github.detentor.codex.collections.Seq;
 import com.github.detentor.codex.collections.mutable.ListSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
@@ -69,7 +70,7 @@ public class JavaTeste
 	 * 
 	 * 
 	 */
-	public static <A, B> B cata(final B start, final Function2<A, B, B> func, ListSharp<A> list)
+	public static <A, B> B cata(final B start, final Function2<A, B, B> func, Seq<A> list)
 	{
 		if (list.isEmpty())
 		{

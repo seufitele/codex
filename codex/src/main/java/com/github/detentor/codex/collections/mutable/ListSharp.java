@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.github.detentor.codex.cat.Applicative;
+import com.github.detentor.codex.cat.Monad;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.IndexedSeq;
 import com.github.detentor.codex.collections.MutableSharpCollection;
@@ -29,7 +31,7 @@ import com.github.detentor.codex.util.Builders;
  * 
  * @author Vinícius Seufitele Pinto
  */
-public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, PartialFunction1<Integer, T>, Serializable
+public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, PartialFunction1<Integer, T>, Serializable, Monad<T>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -42,7 +44,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	{
 		this(new ArrayList<T>());
 	}
-	
+
 	protected ListSharp(final List<T> fromList)
 	{
 		super();
@@ -86,7 +88,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	 * @param valores A ListSharp a ser criada, a partir dos valores
 	 * @return Uma nova ListSharp, cujos elementos são os elementos passados como parâmetro
 	 */
-	@SuppressWarnings("unchecked")
+	@SafeVarargs
 	public static <T> ListSharp<T> from(final T... valores)
 	{
 		final ListSharp<T> retorno = new ListSharp<T>();
@@ -130,9 +132,10 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 		backingList.clear();
 		return this;
 	}
-	
+
 	@Override
-	public <B, U extends SharpCollection<B>> Builder<B, U> builder() {
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
+	{
 		return Builders.arrayListBuilder();
 	}
 
@@ -141,7 +144,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	{
 		return mkString("[", ", ", "]");
 	}
-	
+
 	@Override
 	public <B> ListSharp<B> collect(final PartialFunction1<? super T, B> pFunction)
 	{
@@ -159,7 +162,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	{
 		return (ListSharp<B>) IndexedSeq.super.flatMap(function);
 	}
-	
+
 	@Override
 	public ListSharp<Tuple2<T, Integer>> zipWithIndex()
 	{
@@ -167,33 +170,31 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	}
 
 	/**
-	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> 
-	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
-	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de 
-	 * elementos desta coleção que retornam aquele valor à função. <br/>
+	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br>
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, criando um mapa onde a chave é o resultado
+	 * da função aplicada, e o valor é uma coleção de elementos desta coleção que retornam aquele valor à função. <br/>
 	 * O o mapa retornado será criado a partir de um HashMap.
 	 * 
 	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
-	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
-	 * de elementos cujo resultado da função aplicada seja o mesmo.
+	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção de elementos cujo resultado da função aplicada seja o
+	 *         mesmo.
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function)
 	{
 		return groupBy(function, MapSharpType.HASH_MAP);
 	}
-	
+
 	/**
-	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br> 
-	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
-	 * criando um mapa onde a chave é o resultado da função aplicada, e o valor é uma coleção de 
-	 * elementos desta coleção que retornam aquele valor à função.
+	 * Transforma esta coleção em um mapa de coleções de acordo com uma função discriminadora. </br>
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, criando um mapa onde a chave é o resultado
+	 * da função aplicada, e o valor é uma coleção de elementos desta coleção que retornam aquele valor à função.
 	 * 
 	 * @param <B> O tipo de retorno da função
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
 	 * @param mapType O tipo de mapa a ser criado pelo groupBy.
-	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção 
-	 * de elementos cujo resultado da função aplicada seja o mesmo.
+	 * @return Um mapa, onde a chave é o resultado da função, e os valores uma coleção de elementos cujo resultado da função aplicada seja o
+	 *         mesmo.
 	 */
 	public <A> MapSharp<A, ListSharp<T>> groupBy(final Function1<? super T, A> function, final MapSharpType mapType)
 	{
@@ -208,10 +209,9 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	}
 
 	/**
-	 * Transforma esta coleção em uma lista de tuplas de acordo com uma função de transformação. </br> 
-	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, 
-	 * criando uma lista de tuplas onde o primeiro elemento é o próprio item, e o segundo é o resultado
-	 * da aplicação da função naquele elemento. <br/>
+	 * Transforma esta coleção em uma lista de tuplas de acordo com uma função de transformação. </br>
+	 * Em outras palavras, aplica a função passada como parâmetro a cada elemento desta coleção, criando uma lista de tuplas onde o primeiro
+	 * elemento é o próprio item, e o segundo é o resultado da aplicação da função naquele elemento. <br/>
 	 * 
 	 * @param funcao Uma função que transforma um item desta coleção em outro tipo
 	 * @return Uma lista de tuplas, onde o primeiro item é o elemento original, e o segundo o valor após a aplicação da função
@@ -245,6 +245,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	 * 
 	 * @return Esta lista após a ordenação dos elementos ordenados
 	 */
+	@Override
 	public ListSharp<T> sorted(final Comparator<? super T> comparator)
 	{
 		if (this.isEmpty())
@@ -256,7 +257,7 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	}
 
 	@Override
-	public IndexedSeq<T> subsequence(int startIndex, int endIndex)
+	public IndexedSeq<T> subsequence(final int startIndex, final int endIndex)
 	{
 		return ListSharp.from(backingList.subList(Math.max(startIndex, 0), Math.min(endIndex, this.size())));
 	}
@@ -282,26 +283,32 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 	{
 		return backingList;
 	}
-	
-//	/**
-//	 * Transforma esta lista de tuplas em um mapa onde a chave é o primeiro elemento da tupla, e o valor
-//	 * o segundo. Equivale a {@link MapSharp#from(Iterable) MapSharp.from(this)}.
-//	 * @return Um mapa criado a partir desta lista de tuplas.
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public <A, B> MapSharp<A, B> toMapSharp()
-//	{
-//		if (this.isEmpty())
-//		{
-//			return MapSharp.empty();
-//		}
-//		
-//		if (this.head() instanceof Tuple2<?, ?>)
-//		{
-//			return MapSharp.from((ListSharp<Tuple2<A, B>>) this);
-//		}
-//		throw new IllegalArgumentException("O método toMapSharp só está definido para listas de tuplas");
-//	}
+
+	// /**
+	// * Transforma esta lista de tuplas em um mapa onde a chave é o primeiro elemento da tupla, e o valor
+	// * o segundo. Equivale a {@link MapSharp#from(Iterable) MapSharp.from(this)}.
+	// * @return Um mapa criado a partir desta lista de tuplas.
+	// */
+	// @SuppressWarnings("unchecked")
+	// public <A, B> MapSharp<A, B> toMapSharp()
+	// {
+	// if (this.isEmpty())
+	// {
+	// return MapSharp.empty();
+	// }
+	//
+	// if (this.head() instanceof Tuple2<?, ?>)
+	// {
+	// return MapSharp.from((ListSharp<Tuple2<A, B>>) this);
+	// }
+	// throw new IllegalArgumentException("O método toMapSharp só está definido para listas de tuplas");
+	// }
+
+	@Override
+	public ListSharp<T> addAll(final Iterable<? extends T> col)
+	{
+		return (ListSharp<T>) MutableSharpCollection.super.addAll(col);
+	}
 
 	/**
 	 * Classe com a implementação default do comparator
@@ -316,9 +323,10 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 			return ob1.compareTo(ob2);
 		}
 	}
-	
+
 	/**
 	 * Essa classe é um builder para SharpCollection baseado em um ListSharp.
+	 * 
 	 * @param <E> O tipo de dados do ListSharp retornado
 	 */
 	protected final static class ArrayBuilder<E> implements Builder<E, SharpCollection<E>>
@@ -337,4 +345,27 @@ public class ListSharp<T> implements IndexedSeq<T>, MutableSharpCollection<T>, P
 			return new ListSharp<E>(list);
 		}
 	}
+
+	@Override
+	public <U> ListSharp<U> pure(final U value)
+	{
+		return ListSharp.from(value);
+	}
+
+	@Override
+	public <B> ListSharp<B> ap(final Applicative<Function1<T, B>> applicative)
+	{
+		final ListSharp<Function1<T, B>> listAplic = (ListSharp<Function1<T, B>>) applicative; 
+		return this.map(listAplic.head());
+	}
+
+	@Override
+	public <U> ListSharp<U> bind(final Function1<? super T, ? extends Monad<U>> function)
+	{
+		@SuppressWarnings("unchecked")
+		Function1<? super T, ListSharp<U>> func = (Function1<? super T, ListSharp<U>>) function; 
+		
+		return flatMap(func);
+	}
+
 }

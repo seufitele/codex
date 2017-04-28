@@ -30,7 +30,7 @@ public interface PartialFunction1<A, B> extends Function1<A, B>
 	 * 
 	 * @param func A função a ser composta com essa função parcial
 	 */
-	default public <C> PartialFunction1<A, C> compose(final Function1<? super B, C> func)
+	default public <C> PartialFunction1<A, C> compose(final Function1<? super B, ? extends C> func)
 	{
 		return new PartialFunction1<A, C>()
 		{

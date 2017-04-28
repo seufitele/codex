@@ -37,7 +37,7 @@ public final class Reflections
 	public static <A, B> Function1<A, B> lift(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
-		return param -> invokeSafe(param, theMethod, (Object[]) null);
+		return param -> safeInvoke(param, theMethod, (Object[]) null);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public final class Reflections
 	public static <A, B, C> Function1<B, C> liftStatic(final Class<A> fromClass, final String methodName)
 	{
 		final Method theMethod = ensureNotEmpty(getMethodFromName(fromClass, methodName));
-		return param -> invokeSafe(fromClass, theMethod, param);
+		return param -> safeInvoke(fromClass, theMethod, param);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public final class Reflections
 			types[i] = params[i].getClass();
 		}
 		final Method theMethod = ensureNotEmpty(getMethodFromNameAndType(fromInstance.getClass(), methodName, types));
-		return () -> invokeSafe(fromInstance, theMethod, params);
+		return () -> safeInvoke(fromInstance, theMethod, params);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public final class Reflections
 	{
 		final Method theMethod = ensureNotEmpty(
 									getMethodFromNameAndType(fromClass, methodName, new Class<?>[]{Object[].class}));
-		return params -> invokeSafe(fromClass, theMethod, new Object[] { params });
+		return params -> safeInvoke(fromClass, theMethod, new Object[] { params });
 	}
 
 	/**
@@ -176,7 +176,7 @@ public final class Reflections
 	 * @return O valor retornado pelo método
 	 */
 	@SuppressWarnings("unchecked")
-	public static <A, B> B invokeSafe(final Object fromClass, final Method method, final Object ... params)
+	public static <A, B> B safeInvoke(final Object fromClass, final Method method, final Object ... params)
 	{
 		try
 		{

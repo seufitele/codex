@@ -4,14 +4,14 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
+import com.github.detentor.codex.collections.LinearSeq;
 import com.github.detentor.codex.collections.SharpCollection;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
-import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
@@ -66,7 +66,7 @@ import com.github.detentor.codex.util.RichIterator;
  *
  * @param <T>
  */
-public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
+public class LazyList<T> implements LinearSeq<T>
 {
 	protected Object head;
 	protected LazyList<T> tail;
@@ -118,6 +118,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	 * @param valores A LazyList a ser criada, a partir dos valores
 	 * @return Uma LazyList cujos elementos são os elementos passados como parâmetro
 	 */
+	@SafeVarargs
 	public static <T> LazyList<T> from(final T... valores)
 	{
 		final LinkedListBuilder<T> builder = new LinkedListBuilder<T>();
@@ -172,15 +173,13 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> tail()
 	{
+		if (this.isEmpty())
+		{
+			throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
+		}
 		return tail;
 	}
 	
-	@Override
-	public <B> Builder<B, SharpCollection<B>> builder()
-	{
-		return new LinkedListBuilder<B>();
-	}
-
 	@Override
 	public String toString()
 	{
@@ -358,7 +357,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	{
 		//Como filter é lazy, simplesmente cria um filter pra cada lista.
 		//ATENÇÃO: ESSE CÓDIGO TEM COMPLEXIDADE N (2x). Se fosse feito o partition strict, ele teria complexidade N apenas.
-		return Tuple2.from(this.filter(pred), this.filter(Functions.not(pred)));
+		return Tuple2.from(this.filter(pred), this.filter(val -> !pred.apply(val)));
 	}
 
 	/**
@@ -549,7 +548,6 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		return Tuple2.from(take(num), drop(num));
 	}
 
-	@Override
 	public LazyList<LazyList<T>> grouped(final Integer size)
 	{
 		return unfold(new StatePartialArrow0<Iterator<T>, LazyList<T>>(this.iterator())
@@ -660,7 +658,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public T last()
 	{
-		return super.last();
+		return LinearSeq.super.last();
 	}
 	
 	/**
@@ -670,7 +668,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> takeRight(final Integer num)
 	{
-		return super.takeRight(num);
+		return (LazyList<T>) LinearSeq.super.takeRight(num);
 	}
 
 	/**
@@ -680,7 +678,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> dropRight(final Integer num)
 	{
-		return super.dropRight(num);
+		return (LazyList<T>) LinearSeq.super.dropRight(num);
 	}
 
 	/**
@@ -690,7 +688,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> dropRightWhile(final Function1<? super T, Boolean> pred)
 	{
-		return super.dropRightWhile(pred);
+		return (LazyList<T>) LinearSeq.super.dropRightWhile(pred);
 	}
 	
 	/**
@@ -700,7 +698,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public LazyList<T> takeRightWhile(Function1<? super T, Boolean> pred)
 	{
-		return super.takeRightWhile(pred);
+		return (LazyList<T>) LinearSeq.super.takeRightWhile(pred);
 	}
 	
 	/**
@@ -710,7 +708,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public Option<T> lastOption()
 	{
-		return super.lastOption();
+		return LinearSeq.super.lastOption();
 	}
 
 	/**
@@ -720,7 +718,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public String mkString()
 	{
-		return super.mkString();
+		return LinearSeq.super.mkString();
 	}
 
 	/**
@@ -730,7 +728,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public String mkString(final String separator)
 	{
-		return super.mkString(separator);
+		return LinearSeq.super.mkString(separator);
 	}
 
 	/**
@@ -740,7 +738,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public String mkString(final String start, final String separator, final String end)
 	{
-		return super.mkString(start, separator, end);
+		return LinearSeq.super.mkString(start, separator, end);
 	}
 
 //	/**
@@ -763,45 +761,45 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 //		return super.minWith(comparator);
 //	}
 
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public T min()
-	{
-		return super.min();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public T max()
-	{
-		return super.max();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public Option<T> minOption()
-	{
-		return super.minOption();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public Option<T> maxOption()
-	{
-		return super.maxOption();
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public T min()
+//	{
+//		return LinearSeq.super.min();
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public T max()
+//	{
+//		return LinearSeq.super.max();
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public Option<T> minOption()
+//	{
+//		return super.minOption();
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
+//	 */
+//	@Override
+//	public Option<T> maxOption()
+//	{
+//		return super.maxOption();
+//	}
 	
 	/**
 	 * {@inheritDoc} <br/>
@@ -810,7 +808,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public int size()
 	{
-		return super.size();
+		return LinearSeq.super.size();
 	}
 
 	/**
@@ -820,17 +818,7 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public List<T> toList()
 	{
-		return super.toList();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public List<T> toList(Builder<T, List<T>> builder)
-	{
-		return super.toList(builder);
+		return LinearSeq.super.toList();
 	}
 
 	/**
@@ -840,26 +828,15 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 	@Override
 	public Set<T> toSet()
 	{
-		return super.toSet();
+		return LinearSeq.super.toSet();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * ATENÇÃO: Para listas infinitas essa função não irá retornar.
-	 */
-	@Override
-	public Set<T> toSet(Builder<T, Set<T>> builder)
-	{
-		return super.toSet(builder);
-	}
-
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public LazyList<T> sorted()
-	{
-		return sorted(new DefaultComparator());
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Override
+//	public LazyList<T> sorted()
+//	{
+//		return sorted(new DefaultComparator());
+//	}
 
 	@Override
 	public LazyList<T> sorted(final Comparator<? super T> comparator)
@@ -936,8 +913,10 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 		@Override
 		public LazyList<T> tail()
 		{
-			//ensure chama isEmpty() -> que chama head(), que preenche o valor de tail
-			ensureNotEmpty("tail foi chamado para uma coleção vazia");
+			if (this.isEmpty())
+			{
+				throw new NoSuchElementException("tail foi chamado para uma coleção vazia");
+			}
 			return tail;
 		}
 	}
@@ -1097,4 +1076,18 @@ public class LazyList<T> extends AbstractLinearSeq<T, LazyList<T>>
 			tail = null;
 		}
 	}
+
+//	@Override
+//	public <B> Builder<B, SharpCollection<B>> builder()
+//	{
+//		return new LinkedListBuilder<B>();
+//	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
+	{
+		return (Builder<B, U>) new LinkedListBuilder<B>();
+	}
+
 }

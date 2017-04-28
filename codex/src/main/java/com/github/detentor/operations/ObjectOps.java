@@ -1,3 +1,4 @@
+
 package com.github.detentor.operations;
 
 import com.github.detentor.codex.function.Function1;
@@ -51,5 +52,28 @@ public final class ObjectOps
 	 * Transforma um enum em sua propriedade name
 	 */
 	public static final Function1<Enum<?>, String> enumToName = Enum::name;
+	
+	
+	@SuppressWarnings("unchecked")
+    public static <A, B> Function1<A, B> identity()
+	{
+	    return (Function1<A, B>) identity;
+	}
+	
+	/**
+	 * Representa a função que transforma um objeto em seu valor .class
+	 */
+	public static <A> Function1<A, Class<A>> toClass()
+	{
+		return new Function1<A, Class<A>>()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class<A> apply(final A param)
+			{
+				return (Class<A>) param.getClass();
+			}
+		};
+	}
 
 }

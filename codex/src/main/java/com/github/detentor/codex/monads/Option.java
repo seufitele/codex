@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.github.detentor.codex.cat.Applicative;
+import com.github.detentor.codex.cat.Monad;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.LinearSeq;
 import com.github.detentor.codex.collections.SharpCollection;
@@ -25,7 +27,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @param <T> O tipo do dado a ser guardado na Option
  */
-public class Option<T> implements LinearSeq<T>, Serializable 
+public class Option<T> implements LinearSeq<T>, Serializable , Monad<T>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -181,6 +183,39 @@ public class Option<T> implements LinearSeq<T>, Serializable
 	{
 		return this;
 	}
+	
+	@Override
+	public <B> Option<B> pure(final B value)
+	{
+		return Option.from(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B> Option<B> ap(final Applicative<Function1<T, B>> applicative)
+	{
+		final Option<Function1<T, B>> apOption = (Option<Function1<T, B>>) applicative;
+		
+		if (apOption.isEmpty())
+		{
+			return (Option<B>) Option.empty();
+		}
+		
+		return this.map(apOption.get());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B> Option<B> bind(final Function1<? super T, ? extends Monad<B>> function)
+	{
+		if (this.isEmpty())
+		{
+			return (Option<B>) this;
+		}
+
+		return (Option<B>) function.apply(this.get());
+	}
+	
 
 	@Override
 	public int hashCode()

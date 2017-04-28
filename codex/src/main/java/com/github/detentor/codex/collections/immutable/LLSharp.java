@@ -132,6 +132,7 @@ public class LLSharp<T> implements LinearSeq<T>
 		return tail;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <B, U extends SharpCollection<B>> Builder<B, U> builder()
 	{

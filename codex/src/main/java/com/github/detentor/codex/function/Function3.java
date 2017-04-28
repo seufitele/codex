@@ -11,7 +11,7 @@ package com.github.detentor.codex.function;
  * @param <C> O tipo de dado do terceiro parâmetro
  * @param <D> O tipo de dado de saída da função
  */
-public interface Function3<A, B, C, D> extends Function
+public interface Function3<A, B, C, D> 
 {
 	default int getArity()
 	{

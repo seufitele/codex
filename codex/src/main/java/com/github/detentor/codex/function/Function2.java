@@ -10,7 +10,7 @@ package com.github.detentor.codex.function;
  * @param <B> O tipo de dado do segundo parâmetro
  * @param <C> O tipo de dado de saída da função
  */
-public interface Function2<A, B, C> extends Function
+public interface Function2<A, B, C>
 {
 	default int getArity()
 	{
@@ -27,6 +27,24 @@ public interface Function2<A, B, C> extends Function
 	default public Function1<B, C> applyPartial(final A param1)
 	{
 		return param2 -> Function2.this.apply(param1, param2); 
+	}
+	
+	/**
+	 * Retorna essa função como combinações de {@link Function1}
+	 * @return Uma {@link Function1} que, aplicada sucessivamente, equivale a essa {@link Function2}
+	 */
+	default public Function1<A, Function1<B, C>> curried()
+	{
+		return paramA -> paramB -> Function2.this.apply(paramA, paramB);
+	}
+	
+	/**
+	 * Troca a ordem entre o primeiro e o segundo parâmetros
+	 * @return Uma função que corresponde à esta função, com o primeiro e segundo parâmetros trocados
+	 */
+	default public Function2<B, A, C> flip()
+	{
+		return (param2, param1) -> this.apply(param1, param2);
 	}
 
 	/**

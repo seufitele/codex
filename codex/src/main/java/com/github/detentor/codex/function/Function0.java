@@ -7,7 +7,7 @@ package com.github.detentor.codex.function;
  *
  * @param <A> O tipo a ser retornado pela função
  */
-public interface Function0<A> extends Function
+public interface Function0<A> 
 {
 	default int getArity()
 	{
