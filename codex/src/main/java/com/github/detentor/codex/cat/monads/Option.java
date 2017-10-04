@@ -1,4 +1,4 @@
-package com.github.detentor.codex.monads;
+package com.github.detentor.codex.cat.monads;
 
 import java.io.Serializable;
 import java.util.ArrayList;

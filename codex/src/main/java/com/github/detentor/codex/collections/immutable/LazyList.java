@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.collections.AbstractLinearSeq;
 import com.github.detentor.codex.collections.Builder;
 import com.github.detentor.codex.collections.SharpCollection;
@@ -15,7 +16,6 @@ import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction0;
 import com.github.detentor.codex.function.PartialFunction1;
 import com.github.detentor.codex.function.arrow.impl.StatePartialArrow0;
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.RichIterator;
 

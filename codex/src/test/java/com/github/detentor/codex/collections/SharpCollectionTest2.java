@@ -17,6 +17,7 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
 import com.github.detentor.codex.collections.mutable.ListSharp;
@@ -26,7 +27,6 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.FunctionN;
 import com.github.detentor.codex.function.Functions;
 import com.github.detentor.codex.function.PartialFunction1;
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.Reflections;
 import com.github.detentor.operations.IntegerOps;

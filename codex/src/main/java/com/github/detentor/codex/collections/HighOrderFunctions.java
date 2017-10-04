@@ -1,9 +1,9 @@
 package com.github.detentor.codex.collections;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.Function2;
 import com.github.detentor.codex.function.PartialFunction1;
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**

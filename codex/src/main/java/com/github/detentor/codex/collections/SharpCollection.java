@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**

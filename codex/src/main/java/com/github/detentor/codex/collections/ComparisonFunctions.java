@@ -2,8 +2,8 @@ package com.github.detentor.codex.collections;
 
 import java.util.Comparator;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.monads.Option;
 
 /**
  * As classes que assinam esta interface possuem diversas funções que utilizam comparação. <br/>

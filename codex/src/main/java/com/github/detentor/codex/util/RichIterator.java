@@ -2,7 +2,7 @@ package com.github.detentor.codex.util;
 
 import java.util.Iterator;
 
-import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.cat.monads.Option;
 
 /**
  * Esse iterator é uma versão melhorada do Iterator do Java. <br/>

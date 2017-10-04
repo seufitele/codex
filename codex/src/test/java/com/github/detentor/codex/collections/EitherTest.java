@@ -1,8 +1,8 @@
 package com.github.detentor.codex.collections;
 
 import com.github.detentor.codex.cat.Monad;
+import com.github.detentor.codex.cat.monads.Either;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.monads.Either;
 
 /**
  * Testes para a classe de Either

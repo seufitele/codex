@@ -1,8 +1,8 @@
 package com.github.detentor.operations;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.function.arrow.Arrow1;
 import com.github.detentor.codex.function.arrow.Arrow2;
-import com.github.detentor.codex.monads.Option;
 
 /**
  * Essa classe provê funções comuns ao trabalhar com {@link Integer}.

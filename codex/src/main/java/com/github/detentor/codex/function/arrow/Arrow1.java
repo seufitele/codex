@@ -1,5 +1,7 @@
 package com.github.detentor.codex.function.arrow;
 
+import com.github.detentor.codex.cat.ContraFunctor;
+import com.github.detentor.codex.cat.Functor;
 import com.github.detentor.codex.function.Function1;
 
 /**
@@ -10,7 +12,7 @@ import com.github.detentor.codex.function.Function1;
  * @param <A>
  * @param <B>
  */
-public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow
+public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow, Functor<B>, ContraFunctor<A>
 {
 	@Override
 	public int getArity()
@@ -62,4 +64,31 @@ public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow
 			}
 		};
 	}
+	
+	@Override
+	public <C> Arrow1<A, C> map(final Function1<? super B, C> function)
+	{
+		return new Arrow1<A, C>()
+		{
+			@Override
+			public C apply(A param)
+			{
+				return function.apply(Arrow1.this.apply(param));
+			}
+		};
+	}
+
+	@Override
+	public <C> Arrow1<C, B> contramap(final Function1<? super C, A> function)
+	{
+		return new Arrow1<C, B>()
+		{
+			@Override
+			public B apply(C param)
+			{
+				return Arrow1.this.apply(function.apply(param));
+			}
+		};
+	}
+	
 }

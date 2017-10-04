@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.function.arrow.Arrow0;
 import com.github.detentor.codex.function.arrow.Arrow1;
 import com.github.detentor.codex.function.arrow.ArrowN;
-import com.github.detentor.codex.monads.Option;
 
 /**
  * Essa classe provê métodos helper para trabalhar com Reflection.

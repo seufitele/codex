@@ -1,7 +1,7 @@
 package com.github.detentor.codex.cat;
 
+import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.function.Function1;
-import com.github.detentor.codex.monads.Option;
 
 /**
  * Applicative representa uma estrutura entre o {@link Functor} e a {@link Monad}. <br/>

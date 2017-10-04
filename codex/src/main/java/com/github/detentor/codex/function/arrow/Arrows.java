@@ -33,6 +33,23 @@ public final class Arrows
 			}
 		};
 	}
+	
+	/**
+	 * Inverte a ordem dos argumentos da seta passada como parâmetro
+	 * @param arrow A seta cujos argumentos serão invertidos
+	 * @return Uma seta com a ordem dos argumentos invertidos
+	 */
+	public static <A, B, C> Arrow2<B, A, C> flip (final Arrow2<A, B, C> arrow)
+	{
+		return new Arrow2<B, A, C>()
+		{
+			@Override
+			public C apply(final B param1, final A param2)
+			{
+				return arrow.apply(param2, param1);
+			}
+		};
+	}
 
 	/**
 	 * Faz a composição de duas setas passadas como parâmetro. <br/>
