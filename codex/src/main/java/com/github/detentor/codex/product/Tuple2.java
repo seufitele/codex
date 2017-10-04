@@ -1,6 +1,6 @@
 package com.github.detentor.codex.product;
 
-import com.github.detentor.codex.cat.Functor;
+import com.github.detentor.codex.cat.Functors.Bifunctor;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.arrow.Arrow1;
 
@@ -14,7 +14,7 @@ import com.github.detentor.codex.function.arrow.Arrow1;
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo
  */
-public class Tuple2<A, B> implements Product, Functor<A>
+public class Tuple2<A, B> implements Product, Bifunctor<A, B>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -41,9 +41,9 @@ public class Tuple2<A, B> implements Product, Functor<A>
 	{
 		if (valor1 instanceof Comparable<?> && valor2 instanceof Comparable<?>)
 		{
-			return new ComparableTuple2((Comparable<C>)valor1, (Comparable<D>) valor2);
+			return new ComparableTuple2((Comparable<C>) valor1, (Comparable<D>) valor2);
 		}
-		
+
 		return new Tuple2<C, D>(valor1, valor2);
 	}
 
@@ -74,9 +74,21 @@ public class Tuple2<A, B> implements Product, Functor<A>
 	}
 
 	@Override
-	public <U> Tuple2<U, B> map(final Function1<? super A, U> function)
+	public <C, D> Tuple2<C, D> bimap(final Function1<? super A, C> function1, final Function1<? super B, D> function2)
 	{
-		return Tuple2.from(function.apply(val1), val2);
+		return map(function2).mapFirst(function1);
+	}
+
+	@Override
+	public <C> Tuple2<C, B> mapFirst(final Function1<? super A, C> function)
+	{
+		return Tuple2.from(function.apply(this.getVal1()), this.getVal2());
+	}
+
+	@Override
+	public <C> Tuple2<A, C> map(final Function1<? super B, C> function)
+	{
+		return Tuple2.from(this.getVal1(), function.apply(this.getVal2()));
 	}
 
 	public A getVal1()
@@ -121,7 +133,7 @@ public class Tuple2<A, B> implements Product, Functor<A>
 		{
 			return false;
 		}
-		if (! (obj instanceof Tuple2<?, ?>))
+		if (!(obj instanceof Tuple2<?, ?>))
 		{
 			return false;
 		}
