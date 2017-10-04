@@ -27,7 +27,7 @@ public abstract class State<S, A> implements Monad<A>, Function1<S, Tuple2<A, S>
 			@Override
 			public Tuple2<B, S> apply(final S param)
 			{
-				return State.this.apply(param).map(function);
+				return State.this.apply(param).mapFirst(function);
 			}
 		};
 	}
