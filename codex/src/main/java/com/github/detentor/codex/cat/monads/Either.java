@@ -2,6 +2,7 @@ package com.github.detentor.codex.cat.monads;
 
 import com.github.detentor.codex.cat.Applicative;
 import com.github.detentor.codex.cat.Monad;
+import com.github.detentor.codex.cat.Functors.Bifunctor;
 import com.github.detentor.codex.function.Function1;
 
 /**
@@ -19,7 +20,7 @@ import com.github.detentor.codex.function.Function1;
  * @param <B> O tipo de dados esperado (valor correto)
  * @param <A> O tipo de dados não esperado (valor incorreto, de erro)
  */
-public abstract class Either<B, A> implements Monad<A>
+public abstract class Either<B, A> implements Monad<A>, Bifunctor<B, A>
 {
 	/**
 	 * Cria uma instância de Either que contém um valor em Right
@@ -81,10 +82,24 @@ public abstract class Either<B, A> implements Monad<A>
 		return new Right<B, C>(value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <C> Either<B, C> map(final Function1<? super A, C> function)
 	{
-		return isLeft() ? Either.<B, C> createLeft(getLeft()) : Either.<B, C> createRight(function.apply(this.getRight()));
+		return isLeft() ? (Either<B, C>) this : Either.<B, C> createRight(function.apply(this.getRight()));
+	}
+	
+	@Override
+	public <C, D> Either<C, D> bimap(final Function1<? super B, C> function1, final Function1<? super A, D> function2)
+	{
+		return this.map(function2).mapFirst(function1);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <C> Either<C, A> mapFirst(Function1<? super B, C> function)
+	{
+		return isLeft() ? Either.<C, A> createLeft(function.apply(getLeft())) : (Either<C, A>)this;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -123,7 +138,7 @@ public abstract class Either<B, A> implements Monad<A>
 	{
 		return isRight() ? "Right: " + getRight() : "Left: " + getLeft();
 	}
-
+	
 	/**
 	 * Classe que representa o valor 'correto' contido em Either.
 	 * 
@@ -190,7 +205,6 @@ public abstract class Either<B, A> implements Monad<A>
 			}
 			return true;
 		}
-
 	}
 
 	/**
