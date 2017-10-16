@@ -1,17 +1,17 @@
 package com.github.detentor.codex.function.arrow;
 
-import com.github.detentor.codex.cat.Functors.Profunctor;
+import com.github.detentor.codex.cat.Applicative;
+import com.github.detentor.codex.cat.Monad;
+import com.github.detentor.codex.cat.functors.Profunctor;
 import com.github.detentor.codex.function.Function1;
 
 /**
  * Setas são funções mais poderosas.
  * 
- * @author Vinicius Seufitele Pinto
- * 
  * @param <A>
  * @param <B>
  */
-public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow, Profunctor<A, B>
+public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow, Profunctor<A, B>, Monad<B>
 {
 	@Override
 	public int getArity()
@@ -94,5 +94,50 @@ public abstract class Arrow1<A, B> implements Function1<A, B>, Arrow, Profunctor
 	public <C, D> Arrow1<C, D> dimap(final Function1<? super C, A> function1, final Function1<? super B, D> function2)
 	{
 		return this.contramap(function1).map(function2);
+	}
+
+	@Override
+	public <U> Arrow1<A, U> pure(final U value)
+	{
+		return new Arrow1<A, U>()
+		{
+			@Override
+			public U apply(final A param)
+			{
+				return value;
+			}
+		};
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <C> Arrow1<A, C> ap(final Applicative<Function1<B, C>> applicative)
+	{
+		final Arrow1<A, Function1<B, C>> apval = (Arrow1<A, Function1<B, C>>) applicative;
+
+		// (<*>) f g x = f x (g x)
+		return new Arrow1<A, C>()
+		{
+			@Override
+			public C apply(final A param)
+			{
+				return apval.apply(param).apply(Arrow1.this.apply(param));
+			}
+		};
+	}
+
+	@Override
+	public <U> Arrow1<A, U> bind(final Function1<? super B, Monad<U>> function)
+	{
+		return new Arrow1<A, U>()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public U apply(final A param)
+			{
+				final Arrow1<A, U> res = (Arrow1<A, U>) function.apply(Arrow1.this.apply(param));
+				return res.apply(param);
+			}
+		};
 	}
 }
