@@ -2,7 +2,7 @@ package com.github.detentor.codex.cat.monads;
 
 import com.github.detentor.codex.cat.Applicative;
 import com.github.detentor.codex.cat.Monad;
-import com.github.detentor.codex.cat.Functors.Bifunctor;
+import com.github.detentor.codex.cat.functors.Bifunctor;
 import com.github.detentor.codex.function.Function1;
 
 /**
