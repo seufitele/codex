@@ -1,6 +1,7 @@
 package com.github.detentor.codex.product;
 
-import com.github.detentor.codex.cat.Functors.Bifunctor;
+import com.github.detentor.codex.cat.Comonad;
+import com.github.detentor.codex.cat.functors.Bifunctor;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.arrow.Arrow1;
 
@@ -9,12 +10,10 @@ import com.github.detentor.codex.function.arrow.Arrow1;
  * Uma enupla é igual a outra se, e somente se, os seus valores são iguais.<br/>
  * <br/>
  * 
- * @author Vinícius Seufitele Pinto
- * 
  * @param <A> O objeto do primeiro tipo
  * @param <B> O objeto do segundo tipo
  */
-public class Tuple2<A, B> implements Product, Bifunctor<A, B>
+public class Tuple2<A, B> implements Product, Bifunctor<A, B>, Comonad<B>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -89,6 +88,24 @@ public class Tuple2<A, B> implements Product, Bifunctor<A, B>
 	public <C> Tuple2<A, C> map(final Function1<? super B, C> function)
 	{
 		return Tuple2.from(this.getVal1(), function.apply(this.getVal2()));
+	}
+	
+	@Override
+	public B extract()
+	{
+		return getVal2();
+	}
+
+	@Override
+	public Tuple2<A, Comonad<B>> duplicate()
+	{
+		return Tuple2.from(getVal1(), (Comonad<B>) this);
+	}
+
+	@Override
+	public <C> Tuple2<A, C> extend(final Function1<Comonad<B>, C> function)
+	{
+		return Tuple2.from(getVal1(), function.apply(this));
 	}
 
 	public A getVal1()
