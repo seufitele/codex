@@ -54,7 +54,7 @@ public abstract class State<S, A> implements Monad<A>, Function1<S, Tuple2<A, S>
 	 * Retorna um estado que ao ser executado simplesmente retorna o valor passado como parâmetro
 	 */
 	@Override
-	public <U> Monad<U> pure(final U value)
+	public <U> State<S, U> pure(final U value)
 	{
 		return new State<S, U>()
 		{

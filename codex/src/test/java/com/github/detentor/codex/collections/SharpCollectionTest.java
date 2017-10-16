@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.detentor.codex.cat.EitherTest;
+import com.github.detentor.codex.cat.OptionTest;
+import com.github.detentor.codex.cat.StateTest;
 import com.github.detentor.codex.cat.monads.Option;
 import com.github.detentor.codex.collections.immutable.LazyList;
 import com.github.detentor.codex.collections.mutable.LLSharp;
