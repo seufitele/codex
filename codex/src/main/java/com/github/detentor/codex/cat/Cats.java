@@ -2,6 +2,7 @@ package com.github.detentor.codex.cat;
 
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.function.arrow.Arrow1;
+import com.github.detentor.operations.ObjectOps;
 
 public class Cats
 {
@@ -44,5 +45,15 @@ public class Cats
 				return (U) param.map(function);
 			}
 		};
+	}
+	
+	/**
+	 * Combina dois níveis de monad em um só
+	 * @param monad A monad que está em duas camadas
+	 * @return
+	 */
+	public static <A> Monad<A> join(Monad<Monad<A>> monad)
+	{
+		return monad.bind(ObjectOps.<Monad<A>, Monad<A>>identity());
 	}
 }
