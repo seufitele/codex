@@ -5,9 +5,6 @@ package com.github.detentor.codex.function.arrow;
  * entidades matemáticas. <br/><br/>
  * 
  * No contexto do codex, setas são funções mais poderosas
- *  
- * 
- * @author Vinicius Seufitele Pinto
  *
  */
 public interface Arrow
