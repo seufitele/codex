@@ -1,4 +1,4 @@
-package com.github.detentor.codex.cat;
+package com.github.detentor.codex.cat.functors;
 
 import com.github.detentor.codex.function.Function1;
 
@@ -6,7 +6,7 @@ import com.github.detentor.codex.function.Function1;
  * Representa um Functor contravariante, ou seja, um Functor que 
  * trabalha da direção inversa de um Functor.
  */
-public interface ContraFunctor<B>
+public interface Contrafunctor<B>
 {
 	/**
 	 * Contrói um novo functor contravariante, a partir da função passada como parâmetro. <br/>
@@ -16,5 +16,5 @@ public interface ContraFunctor<B>
 	 * @param function Uma função que recebe um tipo de elemento, e retorna o tipo de elemento deste functor.
 	 * @return Um novo functor contravariante, a partir da aplicação da função para cada elemento.
 	 */
-    public <A> ContraFunctor<A> contramap(final Function1<? super A, B> function);
+    public <A> Contrafunctor<A> contramap(final Function1<? super A, B> function);
 }

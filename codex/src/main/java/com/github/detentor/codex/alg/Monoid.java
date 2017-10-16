@@ -1,4 +1,4 @@
-package com.github.detentor.codex.cat;
+package com.github.detentor.codex.alg;
 
 /**
  * Monóides são estruturas algébricas que comportam uma operação binária associativa e possuem um elemento identidade.
@@ -12,4 +12,6 @@ public interface Monoid<A> extends Semigroup<A>
 	 * @return O valor identidade do monóide
 	 */
     A empty();
+    
+    
 }

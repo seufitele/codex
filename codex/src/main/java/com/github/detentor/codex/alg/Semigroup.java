@@ -1,4 +1,4 @@
-package com.github.detentor.codex.cat;
+package com.github.detentor.codex.alg;
 
 import com.github.detentor.codex.function.Function2;
 
@@ -16,6 +16,5 @@ public interface Semigroup<A>
 	 * @param func A função binária que transforma dois elementos em um
 	 * @return Um valor A, a partir da aplicação da função
 	 */
-	A reduce(final Function2<A, A, A> func);
-
+	A append(final Function2<A, A, A> func);
 }
