@@ -1,7 +1,6 @@
 package com.github.detentor.codex.function;
 
 import com.github.detentor.codex.function.arrow.Arrow1;
-import com.github.detentor.codex.function.arrow.Arrow2;
 
 /**
  * Classe utilitária, com métodos a serem aplicados a funções.
@@ -161,9 +160,9 @@ public final class Functions
 	 * @param function A função cujos argumentos serão invertidos
 	 * @return Uma seta onde os dois primeiros argumentos serão aplicados em ordem inversa
 	 */
-	public static <A, B, C> Arrow2<B, A, C> flip(final Arrow2<A, B, C> function)
+	public static <A, B, C> Function2<B, A, C> flip(final Function2<A, B, C> function)
 	{
-		return new Arrow2<B, A, C>()
+		return new Function2<B, A, C>()
 		{
 			@Override
 			public C apply(final B param1, final A param2)
